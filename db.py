@@ -1,5 +1,9 @@
 
 
+import os
+import csv
+import sys
+
 from sqlalchemy import create_engine, Column, Integer, String, Float
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.engine.url import URL
@@ -15,6 +19,9 @@ session = scoped_session(factory)
 
 Base = declarative_base()
 Base.query = session.query_property()
+
+
+csv.field_size_limit(sys.maxsize)
 
 
 class City(Base):
@@ -58,3 +65,21 @@ class City(Base):
     timezone = Column(String)
 
     modification_date = Column(String)
+
+    @classmethod
+    def load(cls, path, n=1000):
+        """Load from CSV.
+        """
+        cols = cls.__table__.columns.keys()
+
+        with open(path) as fh:
+
+            rows = csv.reader(fh, delimiter='\t')
+
+            for i, chunk in enumerate(chunked_iter(rows)):
+
+                mappings = [dict(zip(cols, vals)) for vals in chunk]
+                session.bulk_insert_mappings(cls, mappings)
+
+                session.commit()
+                print(i)
