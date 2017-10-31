@@ -4,6 +4,8 @@ import os
 import csv
 import sys
 
+from boltons.iterutils import chunked_iter
+
 from sqlalchemy import create_engine, Column, Integer, String, Float
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.engine.url import URL
@@ -76,10 +78,10 @@ class City(Base):
 
             rows = csv.reader(fh, delimiter='\t')
 
-            for i, chunk in enumerate(chunked_iter(rows)):
+            for i, chunk in enumerate(chunked_iter(rows, n)):
 
                 mappings = [dict(zip(cols, vals)) for vals in chunk]
                 session.bulk_insert_mappings(cls, mappings)
 
                 session.commit()
-                print(i)
+                print((i+1)*n)
