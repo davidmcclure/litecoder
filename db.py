@@ -5,6 +5,7 @@ import csv
 import sys
 
 from boltons.iterutils import chunked_iter
+from tqdm import tqdm
 
 from sqlalchemy import create_engine, Column, Integer, String, Float
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -76,12 +77,11 @@ class City(Base):
 
         with open(path) as fh:
 
-            rows = csv.reader(fh, delimiter='\t')
+            rows = csv.reader(fh, delimiter='\t', quoting=csv.QUOTE_NONE)
 
-            for i, chunk in enumerate(chunked_iter(rows, n)):
+            for chunk in tqdm(chunked_iter(rows, n)):
 
                 mappings = [dict(zip(cols, vals)) for vals in chunk]
-                session.bulk_insert_mappings(cls, mappings)
 
+                session.bulk_insert_mappings(cls, mappings)
                 session.commit()
-                print((i+1)*n)
