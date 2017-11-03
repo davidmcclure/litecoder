@@ -2,7 +2,7 @@
 
 from invoke import task
 
-from db import Base, engine, City
+from litecoder.db import Base, engine, City
 
 
 @task

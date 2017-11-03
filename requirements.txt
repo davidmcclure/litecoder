@@ -2,6 +2,7 @@
 ipython
 jupyter
 sqlalchemy
+us
 boltons
 invoke
 tqdm
