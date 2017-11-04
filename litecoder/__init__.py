@@ -1,8 +1,14 @@
 
 
 import us
+import re
 
 from cached_property import cached_property
+from boltons.iterutils import windowed
+
+
+def tokenize_toponym(text):
+    return re.findall('[a-z-\.]+', text, re.I)
 
 
 class StateIndex(dict):
@@ -15,7 +21,28 @@ class StateIndex(dict):
             self[state.name.lower()] = state
 
 
-class FreetextLocation(str):
+class ToponymTokens(list):
+
+    @classmethod
+    def from_text(cls, text):
+        """Tokenize a raw string.
+        """
+        return cls(re.findall('[a-z-\.]+', text, re.I))
+
+    @cached_property
+    def key(self):
+        """Make an index key.
+        """
+        return ' '.join([t.lower() for t in self])
+
+    def ngrams(self, maxn=3):
+        """Generate all ngrams.
+        """
+        for n in range(1, max(maxn, len(self))):
+            yield from map(self.__class__, windowed(self, n))
+
+
+class LocationFieldText(str):
 
     @cached_property
     def parts(self):
@@ -24,10 +51,24 @@ class FreetextLocation(str):
         return [p.strip() for p in self.split(',')]
 
     @cached_property
-    def lower_parts(self):
-        """Lowercased parts.
+    def part_tokens(self):
+        """Tokenize parts.
+
+        Returns: list of ToponymTokens
         """
-        return list(map(str.lower, self.parts))
+        return list(map(ToponymTokens.from_text, self.parts))
+
+    def ngrams(self, *args, **kwargs):
+        """Generate all ngrams inside of parts.
+        """
+        for tokens in self.part_tokens:
+            yield from tokens.ngrams(*args, **kwargs)
+
+    def keys(self, *args, **kwargs):
+        """Generate index keys.
+        """
+        for ng in self.ngrams(*args, **kwargs):
+            yield ng.key
 
 
 def usa_city_state(query):
