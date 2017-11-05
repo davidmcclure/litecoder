@@ -23,7 +23,10 @@ class ToponymTokens(list):
     def from_text(cls, text):
         """Tokenize a raw string.
         """
-        return cls(re.findall('[a-z-\.]+', text, re.I))
+        # D.C. -> DC
+        text = text.replace('.', '')
+
+        return cls(re.findall('[a-z-]+', text, re.I))
 
     @cached_property
     def key(self):
@@ -65,6 +68,9 @@ class LocationFieldText(str):
         """
         for ng in self.ngrams(*args, **kwargs):
             yield ng.key
+
+
+state_index = StateIndex()
 
 
 def usa_city_state(query):
