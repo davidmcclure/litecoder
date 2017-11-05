@@ -35,10 +35,10 @@ class ToponymTokens(list):
         """
         return ' '.join([t.lower() for t in self])
 
-    def ngrams(self, maxn=3):
+    def ngrams(self, maxn=4):
         """Generate all ngrams.
         """
-        for n in range(1, max(maxn, len(self))):
+        for n in range(1, max(maxn+1, len(self))):
             yield from map(self.__class__, windowed(self, n))
 
 
