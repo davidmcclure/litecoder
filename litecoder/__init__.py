@@ -7,10 +7,6 @@ from cached_property import cached_property
 from boltons.iterutils import windowed
 
 
-def tokenize_toponym(text):
-    return re.findall('[a-z-\.]+', text, re.I)
-
-
 class StateIndex(dict):
 
     def __init__(self):
