@@ -122,3 +122,14 @@ class CityIndex(Base):
             session.add(cls(geonameid=id, key=tokens.key))
 
         session.commit()
+
+    @classmethod
+    def lookup(cls, key):
+        """Find cities that match a key, sorted by population.
+        """
+        return (
+            cls.query
+            .join(City)
+            .filter(cls.key==key, City.country_code=='US')
+            .all()
+        )

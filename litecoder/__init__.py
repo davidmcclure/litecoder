@@ -1,5 +1,8 @@
 
 
+import pandas as pd
+
+from .db import CityIndex
 from .parsers import StateIndex, LocationFieldText
 
 
@@ -18,4 +21,16 @@ def usa_city_state(query):
 
     keys = list(query.keys())
 
-    print(keys)
+    states = pd.DataFrame([
+        dict(key=k, state=state_index[k])
+        for k in keys if k in state_index
+    ])
+
+    cities = pd.DataFrame([
+        dict(key=k, population=c.city.population, city=c.city)
+        for c in matches for matches in CityIndex.lookup()
+    ])
+
+    cities = []
+    for key in keys:
+        cities += CityIndex.lookup(key)

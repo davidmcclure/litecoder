@@ -7,3 +7,4 @@ boltons
 invoke
 cached-property
 tqdm
+pandas
