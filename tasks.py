@@ -2,7 +2,7 @@
 
 from invoke import task
 
-from litecoder.db import Base, engine, City, CityIndex
+from litecoder.db import Base, engine, City
 
 
 @task
@@ -23,8 +23,3 @@ def reset_db(ctx):
 @task
 def load_db(ctx, path):
     City.load(path)
-
-
-@task
-def index_db(ctx):
-    CityIndex.load()

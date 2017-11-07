@@ -8,3 +8,4 @@ invoke
 cached-property
 tqdm
 pandas
+attrs

@@ -7,20 +7,10 @@ import sys
 from boltons.iterutils import chunked_iter
 from tqdm import tqdm
 
-from sqlalchemy import (
-    create_engine,
-    Column,
-    Integer,
-    String,
-    Float,
-    ForeignKey,
-)
-
+from sqlalchemy import create_engine, Column, Integer, String, Float
 from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import sessionmaker, scoped_session, relationship
 from sqlalchemy.ext.declarative import declarative_base
-
-from .parsers import ToponymTokens
 
 
 db_path = os.path.join(os.path.dirname(__file__), 'litecoder.db')
@@ -95,41 +85,3 @@ class City(Base):
 
                 session.bulk_insert_mappings(cls, mappings)
                 session.commit()
-
-
-class CityIndex(Base):
-
-    __tablename__ = 'city_index'
-
-    geonameid = Column(
-        Integer,
-        ForeignKey('city.geonameid'),
-        primary_key=True,
-    )
-
-    city = relationship('City')
-
-    key = Column(String, nullable=False)
-
-    @classmethod
-    def load(cls):
-        """Index keys.
-        """
-        query = session.query(City.geonameid, City.name)
-
-        for id, name in tqdm(query):
-            tokens = ToponymTokens.from_text(name)
-            session.add(cls(geonameid=id, key=tokens.key))
-
-        session.commit()
-
-    @classmethod
-    def lookup(cls, key):
-        """Find cities that match a key, sorted by population.
-        """
-        return (
-            cls.query
-            .join(City)
-            .filter(cls.key==key, City.country_code=='US')
-            .all()
-        )
