@@ -84,4 +84,36 @@ class City(Base):
                 mappings = [dict(zip(cols, vals)) for vals in chunk]
 
                 session.bulk_insert_mappings(cls, mappings)
-                session.commit()
+                session.flush()
+
+        session.commit()
+
+    def names(self):
+        """Get list of name + alternate names.
+        """
+        return set([self.name] + self.alternatenames.split(','))
+
+
+class CityIndex(Base):
+
+    __tablename__ = 'city_index'
+
+    geonameid = Column(Integer, primary_key=True)
+
+    name = Column(String, nullable=False, primary_key=True)
+
+    @classmethod
+    def load(cls):
+        """Load from CSV.
+        """
+        for city in tqdm(City.query.yield_per(1000)):
+
+            mappings = [
+                dict(geonameid=city.geonameid, name=name)
+                for name in city.names()
+            ]
+
+            session.bulk_insert_mappings(cls, mappings)
+            session.flush()
+
+        session.commit()
