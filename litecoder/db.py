@@ -7,7 +7,9 @@ import sys
 from boltons.iterutils import chunked_iter
 from tqdm import tqdm
 
-from sqlalchemy import create_engine, Column, Integer, String, Float
+from sqlalchemy import Column, Integer, String, Float, Index, \
+    create_engine, collate
+
 from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import sessionmaker, scoped_session, relationship
 from sqlalchemy.ext.declarative import declarative_base
@@ -88,11 +90,6 @@ class City(Base):
 
         session.commit()
 
-    def names(self):
-        """Get list of name + alternate names.
-        """
-        return set([self.name] + self.alternatenames.split(','))
-
 
 class CityIndex(Base):
 
@@ -107,13 +104,9 @@ class CityIndex(Base):
         """Load from CSV.
         """
         for city in tqdm(City.query.yield_per(1000)):
-
-            mappings = [
-                dict(geonameid=city.geonameid, name=name)
-                for name in city.names()
-            ]
-
-            session.bulk_insert_mappings(cls, mappings)
-            session.flush()
+            session.add(cls(geonameid=city.geonameid, name=city.name))
 
         session.commit()
+
+
+Index('city_index_name', collate(CityIndex.name, 'nocase'))
