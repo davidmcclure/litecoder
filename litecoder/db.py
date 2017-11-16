@@ -3,6 +3,7 @@
 import os
 import csv
 import sys
+import us
 
 from boltons.iterutils import chunked_iter
 from tqdm import tqdm
@@ -13,6 +14,8 @@ from sqlalchemy import Column, Integer, String, Float, Index, ForeignKey, \
 from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import sessionmaker, scoped_session, relationship
 from sqlalchemy.ext.declarative import declarative_base
+
+from .parsers import TokenList
 
 
 db_path = os.path.join(os.path.dirname(__file__), 'litecoder.db')
@@ -114,17 +117,33 @@ class CityIndex(Base):
 
     geonameid = Column(Integer, ForeignKey('city.geonameid'))
 
-    name = Column(String, nullable=False)
+    key = Column(String, nullable=False)
 
     @classmethod
     def load(cls):
         """Load from CSV.
         """
         for city in tqdm(City.query.yield_per(1000)):
-            row = cls(geonameid=city.geonameid, name=city.name.strip())
+
+            tokens = TokenList.from_text(city.name)
+
+            row = cls(geonameid=city.geonameid, key=tokens.key())
             session.add(row)
 
         session.commit()
 
 
-Index('city_index_name', collate(CityIndex.name, 'nocase'))
+Index('city_index_key', collate(CityIndex.key, 'nocase'))
+
+
+class StateIndex(dict):
+
+    def __init__(self):
+        """Index name -> state.
+        """
+        for state in us.STATES:
+            self[state.abbr.lower()] = state
+            self[state.name.lower()] = state
+
+
+state_index = StateIndex()
