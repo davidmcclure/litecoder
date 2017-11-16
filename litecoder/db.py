@@ -49,7 +49,7 @@ class City(Base):
 
     feature_code = Column(String)
 
-    country_code = Column(String)
+    country_code = Column(String, index=True)
 
     cc2 = Column(String)
 
@@ -91,10 +91,19 @@ class City(Base):
         session.commit()
 
     @classmethod
-    def lookup(cls, key, country_code='US'):
+    def lookup(cls, key, country_code=None):
         """Find cities by index key.
         """
-        pass
+        query = (
+            session.query(cls)
+            .join(CityIndex)
+            .filter(CityIndex.name==collate(key, 'nocase'))
+        )
+
+        if country_code:
+            query = query.filter(cls.country_code==country_code)
+
+        return query.all()
 
 
 class CityIndex(Base):
