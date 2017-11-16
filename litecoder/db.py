@@ -108,15 +108,11 @@ class City(Base):
 
         return query.all()
 
-    def names(self):
-        """Name + alternate names.
+    def key(self):
+        """Make index key.
         """
-        return [self.name] + self.alternatenames.split(',')
-
-    def keys(self):
-        """Keys for all names.
-        """
-        return [TokenList.from_text(name).key() for name in self.names()]
+        tokens = TokenList.from_text(self.name)
+        return tokens.key()
 
 
 class CityIndex(Base):
@@ -134,14 +130,7 @@ class CityIndex(Base):
         """Load from CSV.
         """
         for city in tqdm(City.query.yield_per(1000)):
-
-            mappings = [
-                dict(geonameid=city.geonameid, key=key)
-                for key in city.keys()
-            ]
-
-            session.bulk_insert_mappings(cls, mappings)
-            session.flush()
+            session.add(cls(geonameid=city.geonameid, key=city.key()))
 
         session.commit()
 

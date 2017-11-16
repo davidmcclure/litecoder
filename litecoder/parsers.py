@@ -3,6 +3,10 @@
 import attr
 import re
 
+from boltons.iterutils import windowed
+
+from .utils import isplit
+
 
 @attr.s(repr=False)
 class Token:
@@ -41,3 +45,17 @@ class TokenList:
         """
         token_strs = [t.token for t in self.tokens]
         return ' '.join(token_strs).lower()
+
+
+class LocationField(TokenList):
+
+    def candidate_toponyms(self, maxn=4):
+        """Generate candidate toponym ngrams.
+        """
+        # Split on commas.
+        for comma_part in isplit(self.tokens, lambda t: t.token == ','):
+
+            # Slide window across tokens.
+            for n in range(1, maxn+1):
+                for w in windowed(comma_part, n):
+                    yield TokenList(w)
