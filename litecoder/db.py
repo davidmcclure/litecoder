@@ -100,13 +100,23 @@ class City(Base):
         query = (
             session.query(cls)
             .join(CityIndex)
-            .filter(CityIndex.name==collate(key, 'nocase'))
+            .filter(CityIndex.key==collate(key, 'nocase'))
         )
 
         if country_code:
             query = query.filter(cls.country_code==country_code)
 
         return query.all()
+
+    def names(self):
+        """Name + alternate names.
+        """
+        return [self.name] + self.alternatenames.split(',')
+
+    def keys(self):
+        """Keys for all names.
+        """
+        return [TokenList.from_text(name).key() for name in self.names()]
 
 
 class CityIndex(Base):
@@ -125,10 +135,13 @@ class CityIndex(Base):
         """
         for city in tqdm(City.query.yield_per(1000)):
 
-            tokens = TokenList.from_text(city.name)
+            mappings = [
+                dict(geonameid=city.geonameid, key=key)
+                for key in city.keys()
+            ]
 
-            row = cls(geonameid=city.geonameid, key=tokens.key())
-            session.add(row)
+            session.bulk_insert_mappings(cls, mappings)
+            session.flush()
 
         session.commit()
 
