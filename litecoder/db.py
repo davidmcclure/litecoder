@@ -7,7 +7,7 @@ import sys
 from boltons.iterutils import chunked_iter
 from tqdm import tqdm
 
-from sqlalchemy import Column, Integer, String, Float, Index, \
+from sqlalchemy import Column, Integer, String, Float, Index, ForeignKey, \
     create_engine, collate
 
 from sqlalchemy.engine.url import URL
@@ -90,21 +90,30 @@ class City(Base):
 
         session.commit()
 
+    @classmethod
+    def lookup(cls, key, country_code='US'):
+        """Find cities by index key.
+        """
+        pass
+
 
 class CityIndex(Base):
 
     __tablename__ = 'city_index'
 
-    geonameid = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
 
-    name = Column(String, nullable=False, primary_key=True)
+    geonameid = Column(Integer, ForeignKey('city.geonameid'))
+
+    name = Column(String, nullable=False)
 
     @classmethod
     def load(cls):
         """Load from CSV.
         """
         for city in tqdm(City.query.yield_per(1000)):
-            session.add(cls(geonameid=city.geonameid, name=city.name))
+            row = cls(geonameid=city.geonameid, name=city.name.strip())
+            session.add(row)
 
         session.commit()
 
