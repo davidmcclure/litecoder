@@ -12,4 +12,15 @@ setup(
     author='David McClure',
     author_email='dclure@mit.edu',
     packages=find_packages(),
+    install_requires=[
+        'sqlalchemy',
+        'us',
+        'boltons',
+        'invoke',
+        'cached-property',
+        'tqdm',
+        'pandas',
+        'attrs',
+        'pytest',
+    ],
 )
