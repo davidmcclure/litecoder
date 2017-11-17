@@ -40,11 +40,16 @@ class TokenList:
     def __repr__(self):
         return f'{self.__class__.__name__}({self.tokens})'
 
+    def text(self):
+        """Get combined text string.
+        """
+        token_strs = [t.token for t in self.tokens]
+        return ' '.join(token_strs)
+
     def key(self):
         """Make index key from tokens.
         """
-        token_strs = [t.token for t in self.tokens]
-        return ' '.join(token_strs).lower()
+        return self.text().lower()
 
 
 class LocationField(TokenList):

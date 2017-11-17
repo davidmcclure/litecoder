@@ -9,5 +9,6 @@ cached-property
 tqdm
 pandas
 attrs
+wordfreq
 pytest
 PyYAML

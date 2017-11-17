@@ -82,6 +82,19 @@
 # No toponyms
 - query: Flying, watching, where else?
 
+# in / or
+- query:
+    - in your heart
+    - here or there
+
+# Oregon, caps
+- query: OR
+  state: OR
+
+# Oregon, caps
+- query: IN
+  state: IN
+
 # TODO: NYC, DC, Big Easy, Windy City, Sin City, etc.
 
 # NYC

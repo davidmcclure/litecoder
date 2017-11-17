@@ -1,6 +1,11 @@
 
 
+from wordfreq import top_n_list
+
 from .db import state_index, city_index
+
+
+topn = set(top_n_list('en', 100))
 
 
 class TwitterUSACityStateQuery:
@@ -12,6 +17,14 @@ class TwitterUSACityStateQuery:
     def add_ngram(self, ngram):
         """Register state / city for ngram.
         """
+        key = ngram.key()
+        text = ngram.text()
+
+        # Skip very frequent words. (in / Indiana, or / Oregon)
+        # But, allow all-caps frequent words. (IN, OR)
+        if not text.isupper() and key in topn:
+            return
+
         state = state_index.get(ngram.key())
 
         if state:

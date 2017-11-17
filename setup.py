@@ -19,6 +19,7 @@ setup(
         'invoke',
         'cached-property',
         'tqdm',
+        'wordfreq',
         'pandas',
         'attrs',
         'pytest',
