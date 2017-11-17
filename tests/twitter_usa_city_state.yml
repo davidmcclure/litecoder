@@ -43,7 +43,9 @@
   city: 4930956
 
 # Small city with big city name + state
-- query: Boston, GA
+- query:
+    - Boston, GA
+    - Boston, Georgia
   city: 4183849
 
 # City with 2 words
@@ -82,7 +84,7 @@
 
 # State + non-toponym
 - query: Calm Exterior / Louisiana
-  city: LA
+  state: LA
 
 # Multiple states
 - query: MD ✈️ NC

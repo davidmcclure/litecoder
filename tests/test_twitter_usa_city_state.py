@@ -4,10 +4,25 @@ import pytest
 
 from litecoder import twitter_usa_city_state
 
+from tests.utils import read_yaml
 
-@pytest.mark.parametrize('query,city_id,state_abbr', [
-    ('Alabama', None, 'AL'),
-])
+
+def yield_cases():
+
+    cases = read_yaml(__file__, 'twitter_usa_city_state.yml')
+
+    for group in cases:
+
+        queries = group['query']
+
+        if type(queries) is str:
+            queries = [queries]
+
+        for query in queries:
+            yield query, group.get('city'), group.get('state')
+
+
+@pytest.mark.parametrize('query,city_id,state_abbr', yield_cases())
 def test_twitter_usa_city_state(query, city_id, state_abbr):
 
     city, state = twitter_usa_city_state(query)
