@@ -5,6 +5,7 @@ import csv
 import sys
 import us
 
+from collections import defaultdict
 from boltons.iterutils import chunked_iter
 from tqdm import tqdm
 
@@ -96,49 +97,11 @@ class City(Base):
 
         session.commit()
 
-    @classmethod
-    def lookup(cls, key, country_code=None):
-        """Find cities by index key.
-        """
-        query = (
-            session.query(cls)
-            .join(CityIndex)
-            .filter(CityIndex.key==collate(key, 'nocase'))
-        )
-
-        if country_code:
-            query = query.filter(cls.country_code==country_code)
-
-        return query.all()
-
     def key(self):
         """Make index key.
         """
         tokens = TokenList.from_text(self.name)
         return tokens.key()
-
-
-class CityIndex(Base):
-
-    __tablename__ = 'city_index'
-
-    id = Column(Integer, primary_key=True)
-
-    geonameid = Column(Integer, ForeignKey('city.geonameid'))
-
-    key = Column(String, nullable=False)
-
-    @classmethod
-    def load(cls):
-        """Load from CSV.
-        """
-        for city in tqdm(City.query.yield_per(1000)):
-            session.add(cls(geonameid=city.geonameid, key=city.key()))
-
-        session.commit()
-
-
-Index('city_index_key', collate(CityIndex.key, 'nocase'))
 
 
 class StateIndex(dict):
@@ -156,3 +119,22 @@ class StateIndex(dict):
 
 
 state_index = StateIndex()
+
+
+class CityIndex:
+
+    def __init__(self):
+        """Index key -> city.
+        """
+        self._index = defaultdict(list)
+
+        query = City.query.filter_by(country_code='US')
+
+        for city in query:
+            self._index[city.key()].append(city)
+
+    def __getitem__(self, key):
+        return self._index[key]
+
+
+city_index = CityIndex()

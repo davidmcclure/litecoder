@@ -1,6 +1,6 @@
 
 
-from .db import state_index, City
+from .db import state_index, city_index
 
 
 class TwitterUSACityStateQuery:
@@ -19,7 +19,7 @@ class TwitterUSACityStateQuery:
 
         # Skip cities with same names as states.
         else:
-            for city in City.lookup(ngram.key(), 'US'):
+            for city in city_index[ngram.key()]:
                 self.cities.append(city)
 
     def max_city_key_len(self):
