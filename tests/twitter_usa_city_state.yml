@@ -74,15 +74,6 @@
     - south lake tahoe california
   city: 5397664
 
-# City with 3 words
-- query:
-    - New York City
-    - New York, NY
-    - New York, New York
-    - NYC
-    - nyc
-  city: 5128581
-
 # State + country
 - query: Florida, USA
   state: FL
@@ -103,3 +94,14 @@
 
 # No toponyms
 - query: Flying, watching, where else?
+
+# TODO: NYC, DC, Big Easy, Windy City, Sin City, etc.
+
+# NYC
+#- query:
+    #- New York City
+    #- New York, NY
+    #- New York, New York
+    #- NYC
+    #- nyc
+  #city: 5128581
