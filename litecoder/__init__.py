@@ -102,7 +102,9 @@ def twitter_usa_city_state(text):
         if state:
             matches.add_state(state)
 
-        for city in City.lookup(ngram.key(), 'US'):
-            matches.add_city(city)
+        # Skip cities with same names as states.
+        else:
+            for city in City.lookup(ngram.key(), 'US'):
+                matches.add_city(city)
 
     return matches.city_state()
