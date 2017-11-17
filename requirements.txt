@@ -9,3 +9,4 @@ cached-property
 tqdm
 pandas
 attrs
+pytest
