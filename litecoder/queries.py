@@ -50,7 +50,7 @@ class TwitterUSACityStateQuery:
     def state_abbrs(self):
         return set([s.abbr for s in self.states])
 
-    def city_state(self, min_pop_ratio = 3):
+    def city_state(self, pop_threshold = 250000):
         """Extract city and/or state.
         """
         res_city, res_state = None, None
@@ -75,13 +75,10 @@ class TwitterUSACityStateQuery:
                     res_city = city
                     break
 
-        # 2+ cities, no state - take highest-pop city, if the population is X
-        # times greater than the second-largest match.
+        # 2+ cities, no state - take highest-pop city, if the population is
+        # above a reasonable threshold.
         elif len(cities) > 1 and not self.states:
-
-            pop_ratio = cities[0].population / cities[1].population
-
-            if pop_ratio > min_pop_ratio:
+            if cities[0].population > pop_threshold:
                 res_city = cities[0]
 
         # Get state for matched city.
