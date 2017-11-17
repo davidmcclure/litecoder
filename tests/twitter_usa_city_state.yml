@@ -61,19 +61,6 @@
     - san francisco california
   city: 5391959
 
-# City with 3 words
-- query:
-    - South Lake Tahoe
-    - south lake tahoe
-    - SOUTH LAKE TAHOE
-    - South Lake Tahoe, CA
-    - South Lake Tahoe CA
-    - south lake tahoe ca
-    - South Lake Tahoe, California
-    - South Lake Tahoe California
-    - south lake tahoe california
-  city: 5397664
-
 # State + country
 - query: Florida, USA
   state: FL

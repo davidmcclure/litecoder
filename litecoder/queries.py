@@ -57,9 +57,11 @@ class TwitterUSACityStateQuery:
 
         cities = self.pop_ranked_cities()
 
-        # 1 city, 0 states.
-        if len(cities) == 1 and len(self.states) == 0:
-            res_city = cities[0]
+        # 1+ cities, no state - take highest-pop city, if the population is
+        # above a reasonable threshold.
+        if cities and not self.states:
+            if cities[0].population > pop_threshold:
+                res_city = cities[0]
 
         # 1 state, 0 cities.
         elif len(self.states) == 1 and len(cities) == 0:
@@ -74,12 +76,6 @@ class TwitterUSACityStateQuery:
                 if city.admin1_code in state_abbrs:
                     res_city = city
                     break
-
-        # 2+ cities, no state - take highest-pop city, if the population is
-        # above a reasonable threshold.
-        elif len(cities) > 1 and not self.states:
-            if cities[0].population > pop_threshold:
-                res_city = cities[0]
 
         # Get state for matched city.
         if res_city:
