@@ -1,0 +1,94 @@
+---
+
+# State
+- query:
+    - AL
+    - Alabama
+    - alabama
+    - ALABAMA
+  state: AL
+
+# State with 2 words
+- query:
+    - NC
+    - North Carolina
+    - north carolina
+    - NORTH CAROLINA
+  state: NC
+
+# City
+- query:
+    - Detroit
+    - detroit
+    - DETROIT
+    - Detroit, MI
+    - Detroit MI
+    - detroit mi
+    - Detroit, Michigan
+    - Detroit Michigan
+    - detroit michigan
+  city: 4990729
+
+# Big city
+- query:
+    - Boston
+    - boston
+    - BOSTON
+    - Boston, MA
+    - Boston MA
+    - boston ma
+    - Boston, Massachusetts
+    - Boston Massachusetts
+    - boston massachusetts
+  city: 4930956
+
+# Small city with big city name + state
+- query: Boston, GA
+  city: 4183849
+
+# City with 2 words
+- query:
+    - San Francisco
+    - san francisco
+    - SAN FRANCISCO
+    - San Francisco, CA
+    - San Francisco CA
+    - san francisco ca
+    - San Francisco, California
+    - San Francisco California
+    - san francisco california
+  city: 5391959
+
+# City with 3 words
+- query:
+    - South Lake Tahoe
+    - south lake tahoe
+    - SOUTH LAKE TAHOE
+    - South Lake Tahoe, CA
+    - South Lake Tahoe CA
+    - south lake tahoe ca
+    - South Lake Tahoe, California
+    - South Lake Tahoe California
+    - south lake tahoe california
+  city: 5397664
+
+# State + country
+- query: Florida, USA
+  state: FL
+
+# City + non-toponym
+- query: Calm Exterior / New Orleans
+  city: 4335045
+
+# State + non-toponym
+- query: Calm Exterior / Louisiana
+  city: LA
+
+# Multiple states
+- query: MD ✈️ NC
+
+# Ambiguous city
+- query: Springfield
+
+# No toponyms
+- query: Flying, watching, where else?

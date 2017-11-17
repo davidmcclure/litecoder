@@ -1,0 +1,15 @@
+
+
+from setuptools import setup, find_packages
+
+
+setup(
+    name='litecoder',
+    version='0.1.0',
+    description='Simple geocoding.',
+    url='https://github.com/davidmcclure/litecoder',
+    license='MIT',
+    author='David McClure',
+    author_email='dclure@mit.edu',
+    packages=find_packages(),
+)
