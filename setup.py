@@ -12,6 +12,7 @@ setup(
     author='David McClure',
     author_email='dclure@mit.edu',
     packages=find_packages(),
+    include_package_data=True,
     install_requires=[
         'sqlalchemy',
         'us',
