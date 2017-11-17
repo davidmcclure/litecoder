@@ -74,6 +74,9 @@ class City(Base):
 
     modification_date = Column(String)
 
+    def __repr__(self):
+        return f'<City:{self.name},{self.admin1_code}>'
+
     @classmethod
     def load(cls, path, n=1000):
         """Load from CSV.
@@ -144,6 +147,10 @@ class StateIndex(dict):
         """Index name -> state.
         """
         for state in us.STATES:
+
+            self[state.abbr] = state
+            self[state.name] = state
+
             self[state.abbr.lower()] = state
             self[state.name.lower()] = state
 
