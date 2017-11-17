@@ -8,7 +8,8 @@ from tests.utils import read_yaml
 
 
 def yield_cases():
-
+    """Generate cases from YAML file.
+    """
     cases = read_yaml(__file__, 'twitter_usa_city_state.yml')
 
     for group in cases:
