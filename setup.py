@@ -13,6 +13,7 @@ setup(
     author_email='dclure@mit.edu',
     packages=find_packages(),
     include_package_data=True,
+    package_data={'litecoder': ['litecoder.db']},
     install_requires=[
         'sqlalchemy',
         'us',
