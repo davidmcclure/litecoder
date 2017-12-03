@@ -1,7 +1,7 @@
 
 
-from .queries import TwitterUSACityStateQuery
 from .parsers import LocationField
+from .geocoders import TwitterGeocoder
 
 
 def twitter_usa_city_state(text):
@@ -9,9 +9,9 @@ def twitter_usa_city_state(text):
     """
     field = LocationField.from_text(text)
 
-    query = TwitterUSACityStateQuery()
+    geocoder = TwitterGeocoder()
 
     for ngram in field.candidate_toponyms():
-        query.add_ngram(ngram)
+        geocoder.add_ngram(ngram)
 
-    return query.city_state()
+    return geocoder.city_state()

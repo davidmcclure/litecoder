@@ -8,7 +8,7 @@ from .indexes import state_index, city_index
 topn = set(top_n_list('en', 100))
 
 
-class TwitterUSACityStateQuery:
+class TwitterGeocoder:
 
     def __init__(self):
         self.cities = []
