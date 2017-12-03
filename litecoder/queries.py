@@ -2,7 +2,7 @@
 
 from wordfreq import top_n_list
 
-from .db import state_index, city_index
+from .indexes import state_index, city_index
 
 
 topn = set(top_n_list('en', 100))

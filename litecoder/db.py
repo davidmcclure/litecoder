@@ -102,39 +102,3 @@ class City(Base):
         """
         tokens = TokenList.from_text(self.name)
         return tokens.key()
-
-
-class StateIndex(dict):
-
-    def __init__(self):
-        """Index name -> state.
-        """
-        for state in us.STATES:
-
-            self[state.abbr] = state
-            self[state.name] = state
-
-            self[state.abbr.lower()] = state
-            self[state.name.lower()] = state
-
-
-state_index = StateIndex()
-
-
-class CityIndex:
-
-    def __init__(self):
-        """Index key -> city.
-        """
-        self._index = defaultdict(list)
-
-        query = City.query.filter_by(country_code='US')
-
-        for city in query:
-            self._index[city.key()].append(city)
-
-    def __getitem__(self, key):
-        return self._index[key]
-
-
-city_index = CityIndex()
