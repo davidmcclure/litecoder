@@ -17,22 +17,19 @@ class TwitterGeocoder:
     def add_ngram(self, ngram):
         """Register state / city for ngram.
         """
-        key = ngram.key()
-        text = ngram.text()
-
         # Skip very frequent words. (in / Indiana, or / Oregon)
         # But, allow all-caps frequent words. (IN, OR)
-        if not text.isupper() and key in topn:
+        if ngram.key in topn and not ngram.text.isupper():
             return
 
-        state = state_index.get(ngram.key())
+        state = state_index.get(ngram.key)
 
         if state:
             self.states.append(state)
 
         # Skip cities with same names as states.
         else:
-            for city in city_index[ngram.key()]:
+            for city in city_index[ngram.key]:
                 self.cities.append(city)
 
     def max_city_key_len(self):

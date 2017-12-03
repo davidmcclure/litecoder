@@ -100,5 +100,4 @@ class City(Base):
     def key(self):
         """Make index key.
         """
-        tokens = TokenList.from_text(self.name)
-        return tokens.key()
+        return TokenList.from_text(self.name).key

@@ -4,6 +4,7 @@ import attr
 import re
 
 from boltons.iterutils import windowed
+from cached_property import cached_property
 
 from .utils import isplit
 
@@ -40,16 +41,18 @@ class TokenList:
     def __repr__(self):
         return f'{self.__class__.__name__}({self.tokens})'
 
+    @cached_property
     def text(self):
         """Get combined text string.
         """
         token_strs = [t.token for t in self.tokens]
         return ' '.join(token_strs)
 
+    @cached_property
     def key(self):
         """Make index key from tokens.
         """
-        return self.text().lower()
+        return self.text.lower()
 
 
 class LocationField(TokenList):
