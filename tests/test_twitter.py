@@ -2,7 +2,7 @@
 
 import pytest
 
-from litecoder import twitter_usa_city_state
+from litecoder import geocode_twitter
 
 from tests.utils import read_yaml
 
@@ -10,7 +10,7 @@ from tests.utils import read_yaml
 def yield_cases():
     """Generate cases from YAML file.
     """
-    cases = read_yaml(__file__, 'twitter_usa_city_state.yml')
+    cases = read_yaml(__file__, 'twitter.yml')
 
     for group in cases:
 
@@ -26,7 +26,7 @@ def yield_cases():
 @pytest.mark.parametrize('query,city_id,state_abbr', yield_cases())
 def test_twitter_usa_city_state(query, city_id, state_abbr):
 
-    city, state = twitter_usa_city_state(query)
+    city, state = geocode_twitter(query)
 
     if city_id:
         assert city.geonameid == city_id

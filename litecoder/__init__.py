@@ -4,7 +4,7 @@ from .parsers import LocationField
 from .geocoders import TwitterGeocoder
 
 
-def twitter_usa_city_state(text):
+def geocode_twitter(text):
     """Given a Twitter location text, match to a city and/or state.
     """
     field = LocationField.from_text(text)
