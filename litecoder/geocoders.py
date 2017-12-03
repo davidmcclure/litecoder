@@ -11,8 +11,8 @@ topn = set(top_n_list('en', 100))
 class TwitterGeocoder:
 
     def __init__(self):
-        self.cities = []
-        self.states = []
+        self.cities = {}
+        self.states = {}
 
     def add_ngram(self, ngram):
         """Register state / city for ngram.
@@ -25,17 +25,19 @@ class TwitterGeocoder:
         state = state_index.get(ngram.key)
 
         if state:
-            self.states.append(state)
+            self.states[state.abbr] = state
 
-        # Skip cities with same names as states.
         else:
-            for city in city_index[ngram.key]:
-                self.cities.append(city)
+
+            cities = city_index.get(ngram.key)
+
+            if cities:
+                self.cities[ngram.key] = cities
 
     def max_city_key_len(self):
         """Get size of the longest city index key.
         """
-        key_lens = [len(c.key()) for c in self.cities]
+        key_lens = [len(k) for k in self.cities.keys()]
 
         return max(key_lens) if key_lens else 0
 
@@ -44,9 +46,9 @@ class TwitterGeocoder:
         """
         max_len = self.max_city_key_len()
 
-        for city in self.cities:
-            if len(city.key()) == max_len:
-                yield city
+        for key, cities in self.cities.items():
+            if len(key) == max_len:
+                yield from cities
 
     def pop_ranked_cities(self):
         """Order city candidates by population.
@@ -57,9 +59,6 @@ class TwitterGeocoder:
             reverse=True,
         )
 
-    def state_abbrs(self):
-        return set([s.abbr for s in self.states])
-
     def city_state(self, pop_threshold = 250000):
         """Extract city and/or state.
         """
@@ -67,23 +66,19 @@ class TwitterGeocoder:
 
         cities = self.pop_ranked_cities()
 
-        # 1+ cities, no state - take highest-pop city, if the population is
-        # above a reasonable threshold.
+        # 1+ cities, no state - take highest-pop city.
         if cities and not self.states:
             if cities[0].population > pop_threshold:
                 res_city = cities[0]
 
         # 1 state, 0 cities.
         elif len(self.states) == 1 and len(cities) == 0:
-            res_state = self.states[0]
+            res_state = list(self.states.values())[0]
 
         # 2+ cities, 1+ states - look for city / state pair.
         elif cities and self.states:
-
-            state_abbrs = self.state_abbrs()
-
             for city in cities:
-                if city.admin1_code in state_abbrs:
+                if city.admin1_code in self.states:
                     res_city = city
                     break
 

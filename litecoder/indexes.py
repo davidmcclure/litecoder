@@ -7,20 +7,17 @@ from collections import defaultdict
 from .db import City
 
 
-class CityIndex:
+class CityIndex(defaultdict):
 
     def __init__(self):
         """Index key -> city.
         """
-        self._index = defaultdict(list)
+        super().__init__(list)
 
         query = City.query.filter_by(country_code='US')
 
         for city in query:
-            self._index[city.key()].append(city)
-
-    def __getitem__(self, key):
-        return self._index[key]
+            self[city.key()].append(city)
 
 
 class StateIndex(dict):
