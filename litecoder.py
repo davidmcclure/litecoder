@@ -8,6 +8,7 @@ import re
 
 from boltons.iterutils import chunked_iter
 from tqdm import tqdm
+from collections import defaultdict
 from itertools import product
 
 from sqlalchemy.engine.url import URL
@@ -119,6 +120,8 @@ class GeonamesCity(Base):
         if self.population > 500000:
             yield make_key(self.name)
 
+        # TODO: Alternate names.
+
 
 @attr.s
 class GeonamesCityCSV:
@@ -147,3 +150,26 @@ class GeonamesCityCSV:
             session.flush()
 
         session.commit()
+
+
+class CityIndex:
+
+    @classmethod
+    def from_geonames(cls):
+        """Index US Geonames cities.
+        """
+        idx = defaultdict(list)
+
+        cities = GeonamesCity.query.filter(GeonamesCity.country_code=='US')
+
+        for city in tqdm(cities):
+            for key in city.keys_iter():
+                idx[key].append(city.geonameid)
+
+        return cls(idx)
+
+    def __init__(self, idx):
+        self._idx = idx
+
+    def __getitem__(self, query):
+        return self._idx.get(make_key(query))
