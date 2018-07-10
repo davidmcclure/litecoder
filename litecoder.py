@@ -9,7 +9,7 @@ import re
 
 from boltons.iterutils import chunked_iter
 from tqdm import tqdm
-from collections import defaultdict
+from collections import defaultdict, UserDict
 from itertools import product
 from glob import iglob
 
@@ -30,6 +30,24 @@ def make_key(text, lower=True):
         text = text.lower()
 
     return text
+
+
+def safe_get(d, key, *keys):
+    """Safe nested dict lookup.
+    """
+    if keys:
+        return safe_lookup(d.get(key, {}), *keys)
+
+    return d.get(key)
+
+
+def safe_get_first(d, paths):
+    """Return first match.
+    """
+    for keys in paths:
+        val = safe_get(d, *keys)
+        if val:
+            return val
 
 
 # TODO: Config-ify
@@ -125,12 +143,23 @@ class GeonamesCity(Base):
         # TODO: Alternate names.
 
 
+class WOFLocality(Base):
+
+    __tablename__ = 'wof_locality'
+
+    wof_id = Column(Integer, primary_key=True)
+
+    country_iso = Column(String, nullable=False)
+
+    country_name = Column(String, nullable=False)
+
+
 @attr.s
 class GeonamesCityCSV:
 
     path = attr.ib()
 
-    def rows_iter(self):
+    def mappings_iter(self):
         """Generate rows dicts.
         """
         cols = GeonamesCity.__table__.columns.keys()
@@ -147,8 +176,8 @@ class GeonamesCityCSV:
         """
         GeonamesCity.reset()
 
-        for chunk in tqdm(chunked_iter(self.rows_iter(), n)):
-            session.bulk_insert_mappings(GeonamesCity, chunk)
+        for mappings in tqdm(chunked_iter(self.mappings_iter(), n)):
+            session.bulk_insert_mappings(GeonamesCity, mappings)
             session.flush()
 
         session.commit()
@@ -165,12 +194,53 @@ class WOFLocalitiesRepo:
         pattern = os.path.join(self.root, '**/*.geojson')
         return iglob(pattern, recursive=True)
 
-    def docs_iter(self):
+    def locs_iter(self):
         """Generate parsed docs.
         """
         for path in self.paths_iter():
-            with open(path) as fh:
-                yield ujson.load(fh)
+            yield WOFLocalityGeojson.from_json(path)
+
+    def mappings_iter(self):
+        """Generate database rows.
+        """
+        cols = WOFLocality.__table__.columns.keys()
+
+        for loc in self.locs_iter():
+            yield {col: getattr(loc, col) for col in cols}
+
+    def load_db(self, n=1000):
+        """Insert database rows.
+        """
+        WOFLocality.reset()
+
+        for mappings in tqdm(chunked_iter(self.mappings_iter(), n)):
+            session.bulk_insert_mappings(WOFLocality, mappings)
+            session.flush()
+
+        session.commit()
+
+
+class WOFLocalityGeojson(UserDict):
+
+    @classmethod
+    def from_json(cls, path):
+        with open(path) as fh:
+            return cls(ujson.load(fh))
+
+    def __repr__(self):
+        return '%s<%d>' % (self.__class__.__name__, self.id)
+
+    @property
+    def wof_id(self):
+        return self['id']
+
+    @property
+    def country_iso(self):
+        return self['properties']['iso:country']
+
+    @property
+    def country_name(self):
+        return self['properties']['qs:a0']
 
 
 class CityIndex:
