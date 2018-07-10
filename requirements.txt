@@ -1,6 +1,7 @@
 
 ipython
 jupyter
+jupyterlab
 sqlalchemy
 us
 boltons
