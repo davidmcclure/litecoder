@@ -13,3 +13,4 @@ attrs
 wordfreq
 pytest
 PyYAML
+ujson

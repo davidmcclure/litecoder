@@ -4,12 +4,14 @@ import attr
 import os
 import csv
 import us
+import ujson
 import re
 
 from boltons.iterutils import chunked_iter
 from tqdm import tqdm
 from collections import defaultdict
 from itertools import product
+from glob import iglob
 
 from sqlalchemy.engine.url import URL
 from sqlalchemy import create_engine
@@ -150,6 +152,25 @@ class GeonamesCityCSV:
             session.flush()
 
         session.commit()
+
+
+@attr.s
+class WOFLocalitiesRepo:
+
+    root = attr.ib()
+
+    def paths_iter(self):
+        """Glob .geojson paths.
+        """
+        pattern = os.path.join(self.root, '**/*.geojson')
+        return iglob(pattern, recursive=True)
+
+    def docs_iter(self):
+        """Generate parsed docs.
+        """
+        for path in self.paths_iter():
+            with open(path) as fh:
+                yield ujson.load(fh)
 
 
 class CityIndex:
