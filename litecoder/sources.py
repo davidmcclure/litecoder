@@ -11,6 +11,7 @@ from glob import iglob
 from multiprocessing import Pool
 
 from .utils import safe_property, first
+from .db import City
 
 
 @attr.s
@@ -212,3 +213,9 @@ class WOFLocalityGeojson(UserDict):
         )
 
         return set([n for ns in namesets if ns for n in ns])
+
+    def db_row(self):
+        return City(**{
+            col: getattr(self, col)
+            for col in City.__table__.columns.keys()
+        })
