@@ -14,6 +14,7 @@ from tqdm import tqdm
 from collections import defaultdict, UserDict
 from itertools import product
 from glob import iglob
+from multiprocessing import Pool
 
 from sqlalchemy.engine.url import URL
 from sqlalchemy import create_engine
@@ -41,24 +42,6 @@ def make_key(text, lower=True):
         text = text.lower()
 
     return text
-
-
-def safe_get(d, key, *keys):
-    """Safe nested dict lookup.
-    """
-    if keys:
-        return safe_get(d.get(key, {}), *keys)
-
-    return d.get(key)
-
-
-def safe_get_first(d, paths):
-    """Return first match.
-    """
-    for path in paths:
-        val = safe_get(d, *path)
-        if val:
-            return val
 
 
 # TODO: Config-ify
@@ -208,27 +191,11 @@ class WOFLocalitiesRepo:
     def locs_iter(self):
         """Generate parsed docs.
         """
+        # with Pool() as p:
+        #     results = p.imap_unordered(WOFLocalityGeojson.from_json, self.paths_iter())
+        #     yield from results
         for path in self.paths_iter():
             yield WOFLocalityGeojson.from_json(path)
-
-    def mappings_iter(self):
-        """Generate database rows.
-        """
-        cols = WOFLocality.__table__.columns.keys()
-
-        for loc in self.locs_iter():
-            yield {col: getattr(loc, col) for col in cols}
-
-    def load_db(self, n=1000):
-        """Insert database rows.
-        """
-        WOFLocality.reset()
-
-        for mappings in tqdm(chunked_iter(self.mappings_iter(), n)):
-            session.bulk_insert_mappings(WOFLocality, mappings)
-            session.flush()
-
-        session.commit()
 
 
 class WOFLocalityGeojson(UserDict):
@@ -244,14 +211,6 @@ class WOFLocalityGeojson(UserDict):
     @property
     def wof_id(self):
         return self['id']
-
-    @property
-    def country_iso(self):
-        return self['properties']['iso:country']
-
-    @property
-    def name(self):
-        return safe_get(self, 'properties', 'name:eng_x_preferred')
 
 
 class CityIndex:
