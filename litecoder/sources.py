@@ -4,6 +4,7 @@ import attr
 import os
 import ujson
 import time
+import us
 
 from collections import UserDict
 from glob import iglob
@@ -107,6 +108,22 @@ class WOFLocalityGeojson(UserDict):
         return first((self._qs_a0, self._qs_adm0, self._ne_sov0name))
 
     @safe_property
+    def _qs_a1(self):
+        return self['properties']['qs:a1'][1:]
+
+    @safe_property
+    def _ne_adm1name(self):
+        return self['properties']['ne:ADM1NAME']
+
+    @safe_property
+    def state_name(self):
+        return first((self._qs_a1, self._ne_adm1name))
+
+    @safe_property
+    def state_abbr(self):
+        return us.states.lookup(self.state_name).abbr
+
+    @safe_property
     def latitude(self):
         return self['properties']['geom:latitude']
 
@@ -115,12 +132,12 @@ class WOFLocalityGeojson(UserDict):
         return self['properties']['geom:latitude']
 
     @safe_property
-    def _wof_population(self):
-        return self['properties']['wof:population']
-
-    @safe_property
     def _gn_population(self):
         return self['properties']['gn:population']
+
+    @safe_property
+    def _wof_population(self):
+        return self['properties']['wof:population']
 
     @safe_property
     def _wk_population(self):
@@ -129,8 +146,8 @@ class WOFLocalityGeojson(UserDict):
     @safe_property
     def population(self):
         return first((
-            self._wof_population,
             self._gn_population,
+            self._wof_population,
             self._wk_population,
         ))
 
@@ -154,7 +171,6 @@ class WOFLocalityGeojson(UserDict):
     def elevation(self):
         return first((self._gn_elevation, self._ne_elevation))
 
-    # state
     # area
     # geometry
     # ids
