@@ -171,7 +171,10 @@ class WOFLocalityGeojson(UserDict):
     def elevation(self):
         return first((self._gn_elevation, self._ne_elevation))
 
-    # area
-    # geometry
+    @safe_property
+    def area_m2(self):
+        return self['properties']['geom:area_square_m']
+
     # ids
     # alternate names
+    # geometry
