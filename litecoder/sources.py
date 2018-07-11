@@ -224,7 +224,22 @@ class WOFLocalityGeojson(UserDict):
         return self['geometry']
 
     @safe_property
-    def geometry_str(self):
+    def geometry_json(self):
         return ujson.dumps(self.geometry)
 
-    # alternate names
+    @safe_property
+    def _name_eng_x_colloquial(self):
+        return self['properties']['name:eng_x_colloquial']
+
+    @safe_property
+    def _name_eng_x_variant(self):
+        return self['properties']['name:eng_x_variant']
+
+    @safe_property
+    def alt_names(self):
+        namesets = (
+            self._name_eng_x_colloquial,
+            self._name_eng_x_variant,
+        )
+
+        return set([n for ns in namesets if ns for n in ns])
