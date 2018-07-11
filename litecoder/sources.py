@@ -219,6 +219,12 @@ class WOFLocalityGeojson(UserDict):
     def area_m2(self):
         return self['properties']['geom:area_square_m']
 
-    # ids
+    @safe_property
+    def geometry(self):
+        return self['geometry']
+
+    @safe_property
+    def geometry_str(self):
+        return ujson.dumps(self.geometry)
+
     # alternate names
-    # geometry
