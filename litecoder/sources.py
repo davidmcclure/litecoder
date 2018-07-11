@@ -214,8 +214,17 @@ class WOFLocalityGeojson(UserDict):
 
         return set([n for ns in namesets if ns for n in ns])
 
+    def is_us_city(self):
+        return self.country_iso == 'US' and self.state_abbr
+
     def db_row(self):
-        return City(**{
+        """Build city database row instance.
+        """
+        city = City(**{
             col: getattr(self, col)
             for col in City.__table__.columns.keys()
         })
+
+        # TODO: Alt names.
+
+        return city
