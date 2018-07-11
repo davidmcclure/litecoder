@@ -77,11 +77,55 @@ class WOFLocalityGeojson(UserDict):
         self.path = path
 
     def __repr__(self):
-        return '%s<%d>' % (self.__class__.__name__, self.wof_id)
+        return '%s<%d>' % (self.__class__.__name__, self.id_wof)
 
     @property
     def wof_id(self):
         return self['id']
+
+    @safe_property
+    def dbpedia_id(self):
+        return self['properties']['wof:concordances']['dbp:id']
+
+    @safe_property
+    def freebase_id(self):
+        return self['properties']['wof:concordances']['fb:id']
+
+    @safe_property
+    def factual_id(self):
+        return self['properties']['wof:concordances']['fc:id']
+
+    @safe_property
+    def fips_code(self):
+        return self['properties']['wof:concordances']['fips:code']
+
+    @safe_property
+    def geonames_id(self):
+        return self['properties']['wof:concordances']['gn:id']
+
+    @safe_property
+    def geoplanet_id(self):
+        return self['properties']['wof:concordances']['gp:id']
+
+    @safe_property
+    def library_of_congress_id(self):
+        return self['properties']['wof:concordances']['loc:id']
+
+    @safe_property
+    def new_york_times_id(self):
+        return self['properties']['wof:concordances']['nyt:id']
+
+    @safe_property
+    def quattroshapes_id(self):
+        return self['properties']['wof:concordances']['qs:id']
+
+    @safe_property
+    def wikidata_id(self):
+        return self['properties']['wof:concordances']['wd:id']
+
+    @safe_property
+    def wikipedia_page(self):
+        return self['properties']['wof:concordances']['wk:page']
 
     @safe_property
     def name(self):
