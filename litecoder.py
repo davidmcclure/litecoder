@@ -6,6 +6,8 @@ import csv
 import us
 import ujson
 import re
+import logging
+import sys
 
 from boltons.iterutils import chunked_iter
 from tqdm import tqdm
@@ -18,6 +20,15 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Float
+
+
+logging.basicConfig(
+    format='%(asctime)s | %(levelname)s : %(message)s',
+    stream=sys.stdout,
+    level=logging.INFO,
+)
+
+logger = logging.getLogger('geovec')
 
 
 def make_key(text, lower=True):
@@ -36,7 +47,7 @@ def safe_get(d, key, *keys):
     """Safe nested dict lookup.
     """
     if keys:
-        return safe_lookup(d.get(key, {}), *keys)
+        return safe_get(d.get(key, {}), *keys)
 
     return d.get(key)
 
@@ -44,8 +55,8 @@ def safe_get(d, key, *keys):
 def safe_get_first(d, paths):
     """Return first match.
     """
-    for keys in paths:
-        val = safe_get(d, *keys)
+    for path in paths:
+        val = safe_get(d, *path)
         if val:
             return val
 
@@ -149,9 +160,9 @@ class WOFLocality(Base):
 
     wof_id = Column(Integer, primary_key=True)
 
-    country_iso = Column(String, nullable=False)
+    country_iso = Column(String)
 
-    country_name = Column(String, nullable=False)
+    name = Column(String)
 
 
 @attr.s
@@ -239,8 +250,8 @@ class WOFLocalityGeojson(UserDict):
         return self['properties']['iso:country']
 
     @property
-    def country_name(self):
-        return self['properties']['qs:a0']
+    def name(self):
+        return safe_get(self, 'properties', 'name:eng_x_preferred')
 
 
 class CityIndex:
