@@ -8,10 +8,11 @@ import us
 
 from collections import UserDict
 from glob import iglob
+from boltons.iterutils import chunked_iter
 from multiprocessing import Pool
 
 from .utils import safe_property, first
-from .db import City
+from .db import session, City
 
 
 @attr.s
@@ -20,7 +21,7 @@ class WOFLocalitiesRepo:
     root = attr.ib()
 
     def paths_iter(self):
-        """Glob .geojson paths.
+        """Glob paths.
         """
         pattern = os.path.join(self.root, '**/*.geojson')
         return iglob(pattern, recursive=True)
@@ -31,20 +32,19 @@ class WOFLocalitiesRepo:
         with Pool(num_procs) as p:
 
             yield from p.imap_unordered(
-                WOFLocalityGeojson,
+                WOFLocalityGeojson.from_json,
                 self.paths_iter(),
             )
 
 
 class WOFLocalityGeojson(UserDict):
 
-    def __init__(self, path):
-        """Parse JSON, set path.
+    @classmethod
+    def from_json(cls, path):
+        """Parse JSON.
         """
         with open(path) as fh:
-            super().__init__(ujson.load(fh))
-
-        self.path = path
+            return cls(ujson.load(fh))
 
     def __repr__(self):
         return '%s<%d>' % (self.__class__.__name__, self.id_wof)
