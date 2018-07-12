@@ -51,6 +51,7 @@ class WOFLocalitiesRepo:
         for loc in self.us_cities_iter():
             yield loc.db_row()
 
+    # TODO: Move to model class?
     def insert_us_cities(self, n=1000):
         """Load US cities database.
         """
@@ -294,6 +295,7 @@ class WOFLocalityGeojson(UserDict):
     def is_us_city(self):
         return self.country_iso == 'US' and self.state_abbr
 
+    # TODO: Model factory?
     def db_row(self):
         """Build city database row instance.
         """
