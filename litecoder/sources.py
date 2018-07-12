@@ -10,7 +10,9 @@ from collections import UserDict
 from glob import iglob
 from boltons.iterutils import chunked_iter
 from multiprocessing import Pool
+from tqdm import tqdm
 
+from . import logger
 from .utils import safe_property, first
 from .db import session, City
 
@@ -35,6 +37,38 @@ class WOFLocalitiesRepo:
                 WOFLocalityGeojson.from_json,
                 self.paths_iter(),
             )
+
+    def us_cities_iter(self):
+        """Filter US cities.
+        """
+        for loc in self.locs_iter():
+            if loc.is_us_city():
+                yield loc
+
+    def us_cities_db_rows_iter(self):
+        """Generate DB rows for US cities.
+        """
+        for loc in self.us_cities_iter():
+            yield loc.db_row()
+
+    def insert_us_cities(self, n=1000):
+        """Load US cities database.
+        """
+        City.reset()
+
+        rows_iter = self.us_cities_db_rows_iter()
+
+        for loc in tqdm(self.locs_iter()):
+
+            if loc.country_iso == 'US':
+
+                try:
+                    session.add(loc.db_row())
+                    session.commit()
+
+                except Exception as e:
+                    logger.warn(f'Failed: {loc.wof_id}, {loc.name}')
+                    session.rollback()
 
 
 class WOFLocalityGeojson(UserDict):
@@ -98,8 +132,24 @@ class WOFLocalityGeojson(UserDict):
         return self['properties']['wof:concordances']['wk:page']
 
     @safe_property
-    def name(self):
+    def _name_eng_x_preferred(self):
         return self['properties']['name:eng_x_preferred'][0]
+
+    @safe_property
+    def _qs_pg_name(self):
+        return self['properties']['qs_pg:name']
+
+    @safe_property
+    def _wof_name(self):
+        return self['properties']['wof:name']
+
+    @safe_property
+    def name(self):
+        return first((
+            self._name_eng_x_preferred,
+            self._qs_pg_name,
+            self._wof_name,
+        ))
 
     @safe_property
     def country_iso(self):
@@ -118,8 +168,22 @@ class WOFLocalityGeojson(UserDict):
         return self['properties']['ne:SOV0NAME']
 
     @safe_property
+    def _qs_pg_name_adm0(self):
+        return self['properties']['qs_pg:name_adm0']
+
+    @safe_property
+    def _woe_name_adm0(self):
+        return self['properties']['woe:name_adm0']
+
+    @safe_property
     def country_name(self):
-        return first((self._qs_a0, self._qs_adm0, self._ne_sov0name))
+        return first((
+            self._qs_a0,
+            self._qs_adm0,
+            self._ne_sov0name,
+            self._qs_pg_name_adm0,
+            self._woe_name_adm0,
+        ))
 
     @safe_property
     def _qs_a1(self):
@@ -130,8 +194,21 @@ class WOFLocalityGeojson(UserDict):
         return self['properties']['ne:ADM1NAME']
 
     @safe_property
+    def _qs_pg_name_adm1(self):
+        return self['properties']['qs_pg:name_adm1']
+
+    @safe_property
+    def _woe_name_adm1(self):
+        return self['properties']['woe:name_adm1']
+
+    @safe_property
     def state_name(self):
-        return first((self._qs_a1, self._ne_adm1name))
+        return first((
+            self._qs_a1,
+            self._ne_adm1name,
+            self._qs_pg_name_adm1,
+            self._woe_name_adm1,
+        ))
 
     @safe_property
     def state_abbr(self):
