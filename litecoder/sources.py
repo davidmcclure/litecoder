@@ -38,19 +38,6 @@ class WOFLocalitiesRepo:
                 self.paths_iter(),
             )
 
-    def us_cities_iter(self):
-        """Filter US cities.
-        """
-        for loc in self.locs_iter():
-            if loc.is_us_city():
-                yield loc
-
-    def us_cities_db_rows_iter(self):
-        """Generate DB rows for US cities.
-        """
-        for loc in self.us_cities_iter():
-            yield loc.db_row()
-
     # TODO: Move to model class?
     def insert_us_cities(self, n=1000):
         """Load US cities database.
