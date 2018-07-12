@@ -63,7 +63,7 @@ class WOFLocalityGeojson(UserDict):
 
     @safe_property
     def factual_id(self):
-        return self['properties']['wof:concordances']['fc:id']
+        return self['properties']['wof:concordances']['fct:id']
 
     @safe_property
     def fips_code(self):
