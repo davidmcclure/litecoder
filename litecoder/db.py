@@ -1,12 +1,15 @@
 
 
 import os
+import us
 
 from sqlalchemy.engine.url import URL
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Float, Text
+
+from .utils import safe_property
 
 
 # TODO: Config-ify
@@ -86,3 +89,7 @@ class City(BaseModel):
     area_m2 = Column(Float)
 
     geometry_json = Column(Text)
+
+    @safe_property
+    def us_state_abbr(self):
+        return us.states.lookup(self.name_a1).abbr
