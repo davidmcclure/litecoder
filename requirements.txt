@@ -14,3 +14,4 @@ wordfreq
 pytest
 PyYAML
 ujson
+pygtrie
