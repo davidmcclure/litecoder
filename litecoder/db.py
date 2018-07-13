@@ -67,11 +67,9 @@ class City(BaseModel):
 
     country_iso = Column(String, nullable=False)
 
-    country_name = Column(String, nullable=False)
+    name_a0 = Column(String)
 
-    state_name = Column(String, nullable=False)
-
-    state_abbr = Column(String, nullable=False)
+    name_a1 = Column(String)
 
     latitude = Column(Float)
 

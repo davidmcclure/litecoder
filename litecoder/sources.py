@@ -44,19 +44,21 @@ class WOFLocalitiesRepo:
         """
         City.reset()
 
-        rows_iter = self.us_cities_db_rows_iter()
-
         for loc in tqdm(self.locs_iter()):
 
-            if loc.country_iso == 'US':
+            try:
+                session.add(loc.db_row())
+                session.commit()
 
-                try:
-                    session.add(loc.db_row())
-                    session.commit()
+            except Exception as e:
 
-                except Exception as e:
-                    logger.warn(f'Failed: {loc.wof_id}, {loc.name}')
-                    session.rollback()
+                logger.warn('Failed: %d, %s, %s' % (
+                    loc.wof_id,
+                    loc.country_iso,
+                    loc.name,
+                ))
+
+                session.rollback()
 
 
 class WOFLocalityGeojson(UserDict):
@@ -69,7 +71,7 @@ class WOFLocalityGeojson(UserDict):
             return cls(ujson.load(fh))
 
     def __repr__(self):
-        return '%s<%d>' % (self.__class__.__name__, self.id_wof)
+        return '%s<%d>' % (self.__class__.__name__, self.wof_id)
 
     @property
     def wof_id(self):
@@ -124,19 +126,19 @@ class WOFLocalityGeojson(UserDict):
         return self['properties']['name:eng_x_preferred'][0]
 
     @safe_property
-    def _qs_pg_name(self):
-        return self['properties']['qs_pg:name']
-
-    @safe_property
     def _wof_name(self):
         return self['properties']['wof:name']
+
+    @safe_property
+    def _qs_pg_name(self):
+        return self['properties']['qs_pg:name']
 
     @safe_property
     def name(self):
         return first((
             self._name_eng_x_preferred,
-            self._qs_pg_name,
             self._wof_name,
+            self._qs_pg_name,
         ))
 
     @safe_property
@@ -164,7 +166,7 @@ class WOFLocalityGeojson(UserDict):
         return self['properties']['woe:name_adm0']
 
     @safe_property
-    def country_name(self):
+    def name_a0(self):
         return first((
             self._qs_a0,
             self._qs_adm0,
@@ -190,17 +192,13 @@ class WOFLocalityGeojson(UserDict):
         return self['properties']['woe:name_adm1']
 
     @safe_property
-    def state_name(self):
+    def name_a1(self):
         return first((
             self._qs_a1,
             self._ne_adm1name,
             self._qs_pg_name_adm1,
             self._woe_name_adm1,
         ))
-
-    @safe_property
-    def state_abbr(self):
-        return us.states.lookup(self.state_name).abbr
 
     @safe_property
     def latitude(self):
