@@ -14,5 +14,5 @@ wordfreq
 pytest
 PyYAML
 ujson
-pygtrie
+textblob
 anytree
