@@ -18,5 +18,6 @@ ujson
 textblob
 anytree
 wordfreq
-networkx
+pygraphviz
 pydot
+networkx
