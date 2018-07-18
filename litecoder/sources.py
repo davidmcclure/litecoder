@@ -284,9 +284,4 @@ class WOFLocalityGeojson(UserDict):
             for col in City.__table__.columns.keys()
         })
 
-        city.alt_names += [
-            CityAltName(wof_id=self.wof_id, name=name)
-            for name in self.alt_names
-        ]
-
         return city

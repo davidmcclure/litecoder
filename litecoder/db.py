@@ -5,9 +5,9 @@ import us
 
 from sqlalchemy.engine.url import URL
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session, relationship
+from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, Text
 
 from .utils import safe_property
 
@@ -90,8 +90,6 @@ class City(BaseModel):
 
     geometry_json = Column(Text)
 
-    alt_names = relationship('CityAltName')
-
     def __repr__(self):
         return '%s<%s, %s, %s>' % (
             self.__class__.__name__,
@@ -107,14 +105,3 @@ class City(BaseModel):
     @safe_property
     def us_state_abbr(self):
         return us.states.lookup(self.name_a1).abbr
-
-
-class CityAltName(BaseModel):
-
-    __tablename__ = 'city_alt_name'
-
-    id = Column(Integer, primary_key=True)
-
-    wof_id = Column(Integer, ForeignKey('city.wof_id'))
-
-    name = Column(String, nullable=False)
