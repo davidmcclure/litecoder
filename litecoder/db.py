@@ -92,6 +92,10 @@ class City(BaseModel):
 
     alt_names = relationship('CityAltName')
 
+    @property
+    def alt_name_strings(self):
+        return [r.name for r in self.alt_names]
+
     @safe_property
     def us_state_abbr(self):
         return us.states.lookup(self.name_a1).abbr
