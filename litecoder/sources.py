@@ -14,7 +14,7 @@ from tqdm import tqdm
 
 from . import logger
 from .utils import safe_property, first
-from .db import session, City
+from .db import session, City, CityAltName
 
 
 @attr.s
@@ -39,10 +39,11 @@ class WOFLocalitiesRepo:
             )
 
     # TODO: Move to model class?
-    def insert_us_cities(self, n=1000):
+    def load_db(self):
         """Load US cities database.
         """
         City.reset()
+        CityAltName.reset()
 
         for loc in tqdm(self.locs_iter()):
 
@@ -51,14 +52,8 @@ class WOFLocalitiesRepo:
                 session.commit()
 
             except Exception as e:
-
-                logger.warn('Failed: %d, %s, %s' % (
-                    loc.wof_id,
-                    loc.country_iso,
-                    loc.name,
-                ))
-
                 session.rollback()
+                print(e)
 
 
 class WOFLocalityGeojson(UserDict):
@@ -289,6 +284,9 @@ class WOFLocalityGeojson(UserDict):
             for col in City.__table__.columns.keys()
         })
 
-        # TODO: Alt names.
+        city.alt_names += [
+            CityAltName(wof_id=self.wof_id, name=name)
+            for name in self.alt_names
+        ]
 
         return city
