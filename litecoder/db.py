@@ -90,10 +90,6 @@ class City(BaseModel):
 
     geometry_json = Column(Text)
 
-    @property
-    def fsa_entity(self):
-        return (self.__tablename__, self.wof_id)
-
     @safe_property
     def us_state_abbr(self):
         return us.states.lookup(self.name_a1).abbr
