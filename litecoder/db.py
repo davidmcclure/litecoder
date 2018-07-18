@@ -92,6 +92,14 @@ class City(BaseModel):
 
     alt_names = relationship('CityAltName')
 
+    def __repr__(self):
+        return '%s<%s, %s, %s>' % (
+            self.__class__.__name__,
+            self.name,
+            self.name_a1,
+            self.name_a0,
+        )
+
     @property
     def alt_name_strings(self):
         return [r.name for r in self.alt_names]
