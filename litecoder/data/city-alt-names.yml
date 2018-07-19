@@ -30,6 +30,13 @@ Q65:
   - La La Land
   - East Los Angeles
 
+Q61:
+  - Washington, D.C.
+  - DC
+
+  # Ambiguous with state
+  - Washington
+
 Q34404:
   - NOLA
 
@@ -45,3 +52,43 @@ Q16555:
 
 Q43421:
   - RVA
+
+Q38022:
+  - STL
+
+Q16559:
+  - ATX
+
+Q975:
+  - SATX
+
+Q1345:
+  - Philly
+  - PHL
+
+Q16557:
+  - DTX
+
+Q1297:
+  - Chicagoland
+
+Q37320:
+  - CLE
+
+Q16553:
+  - SJC
+
+Q6106:
+  - PDX
+
+Q41819:
+  - KCMO
+
+Q34863:
+  - OKC
+
+Q37836:
+  - MKE
+
+Q23337:
+  - SLC
