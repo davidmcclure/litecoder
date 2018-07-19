@@ -29,6 +29,22 @@ class BaseModel:
         cls.metadata.drop_all(engine)
         cls.metadata.create_all(engine)
 
+    def column_names(self):
+        """Get a list of column names.
+
+        Returns: list
+        """
+        return [c.name for c in self.__table__.columns]
+
+    def __iter__(self):
+        """Generate column / value tuples.
+
+        Yields: (key, val)
+        """
+        for key in self.column_names():
+            if key in self.__dict__:
+                yield (key, getattr(self, key))
+
 
 BaseModel = declarative_base(cls=BaseModel)
 BaseModel.query = session.query_property()
@@ -94,8 +110,9 @@ class City(BaseModel):
         return np.median(pops)
 
     def __repr__(self):
-        return '%s<%s, %s, %s>' % (
+        return '%s<%d, %s, %s, %s>' % (
             self.__class__.__name__,
+            self.wof_id,
             self.name,
             self.name_a1,
             self.name_a0,

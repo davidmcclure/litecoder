@@ -1,5 +1,7 @@
 ---
 
+# TODO: Separate neighborhoods list, for eg Hollywood / Bronx?
+
 Q60:
   - NYC
   - New York City
@@ -27,6 +29,8 @@ Q62:
 Q65:
   - LA
   - La La Land
+  - Hollywood
+  - North Hollywood
 
 Q61:
   - Washington, D.C.
