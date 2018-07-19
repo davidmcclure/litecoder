@@ -10,3 +10,38 @@ Q60:
   - Manhattan
   - Queens
   - Staten Island
+  - Gotham City
+  - Gotham
+
+  # Ambiguous with state
+  - NY
+  - New York
+
+Q62:
+  - Bay Area
+  - The Bay Area
+  - San Francisco Bay Area
+  - SF Bay Area
+  - SF
+  - Frisco
+
+Q65:
+  - LA
+  - La La Land
+  - East Los Angeles
+
+Q34404:
+  - NOLA
+
+Q23768:
+  - Vegas
+  - Sin City
+
+Q23556:
+  - ATL
+
+Q16555:
+  - HTX
+
+Q43421:
+  - RVA
