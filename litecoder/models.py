@@ -96,6 +96,10 @@ class City(BaseModel):
     def alt_names(self):
         return CITY_ALT_NAMES.get(self.wikidata_id, [])
 
+    @property
+    def names(self):
+        return set((self.name, *self.alt_names))
+
     @safe_property
     def us_state_abbr(self):
         return us.states.lookup(self.name_a1).abbr
