@@ -14,7 +14,7 @@ from tqdm import tqdm
 
 from . import logger
 from .utils import safe_property, first
-from .db import session, City, CityAltName
+from .db import session, City
 
 
 @attr.s
@@ -43,7 +43,6 @@ class WOFLocalitiesRepo:
         """Load US cities database.
         """
         City.reset()
-        CityAltName.reset()
 
         for loc in tqdm(self.locs_iter()):
 
