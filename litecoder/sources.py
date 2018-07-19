@@ -38,8 +38,7 @@ class WOFLocalitiesRepo:
                 self.paths_iter(),
             )
 
-    # TODO: Move to model class?
-    def load_db(self):
+    def load_cities_db(self):
         """Load US cities database.
         """
         City.reset()
@@ -47,7 +46,7 @@ class WOFLocalitiesRepo:
         for loc in tqdm(self.locs_iter()):
 
             try:
-                session.add(loc.db_row())
+                session.add(loc.city_db_row())
                 session.commit()
 
             except Exception as e:
@@ -274,13 +273,10 @@ class WOFLocalityGeojson(UserDict):
     def is_us_city(self):
         return self.country_iso == 'US' and self.state_abbr
 
-    # TODO: Model factory?
-    def db_row(self):
+    def city_db_row(self):
         """Build city database row instance.
         """
-        city = City(**{
+        return City(**{
             col: getattr(self, col)
-            for col in City.__table__.columns.keys()
+            for col in City.column_names()
         })
-
-        return city

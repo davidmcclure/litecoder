@@ -29,12 +29,11 @@ class BaseModel:
         cls.metadata.drop_all(engine)
         cls.metadata.create_all(engine)
 
-    def column_names(self):
+    @classmethod
+    def column_names(cls):
         """Get a list of column names.
-
-        Returns: list
         """
-        return [c.name for c in self.__table__.columns]
+        return cls.__table__.columns.keys()
 
     def __iter__(self):
         """Generate column / value tuples.
