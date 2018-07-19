@@ -8,7 +8,7 @@ import yaml
 
 from sqlalchemy.engine.url import URL
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.orm import sessionmaker, scoped_session, deferred
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Float, Text
 
@@ -94,7 +94,7 @@ class City(BaseModel):
 
     area_m2 = Column(Float)
 
-    geometry_json = Column(Text)
+    geometry_json = deferred(Column(Text))
 
     def __repr__(self):
         return '%s<%s, %s, %s>' % (
