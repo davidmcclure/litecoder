@@ -4,6 +4,8 @@ import us
 import pkgutil
 import yaml
 
+import numpy as np
+
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import deferred
 from sqlalchemy import Column, Integer, String, Float, Text
@@ -83,6 +85,13 @@ class City(BaseModel):
     area_m2 = Column(Float)
 
     geometry_json = deferred(Column(Text))
+
+    @classmethod
+    def median_population(cls):
+        """Get median population.
+        """
+        pops = [c.population for c in cls.query if c.population]
+        return np.median(pops)
 
     def __repr__(self):
         return '%s<%s, %s, %s>' % (
