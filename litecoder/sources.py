@@ -13,12 +13,13 @@ from multiprocessing import Pool
 from tqdm import tqdm
 
 from . import logger
-from .utils import safe_property, first
-from .db import session, City
+from .utils import safe_property, first, read_json
+from .db import session
+from .models import City
 
 
 @attr.s
-class WOFLocalitiesRepo:
+class WOFRepo:
 
     root = attr.ib()
 
@@ -28,15 +29,20 @@ class WOFLocalitiesRepo:
         pattern = os.path.join(self.root, '**/*.geojson')
         return iglob(pattern, recursive=True)
 
-    def locs_iter(self, num_procs=None):
-        """Generate parsed locality documents.
+    def docs_iter(self, num_procs=None):
+        """Generate parsed GeoJSON docs.
         """
         with Pool(num_procs) as p:
+            yield from p.imap_unordered(read_json, self.paths_iter())
 
-            yield from p.imap_unordered(
-                WOFLocalityGeojson.from_json,
-                self.paths_iter(),
-            )
+
+class WOFLocalitiesRepo(WOFRepo):
+
+    def locs_iter(self, *args, **kwargs):
+        """Generate parsed locality instances.
+        """
+        for data in self.docs_iter(*args, **kwargs):
+            yield WOFLocalityGeojson(data)
 
     def load_cities_db(self):
         """Load US cities database.
@@ -55,13 +61,6 @@ class WOFLocalitiesRepo:
 
 
 class WOFLocalityGeojson(UserDict):
-
-    @classmethod
-    def from_json(cls, path):
-        """Parse JSON.
-        """
-        with open(path) as fh:
-            return cls(ujson.load(fh))
 
     def __repr__(self):
         return '%s<%d>' % (self.__class__.__name__, self.wof_id)

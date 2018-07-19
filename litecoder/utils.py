@@ -1,5 +1,8 @@
 
 
+import ujson
+
+
 class safe_property:
 
     @classmethod
@@ -31,3 +34,8 @@ class safe_property:
 
 def first(seq):
     return next((x for x in seq if x is not None), None)
+
+
+def read_json(path):
+    with open(path) as fh:
+        return ujson.load(fh)
