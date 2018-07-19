@@ -2,6 +2,9 @@
 
 import os
 import us
+import pkgutil
+import yaml
+
 
 from sqlalchemy.engine.url import URL
 from sqlalchemy import create_engine
@@ -10,6 +13,9 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Float, Text
 
 from .utils import safe_property
+
+
+ALT_NAMES = yaml.load(pkgutil.get_data('litecoder', 'data/city-alt-names.yml'))
 
 
 # TODO: Config-ify
@@ -99,8 +105,8 @@ class City(BaseModel):
         )
 
     @property
-    def alt_name_strings(self):
-        return [r.name for r in self.alt_names]
+    def alt_names(self):
+        return ALT_NAMES.get(self.wikidata_id, [])
 
     @safe_property
     def us_state_abbr(self):
