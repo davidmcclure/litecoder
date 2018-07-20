@@ -5,7 +5,7 @@
 
 It's not uncommon to have free-text "location" fields - for example, from Twitter user profiles - that contain a mix of cities, states, and countries. Eg, things like `Los Angeles, CA`, `Boston`, `DC`, `tuscaloosa al`, `VT` etc. To make use of these, they generally need to be liked against some kind of canonical set of geographic entities. One approach is to throw them at a commercial geocoder like [Google](https://developers.google.com/places/web-service/search) or [Mapbox](https://www.mapbox.com/geocoding/), but this is slow and expensive, and there are often onerous terms-of-service restrictions on the results. And, really, a full-blown geocoder is overkill here, since these kinds of location fields almost never contain street addresses, just references to a smaller set of high-level locations.
 
-This library resolves location strings to records in the open-source [Who's On First](https://www.whosonfirst.org/) (WOF) gazetteer from Mapzen, which includes fantastic geographic metadata as well as IDs for corresponding records in a range of other gazetteers and knowledge databases (Wikipedia, Wikidata, DBpedia, Geonames, etc). Mapzen sadly doesn't exist anymore, but the WOF data is [CC-0](https://github.com/whosonfirst-data/whosonfirst-data/blob/master/LICENSE.md).
+This library resolves location strings to records in the amazing [Who's On First](https://www.whosonfirst.org/) (WOF) gazetteer from Mapzen, which aggregates geographic metadata as well as IDs for corresponding records in a number of other gazetteers and knowledge databases (Wikipedia, Wikidata, DBpedia, Geonames, etc). Mapzen sadly doesn't exist anymore, but the WOF data is [CC-0](https://github.com/whosonfirst-data/whosonfirst-data/blob/master/LICENSE.md), and shows signs of [ongoing institutional support](http://library.stanford.edu/blogs/digital-library-blog/2018/05/whos-first-stanford).
 
 For now, Litecoder only supports US cities and states.
 
@@ -14,7 +14,7 @@ For now, Litecoder only supports US cities and states.
 - Work anywhere without hassle. The underlying data sits in SQLite and ships with the package - just `pip install`. Since Litecoder is totally embedded, it can be used in ETL and big data workflows involving billions of inputs.
 - Favor precision over recall. Litecoder will miss some things, but when it returns a result, it should be trustworthy.
 - Support non-standard names that clearly refer to a city or state. Eg, `NYC` always means New York City.
-- Some heuristics are unavoidable - eg, `Boston` should map to `Boston, MA`, not `Boston, GA` (which exists!). In these cases, do something simple and interpretable.
+- Some heuristics are unavoidable - eg, `Boston` should map to `Boston, MA`, not `Boston, GA` (which exists!). In these cases, do something simple and easy to reason about.
 
 ## Non-Goals
 - No support yet for extracting locations that are embedded inside of surrounding text. The assumption is that you've got a snippet of text that represents a location, and the goal is to figure out which one.
