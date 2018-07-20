@@ -97,7 +97,7 @@ class City(BaseModel):
 
     area_m2 = Column(Float)
 
-    geometry_json = deferred(Column(Text))
+    # geometry_json = deferred(Column(Text))
 
     @classmethod
     def median_population(cls):

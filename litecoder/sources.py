@@ -44,7 +44,7 @@ class WOFLocalitiesRepo(WOFRepo):
         for data in self.docs_iter(*args, **kwargs):
             yield WOFLocalityGeojson(data)
 
-    def load_cities_db(self):
+    def load_db(self):
         """Load US cities database.
         """
         City.reset()
@@ -52,7 +52,7 @@ class WOFLocalitiesRepo(WOFRepo):
         for loc in tqdm(self.locs_iter()):
 
             try:
-                session.add(loc.city_db_row())
+                session.add(loc.db_row())
                 session.commit()
 
             except Exception as e:
@@ -256,7 +256,7 @@ class WOFLocalityGeojson(UserDict):
     def geometry_json(self):
         return ujson.dumps(self.geometry)
 
-    def city_db_row(self):
+    def db_row(self):
         """Build city database row instance.
         """
         return City(**{
