@@ -294,8 +294,27 @@ class WOFRegionGeojson(UserDict):
         ))
 
     @safe_property
+    def name_abbr(self):
+        return self['properties']['wof:abbreviation']
+
+    @safe_property
     def country_iso(self):
         return self['properties']['iso:country']
+
+    @safe_property
+    def _qs_a0(self):
+        return self['properties']['qs:a0']
+
+    @safe_property
+    def _qs_adm0(self):
+        return self['properties']['qs:adm0']
+
+    @safe_property
+    def name_a0(self):
+        return first((
+            self._qs_a0,
+            self._qs_adm0,
+        ))
 
     @safe_property
     def latitude(self):
