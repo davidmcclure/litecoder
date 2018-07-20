@@ -62,6 +62,10 @@ class WOFLocalitiesRepo(WOFRepo):
 
 class WOFLocalityGeojson(UserDict):
 
+    @classmethod
+    def from_path(cls, path):
+        return cls(read_json(path))
+
     def __repr__(self):
         return '%s<%d>' % (self.__class__.__name__, self.wof_id)
 
@@ -279,3 +283,17 @@ class WOFLocalityGeojson(UserDict):
             col: getattr(self, col)
             for col in City.column_names()
         })
+
+
+class WOFRegionGeojson(UserDict):
+
+    @classmethod
+    def from_path(cls, path):
+        return cls(read_json(path))
+
+    def __repr__(self):
+        return '%s<%d>' % (self.__class__.__name__, self.wof_id)
+
+    @property
+    def wof_id(self):
+        return self['id']
