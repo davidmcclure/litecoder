@@ -256,26 +256,6 @@ class WOFLocalityGeojson(UserDict):
     def geometry_json(self):
         return ujson.dumps(self.geometry)
 
-    @safe_property
-    def _name_eng_x_colloquial(self):
-        return self['properties']['name:eng_x_colloquial']
-
-    @safe_property
-    def _name_eng_x_variant(self):
-        return self['properties']['name:eng_x_variant']
-
-    @safe_property
-    def alt_names(self):
-        namesets = (
-            self._name_eng_x_colloquial,
-            self._name_eng_x_variant,
-        )
-
-        return set([n for ns in namesets if ns for n in ns])
-
-    def is_us_city(self):
-        return self.country_iso == 'US' and self.state_abbr
-
     def city_db_row(self):
         """Build city database row instance.
         """
@@ -297,3 +277,57 @@ class WOFRegionGeojson(UserDict):
     @property
     def wof_id(self):
         return self['id']
+
+    @safe_property
+    def _name_eng_x_preferred(self):
+        return self['properties']['name:eng_x_preferred'][0]
+
+    @safe_property
+    def _wof_name(self):
+        return self['properties']['wof:name']
+
+    @safe_property
+    def name(self):
+        return first((
+            self._name_eng_x_preferred,
+            self._wof_name,
+        ))
+
+    @safe_property
+    def country_iso(self):
+        return self['properties']['iso:country']
+
+    @safe_property
+    def latitude(self):
+        return self['properties']['geom:latitude']
+
+    @safe_property
+    def longitude(self):
+        return self['properties']['geom:latitude']
+
+    @safe_property
+    def _wof_population(self):
+        return self['properties']['wof:population']
+
+    @safe_property
+    def _statoids_population(self):
+        return self['properties']['statoids:population']
+
+    @safe_property
+    def population(self):
+        return first((
+            self._wof_population,
+            self._statoids_population,
+        ))
+
+    @safe_property
+    def area_m2(self):
+        return self['properties']['geom:area_square_m']
+
+    @safe_property
+    def geometry(self):
+        return self['geometry']
+
+    @safe_property
+    def geometry_json(self):
+        return ujson.dumps(self.geometry)
