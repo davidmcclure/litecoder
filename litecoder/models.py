@@ -55,6 +55,8 @@ class City(BaseModel):
 
     wof_id = Column(Integer, primary_key=True)
 
+    wof_parent_id = Column(Integer)
+
     dbpedia_id = Column(String)
 
     freebase_id = Column(String)
