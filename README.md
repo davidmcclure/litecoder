@@ -10,11 +10,11 @@ This library resolves location strings to entities in the open-source [Who's On 
 For now, Litecoder only supports US cities and states.
 
 ## Goals
-- Be very fast. Lookups take ~3ms.
+- Be fast. Lookups take ~3ms.
 - Work anywhere without hassle. The underlying data sits in SQLite and ships with the package - just `pip install`. Since Litecoder is totally embedded, it can be used in ETL and big data workflows involving billions of inputs.
-- Be unsurprising. When in doubt, favor precision over recall. Litecoder will miss some things, but when it returns a result, it should almost always be correct.
-- Support non-standard names that unambiguously refer to a city or state. Eg, `NYC` always means New York City.
-- Some heuristics are unavoidable - eg, `Boston` should map to `Boston, MA`, not `Boston, GA` (which exists!). In these cases, use rules that are simple and interpretable.
+- Favor precision over recall. Litecoder will miss some things, but when it returns a result, it should be trustworthy.
+- Support non-standard names that clearly refer to a city or state. Eg, `NYC` always means New York City.
+- Some heuristics are unavoidable - eg, `Boston` should map to `Boston, MA`, not `Boston, GA` (which exists!). In these cases, do something simple and interpretable.
 
 ## Non-Goals
 - No support yet for extracting locations that are embedded inside of surrounding text. The assumption is that you've got a snippet of text that represents a location, and the goal is to figure out which one.
