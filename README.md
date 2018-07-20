@@ -18,7 +18,7 @@ For now, Litecoder only supports US cities and states.
 
 ## Non-Goals
 - No support yet for extracting locations that are embedded inside of surrounding text. The assumption is that you've got a snippet of text that represents a location, and the goal is to figure out which one.
-- No support for entities more granular than the city / town. (With the exception of NYC boroughs, which map to NYC.)
+- Nothing more granular than the city / town. (With the exception of NYC boroughs, which map to NYC.)
 
 ## Examples
 
