@@ -20,6 +20,7 @@ USA_NAMES = (
 )
 
 
+# TODO: Test
 def keyify(text):
     """Convert text -> normalized index key.
     """
