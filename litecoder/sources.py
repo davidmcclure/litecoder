@@ -275,6 +275,26 @@ class WOFRegionGeojson(UserDict):
         return self['id']
 
     @safe_property
+    def fips_code(self):
+        return self['properties']['wof:concordances']['fips:code']
+
+    @safe_property
+    def geonames_id(self):
+        return self['properties']['wof:concordances']['gn:id']
+
+    @safe_property
+    def geoplanet_id(self):
+        return self['properties']['wof:concordances']['gp:id']
+
+    @safe_property
+    def iso_id(self):
+        return self['properties']['wof:concordances']['iso:id']
+
+    @safe_property
+    def wikidata_id(self):
+        return self['properties']['wof:concordances']['wd:id']
+
+    @safe_property
     def _name_eng_x_preferred(self):
         return self['properties']['name:eng_x_preferred'][0]
 
