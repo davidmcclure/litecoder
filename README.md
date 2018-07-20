@@ -5,13 +5,14 @@ US city + state geocoding, without a heavy webservice. With [Who's On First](htt
 
 It's not uncommon to have free-text "location" fields - for example, from Twitter user profiles - that contain a mix of cities, states, and countries. Eg, things like `Los Angeles, CA`, `Boston`, `DC`, `tuscaloosa al`, `VT` etc. To make use of these, they generally need to be liked against some kind of canonical set of geographic entities. One approach is to throw them at a commercial geocoder like Google Places or Mapbox, but this is slow and expensive, and there are often onerous TOS restrictions on the results. And, really, a full-blown geocoder is overkill here, since these kinds of location fields almost never contain street addresses, just references to a more limited set of cities, regions, and countries. Though, annoyingly, with endless variations in formatting.
 
-This library resolves location strings to entities in the open-source Who's On First gazetteer, which includes really rich geographic metadata as well as IDs for corresponding records in a range of other gazetteers and knowledge databases (Wikipedia, Wikidata, DBpedia, Geonames, Quattroshapes, Freebase, etc). Right now Litecoder only supports US cities and states.
+This library resolves location strings to entities in the open-source Who's On First gazetteer, which includes really rich geographic metadata as well as IDs for corresponding records in a range of other gazetteers and knowledge databases (Wikipedia, Wikidata, DBpedia, Geonames, Freebase, etc). Right now Litecoder only supports US cities and states.
 
 ## Goals
 - Be very fast. Lookups take ~3ms.
 - Work anywhere without hassle. The underlying data sits in SQLite and ships with the package - just `pip install`. Since Litecoder is totally embedded, it can be used in ETL and big data workflows involving billions of inputs.
-- When in doubt, favor precision over recall. Litecoder will miss some things, but when it returns a result, it should almost always be correct.
-- But do support non-standard variants that unambiguously correspond to a city or state. Eg, `NYC` always means New York City.
+- Be unsurprising. When in doubt, favor precision over recall. Litecoder will miss some things, but when it returns a result, it should almost always be correct.
+- But do support non-standard names that unambiguously refer to a city or state. Eg, `NYC` always means New York City.
+- Some heuristics are unavoidable - eg, does `Boston` refer to `Boston, MA` or `Boston, GA`? In these cases, use rules that are simple and interpretable.
 
 ## Non-Goals
 - No support yet for extracting locations that are embedded inside of surrounding text. The assumption is that you've got a snippet of text that represents a location, and the goal is to figure out which one.
