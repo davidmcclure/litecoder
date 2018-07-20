@@ -1,5 +1,5 @@
 
-# Litecoder
+# Litecoder [WIP]
 
 > US city + state geocoding, without a heavy webservice. With [Who's On First](https://www.whosonfirst.org/) and SQLite.
 
