@@ -69,9 +69,13 @@ class WOFLocalityGeojson(UserDict):
     def __repr__(self):
         return '%s<%d>' % (self.__class__.__name__, self.wof_id)
 
-    @property
+    @safe_property
     def wof_id(self):
         return self['id']
+
+    @safe_property
+    def wof_parent_id(self):
+        return self['properties']['wof:parent_id']
 
     @safe_property
     def dbpedia_id(self):
@@ -270,9 +274,13 @@ class WOFRegionGeojson(UserDict):
     def __repr__(self):
         return '%s<%d>' % (self.__class__.__name__, self.wof_id)
 
-    @property
+    @safe_property
     def wof_id(self):
         return self['id']
+
+    @safe_property
+    def wof_parent_id(self):
+        return self['properties']['wof:parent_id']
 
     @safe_property
     def fips_code(self):
