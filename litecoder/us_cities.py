@@ -166,6 +166,7 @@ class USCityIndex:
         """
         ids = self[text]
 
+        # TODO: Preload db rows?
         return (
             City.query.filter(City.wof_id.in_(ids)).all()
             if ids else []
