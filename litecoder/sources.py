@@ -225,10 +225,6 @@ class WOFLocalityGeojson(UserDict):
         ))
 
     @safe_property
-    def population_rank(self):
-        return self['properties']['wof:population_rank']
-
-    @safe_property
     def wikipedia_wordcount(self):
         return self['properties']['wk:wordcount']
 

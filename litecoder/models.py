@@ -91,8 +91,6 @@ class City(BaseModel):
 
     population = Column(Integer)
 
-    population_rank = Column(Integer)
-
     wikipedia_wordcount = Column(Integer)
 
     elevation = Column(Integer)
