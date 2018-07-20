@@ -248,14 +248,6 @@ class WOFLocalityGeojson(UserDict):
     def area_m2(self):
         return self['properties']['geom:area_square_m']
 
-    @safe_property
-    def geometry(self):
-        return self['geometry']
-
-    @safe_property
-    def geometry_json(self):
-        return ujson.dumps(self.geometry)
-
     def db_row(self):
         """Build city database row instance.
         """
@@ -366,11 +358,3 @@ class WOFRegionGeojson(UserDict):
     @safe_property
     def area_m2(self):
         return self['properties']['geom:area_square_m']
-
-    @safe_property
-    def geometry(self):
-        return self['geometry']
-
-    @safe_property
-    def geometry_json(self):
-        return ujson.dumps(self.geometry)
