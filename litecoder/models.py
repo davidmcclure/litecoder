@@ -54,21 +54,21 @@ class Region(BaseModel):
 
     wof_country_id = Column(Integer, nullable=False)
 
-    fips_code = Column(Integer, unique=True)
+    fips_code = Column(Integer)
 
-    geonames_id = Column(Integer, unique=True)
+    geonames_id = Column(Integer)
 
-    geoplanet_id = Column(Integer, unique=True)
+    geoplanet_id = Column(Integer)
 
-    iso_id = Column(String, unique=True)
+    iso_id = Column(String)
 
-    wikidata_id = Column(String, unique=True)
+    wikidata_id = Column(String)
 
-    name = Column(String, nullable=False)
+    name = Column(String)
 
     name_abbr = Column(String)
 
-    country_iso = Column(String, nullable=False)
+    country_iso = Column(String)
 
     name_a0 = Column(String)
 
@@ -103,27 +103,27 @@ class Locality(BaseModel):
 
     wof_region_id = Column(Integer, ForeignKey(Region.wof_id))
 
-    dbpedia_id = Column(String, unique=True)
+    dbpedia_id = Column(String)
 
-    freebase_id = Column(String, unique=True)
+    freebase_id = Column(String)
 
-    factual_id = Column(String, unique=True)
+    factual_id = Column(String)
 
-    fips_code = Column(Integer, unique=True)
+    fips_code = Column(Integer)
 
-    geonames_id = Column(Integer, unique=True)
+    geonames_id = Column(Integer)
 
-    geoplanet_id = Column(Integer, unique=True)
+    geoplanet_id = Column(Integer)
 
-    library_of_congress_id = Column(String, unique=True)
+    library_of_congress_id = Column(String)
 
-    new_york_times_id = Column(String, unique=True)
+    new_york_times_id = Column(String)
 
-    quattroshapes_id = Column(Integer, unique=True)
+    quattroshapes_id = Column(Integer)
 
-    wikidata_id = Column(String, unique=True)
+    wikidata_id = Column(String)
 
-    wikipedia_page = Column(String, unique=True)
+    wikipedia_page = Column(String)
 
     name = Column(String, nullable=False)
 
