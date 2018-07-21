@@ -43,6 +43,9 @@ BaseModel = declarative_base(cls=BaseModel)
 BaseModel.query = session.query_property()
 
 
+# TODO: Country
+
+
 class Region(BaseModel):
 
     __tablename__ = 'region'
