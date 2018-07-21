@@ -41,8 +41,6 @@ class WOFRegionsRepo(WOFRepo):
     def load_db(self):
         """Load US cities database.
         """
-        Region.reset()
-
         for doc in tqdm(self.docs_iter()):
 
             try:
@@ -60,8 +58,6 @@ class WOFLocalitiesRepo(WOFRepo):
     def load_db(self):
         """Load US cities database.
         """
-        Locality.reset()
-
         for doc in tqdm(self.docs_iter()):
 
             try:
