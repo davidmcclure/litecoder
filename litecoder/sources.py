@@ -36,25 +36,6 @@ class WOFRepo:
             yield from p.imap_unordered(read_json, self.paths_iter())
 
 
-class WOFLocalitiesRepo(WOFRepo):
-
-    def load_db(self):
-        """Load US cities database.
-        """
-        Locality.reset()
-
-        for doc in tqdm(self.docs_iter()):
-
-            try:
-                row = WOFLocalityDoc(doc).db_row()
-                session.add(row)
-                session.commit()
-
-            except Exception as e:
-                session.rollback()
-                print(e)
-
-
 class WOFRegionsRepo(WOFRepo):
 
     def load_db(self):
@@ -74,6 +55,136 @@ class WOFRegionsRepo(WOFRepo):
                 print(e)
 
 
+class WOFLocalitiesRepo(WOFRepo):
+
+    def load_db(self):
+        """Load US cities database.
+        """
+        Locality.reset()
+
+        for doc in tqdm(self.docs_iter()):
+
+            try:
+                row = WOFLocalityDoc(doc).db_row()
+                session.add(row)
+                session.commit()
+
+            except Exception as e:
+                session.rollback()
+                print(e)
+
+
+class WOFRegionDoc(UserDict):
+
+    @classmethod
+    def from_path(cls, path):
+        return cls(read_json(path))
+
+    def __repr__(self):
+        return '%s<%d>' % (self.__class__.__name__, self.wof_id)
+
+    @safe_property
+    def wof_id(self):
+        return self['id']
+
+    @safe_property
+    def wof_country_id(self):
+        return self['properties']['wof:parent_id']
+
+    @safe_property
+    def fips_code(self):
+        return self['properties']['wof:concordances']['fips:code']
+
+    @safe_property
+    def geonames_id(self):
+        return self['properties']['wof:concordances']['gn:id']
+
+    @safe_property
+    def geoplanet_id(self):
+        return self['properties']['wof:concordances']['gp:id']
+
+    @safe_property
+    def iso_id(self):
+        return self['properties']['wof:concordances']['iso:id']
+
+    @safe_property
+    def wikidata_id(self):
+        return self['properties']['wof:concordances']['wd:id']
+
+    @safe_property
+    def _name_eng_x_preferred(self):
+        return self['properties']['name:eng_x_preferred'][0]
+
+    @safe_property
+    def _wof_name(self):
+        return self['properties']['wof:name']
+
+    @safe_property
+    def name(self):
+        return first((
+            self._name_eng_x_preferred,
+            self._wof_name,
+        ))
+
+    @safe_property
+    def name_abbr(self):
+        return self['properties']['wof:abbreviation']
+
+    @safe_property
+    def country_iso(self):
+        return self['properties']['iso:country']
+
+    @safe_property
+    def _qs_a0(self):
+        return self['properties']['qs:a0']
+
+    @safe_property
+    def _qs_adm0(self):
+        return self['properties']['qs:adm0']
+
+    @safe_property
+    def name_a0(self):
+        return first((
+            self._qs_a0,
+            self._qs_adm0,
+        ))
+
+    @safe_property
+    def latitude(self):
+        return self['properties']['geom:latitude']
+
+    @safe_property
+    def longitude(self):
+        return self['properties']['geom:latitude']
+
+    @safe_property
+    def _wof_population(self):
+        return self['properties']['wof:population']
+
+    @safe_property
+    def _statoids_population(self):
+        return self['properties']['statoids:population']
+
+    @safe_property
+    def population(self):
+        return first((
+            self._wof_population,
+            self._statoids_population,
+        ))
+
+    @safe_property
+    def area_m2(self):
+        return self['properties']['geom:area_square_m']
+
+    def db_row(self):
+        """Returns: models.Region
+        """
+        return Region(**{
+            col: getattr(self, col)
+            for col in Region.column_names()
+        })
+
+
 class WOFLocalityDoc(UserDict):
 
     @classmethod
@@ -88,7 +199,7 @@ class WOFLocalityDoc(UserDict):
         return self['id']
 
     @safe_property
-    def wof_parent_id(self):
+    def wof_region_id(self):
         return self['properties']['wof:parent_id']
 
     @safe_property
@@ -268,115 +379,4 @@ class WOFLocalityDoc(UserDict):
         return Locality(**{
             col: getattr(self, col)
             for col in Locality.column_names()
-        })
-
-
-class WOFRegionDoc(UserDict):
-
-    @classmethod
-    def from_path(cls, path):
-        return cls(read_json(path))
-
-    def __repr__(self):
-        return '%s<%d>' % (self.__class__.__name__, self.wof_id)
-
-    @safe_property
-    def wof_id(self):
-        return self['id']
-
-    @safe_property
-    def wof_parent_id(self):
-        return self['properties']['wof:parent_id']
-
-    @safe_property
-    def fips_code(self):
-        return self['properties']['wof:concordances']['fips:code']
-
-    @safe_property
-    def geonames_id(self):
-        return self['properties']['wof:concordances']['gn:id']
-
-    @safe_property
-    def geoplanet_id(self):
-        return self['properties']['wof:concordances']['gp:id']
-
-    @safe_property
-    def iso_id(self):
-        return self['properties']['wof:concordances']['iso:id']
-
-    @safe_property
-    def wikidata_id(self):
-        return self['properties']['wof:concordances']['wd:id']
-
-    @safe_property
-    def _name_eng_x_preferred(self):
-        return self['properties']['name:eng_x_preferred'][0]
-
-    @safe_property
-    def _wof_name(self):
-        return self['properties']['wof:name']
-
-    @safe_property
-    def name(self):
-        return first((
-            self._name_eng_x_preferred,
-            self._wof_name,
-        ))
-
-    @safe_property
-    def name_abbr(self):
-        return self['properties']['wof:abbreviation']
-
-    @safe_property
-    def country_iso(self):
-        return self['properties']['iso:country']
-
-    @safe_property
-    def _qs_a0(self):
-        return self['properties']['qs:a0']
-
-    @safe_property
-    def _qs_adm0(self):
-        return self['properties']['qs:adm0']
-
-    @safe_property
-    def name_a0(self):
-        return first((
-            self._qs_a0,
-            self._qs_adm0,
-        ))
-
-    @safe_property
-    def latitude(self):
-        return self['properties']['geom:latitude']
-
-    @safe_property
-    def longitude(self):
-        return self['properties']['geom:latitude']
-
-    @safe_property
-    def _wof_population(self):
-        return self['properties']['wof:population']
-
-    @safe_property
-    def _statoids_population(self):
-        return self['properties']['statoids:population']
-
-    @safe_property
-    def population(self):
-        return first((
-            self._wof_population,
-            self._statoids_population,
-        ))
-
-    @safe_property
-    def area_m2(self):
-        return self['properties']['geom:area_square_m']
-
-    def db_row(self):
-        """Returns: models.Region
-        """
-        return Region(**{
-            col: getattr(self, col)
-            for col in Region.column_names()
         })

@@ -7,8 +7,8 @@ import yaml
 import numpy as np
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import deferred
-from sqlalchemy import Column, Integer, String, Float, Text
+from sqlalchemy.orm import deferred, relationship
+from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey
 
 from .db import session, engine
 from .utils import safe_property
@@ -43,6 +43,41 @@ BaseModel = declarative_base(cls=BaseModel)
 BaseModel.query = session.query_property()
 
 
+class Region(BaseModel):
+
+    __tablename__ = 'region'
+
+    wof_id = Column(Integer, primary_key=True)
+
+    wof_country_id = Column(Integer, nullable=False)
+
+    fips_code = Column(Integer)
+
+    geonames_id = Column(Integer)
+
+    geoplanet_id = Column(Integer)
+
+    iso_id = Column(String)
+
+    wikidata_id = Column(String)
+
+    name = Column(String, nullable=False)
+
+    name_abbr = Column(String)
+
+    country_iso = Column(String, nullable=False)
+
+    name_a0 = Column(String)
+
+    latitude = Column(Float)
+
+    longitude = Column(Float)
+
+    population = Column(Integer)
+
+    area_m2 = Column(Float)
+
+
 # TODO: Make pluggable.
 CITY_ALT_NAMES = yaml.load(pkgutil.get_data(
     'litecoder', 'data/city-alt-names.yml'
@@ -55,8 +90,7 @@ class Locality(BaseModel):
 
     wof_id = Column(Integer, primary_key=True)
 
-    # TODO: wof_region_id
-    wof_parent_id = Column(Integer)
+    wof_region_id = Column(Integer, ForeignKey(Region.wof_id))
 
     dbpedia_id = Column(String)
 
@@ -100,6 +134,8 @@ class Locality(BaseModel):
 
     area_m2 = Column(Float)
 
+    region = relationship(Region, primaryjoin=(wof_region_id==Region.wof_id))
+
     @classmethod
     def median_population(cls):
         """Get median population.
@@ -127,39 +163,3 @@ class Locality(BaseModel):
     @safe_property
     def us_state_abbr(self):
         return us.states.lookup(self.name_a1).abbr
-
-
-class Region(BaseModel):
-
-    __tablename__ = 'region'
-
-    wof_id = Column(Integer, primary_key=True)
-
-    # TODO: wof_country_id
-    wof_parent_id = Column(Integer)
-
-    fips_code = Column(Integer)
-
-    geonames_id = Column(Integer)
-
-    geoplanet_id = Column(Integer)
-
-    iso_id = Column(String)
-
-    wikidata_id = Column(String)
-
-    name = Column(String, nullable=False)
-
-    name_abbr = Column(String)
-
-    country_iso = Column(String, nullable=False)
-
-    name_a0 = Column(String)
-
-    latitude = Column(Float)
-
-    longitude = Column(Float)
-
-    population = Column(Integer)
-
-    area_m2 = Column(Float)
