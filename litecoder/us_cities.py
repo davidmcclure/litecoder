@@ -147,14 +147,6 @@ class USCityIndex:
             for key in keys:
                 self[key].add(row.wof_id)
 
-    def save(self, path):
-        with open(path, 'wb') as fh:
-            pickle.dump(self._idx, fh)
-
-    def load(self, path):
-        with open(path, 'rb') as fh:
-            self._idx = pickle.load(fh)
-
     def query(self, text):
         """Get ids, query database records.
         """
