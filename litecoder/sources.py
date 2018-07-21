@@ -74,8 +74,9 @@ class WOFLocalitiesRepo(WOFRepo):
         return cls(os.path.join(DATA_DIR, 'wof-locality'))
 
     def db_rows_iter(self):
-        for doc in self.docs_iter():
+        for doc in islice(self.docs_iter(), 1000):
             yield WOFLocalityDoc(doc).db_row()
+
 
 class WOFRegionDoc(UserDict):
 
@@ -124,14 +125,25 @@ class WOFRegionDoc(UserDict):
 
     @safe_property
     def name(self):
-        return first((
+        return first(
             self._name_eng_x_preferred,
             self._wof_name,
-        ))
+        )
+
+    @safe_property
+    def _abrv_eng_x_preferred(self):
+        return self['properties']['abrv:eng_x_preferred'][0]
+
+    @safe_property
+    def _wof_abbreviation(self):
+        return self['properties']['wof:abbreviation']
 
     @safe_property
     def name_abbr(self):
-        return self['properties']['wof:abbreviation']
+        return first(
+            self._abrv_eng_x_preferred,
+            self._wof_abbreviation,
+        )
 
     @safe_property
     def country_iso(self):
@@ -147,10 +159,10 @@ class WOFRegionDoc(UserDict):
 
     @safe_property
     def name_a0(self):
-        return first((
+        return first(
             self._qs_a0,
             self._qs_adm0,
-        ))
+        )
 
     @safe_property
     def latitude(self):
@@ -170,10 +182,10 @@ class WOFRegionDoc(UserDict):
 
     @safe_property
     def population(self):
-        return first((
+        return first(
             self._wof_population,
             self._statoids_population,
-        ))
+        )
 
     @safe_property
     def area_m2(self):
@@ -263,11 +275,11 @@ class WOFLocalityDoc(UserDict):
 
     @safe_property
     def name(self):
-        return first((
+        return first(
             self._name_eng_x_preferred,
             self._wof_name,
             self._qs_pg_name,
-        ))
+        )
 
     @safe_property
     def country_iso(self):
@@ -295,13 +307,13 @@ class WOFLocalityDoc(UserDict):
 
     @safe_property
     def name_a0(self):
-        return first((
+        return first(
             self._qs_a0,
             self._qs_adm0,
             self._ne_sov0name,
             self._qs_pg_name_adm0,
             self._woe_name_adm0,
-        ))
+        )
 
     @safe_property
     def _qs_a1(self):
@@ -321,12 +333,12 @@ class WOFLocalityDoc(UserDict):
 
     @safe_property
     def name_a1(self):
-        return first((
+        return first(
             self._qs_a1,
             self._ne_adm1name,
             self._qs_pg_name_adm1,
             self._woe_name_adm1,
-        ))
+        )
 
     @safe_property
     def latitude(self):
@@ -350,11 +362,11 @@ class WOFLocalityDoc(UserDict):
 
     @safe_property
     def population(self):
-        return first((
+        return first(
             self._gn_population,
             self._wof_population,
             self._wk_population,
-        ))
+        )
 
     @safe_property
     def wikipedia_wordcount(self):
@@ -370,7 +382,10 @@ class WOFLocalityDoc(UserDict):
 
     @safe_property
     def elevation(self):
-        return first((self._gn_elevation, self._ne_elevation))
+        return first(
+            self._gn_elevation,
+            self._ne_elevation,
+        )
 
     @safe_property
     def area_m2(self):

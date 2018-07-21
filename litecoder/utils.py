@@ -32,7 +32,7 @@ class safe_property:
         return value
 
 
-def first(seq):
+def first(*seq):
     return next((x for x in seq if x is not None), None)
 
 
