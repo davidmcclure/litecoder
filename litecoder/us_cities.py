@@ -55,9 +55,9 @@ class NamePopulations(defaultdict):
 
 class AllowBareName:
 
-    def __init__(self, min_p2_ratio=10):
+    def __init__(self, min_p1_p2_diff=200000):
         self.name_pops = NamePopulations()
-        self.min_p2_ratio = min_p2_ratio
+        self.min_p1_p2_diff = min_p1_p2_diff
 
     def __call__(self, city, name):
         """Is a city name unique enough that it should be indexed
@@ -71,15 +71,9 @@ class AllowBareName:
         """
         all_pops = sorted(self.name_pops[name], reverse=True)
 
-        if len(all_pops) < 2:
-            return True
+        pop = city.population or 0
 
-        p2_ratio = (city.population or 0) / all_pops[1]
-
-        if p2_ratio > self.min_p2_ratio:
-            return True
-
-        return False
+        return pop - sum(all_pops[1:]) > self.min_p1_p2_diff
 
 
 class USCityKeyIter:
@@ -97,18 +91,23 @@ class USCityKeyIter:
         """
         bare_names = [n for n in city.names if self.allow_bare(city, n)]
 
-        states = (city.name_a1, city.us_state_abbr)
+        # Get non-empty state names.
+        state_names = [n for n in (city.name_a1, city.us_state_abbr) if n]
 
+        # Bare name
         for name in bare_names:
             yield name
 
+        # Bare name, USA
         for name, usa in product(bare_names, USA_NAMES):
             yield ' '.join((name, usa))
 
-        for name, state in product(city.names, states):
+        # Name, state
+        for name, state in product(city.names, state_names):
             yield ' '.join((name, state))
 
-        for name, state, usa in product(city.names, states, USA_NAMES):
+        # Name, state, USA
+        for name, state, usa in product(city.names, state_names, USA_NAMES):
             yield ' '.join((name, state, usa))
 
     def __call__(self, city):
@@ -141,17 +140,12 @@ class USCityIndex:
 
         for city in tqdm(cities):
 
-            try:
+            # Generate keys, ensure no errors.
+            keys = list(iter_keys(city))
 
-                # Generate keys, ensure no errors.
-                keys = list(iter_keys(city))
-
-                # Index complete key set.
-                for key in iter_keys(city):
-                    self[key].add(city.wof_id)
-
-            except Exception as e:
-                pass
+            # Index complete key set.
+            for key in keys:
+                self[key].add(city.wof_id)
 
     def save(self, path):
         with open(path, 'wb') as fh:
