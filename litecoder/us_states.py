@@ -49,6 +49,10 @@ class USStateKeyIter:
         # Name
         yield from names
 
+        # TODO: ?
+        # Abbr
+        # yield from abbrs
+
         # Name, USA
         for name, usa in product(names, USA_NAMES):
             yield ' '.join((name, usa))
