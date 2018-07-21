@@ -15,7 +15,7 @@ from tqdm import tqdm
 from . import logger
 from .utils import safe_property, first, read_json
 from .db import session
-from .models import Locality
+from .models import Locality, Region
 
 
 @attr.s
@@ -38,21 +38,16 @@ class WOFRepo:
 
 class WOFLocalitiesRepo(WOFRepo):
 
-    def locs_iter(self, *args, **kwargs):
-        """Generate parsed locality instances.
-        """
-        for data in self.docs_iter(*args, **kwargs):
-            yield WOFLocalityGeojson(data)
-
     def load_db(self):
         """Load US cities database.
         """
         Locality.reset()
 
-        for loc in tqdm(self.locs_iter()):
+        for doc in tqdm(self.docs_iter()):
 
             try:
-                session.add(loc.db_row())
+                row = WOFLocalityDoc(doc).db_row()
+                session.add(row)
                 session.commit()
 
             except Exception as e:
@@ -60,7 +55,26 @@ class WOFLocalitiesRepo(WOFRepo):
                 print(e)
 
 
-class WOFLocalityGeojson(UserDict):
+class WOFRegionsRepo(WOFRepo):
+
+    def load_db(self):
+        """Load US cities database.
+        """
+        Region.reset()
+
+        for doc in tqdm(self.docs_iter()):
+
+            try:
+                row = WOFRegionDoc(doc).db_row()
+                session.add(row)
+                session.commit()
+
+            except Exception as e:
+                session.rollback()
+                print(e)
+
+
+class WOFLocalityDoc(UserDict):
 
     @classmethod
     def from_path(cls, path):
@@ -249,7 +263,7 @@ class WOFLocalityGeojson(UserDict):
         return self['properties']['geom:area_square_m']
 
     def db_row(self):
-        """Build locality database row instance.
+        """Returns: models.Locality
         """
         return Locality(**{
             col: getattr(self, col)
@@ -257,7 +271,7 @@ class WOFLocalityGeojson(UserDict):
         })
 
 
-class WOFRegionGeojson(UserDict):
+class WOFRegionDoc(UserDict):
 
     @classmethod
     def from_path(cls, path):
@@ -358,3 +372,11 @@ class WOFRegionGeojson(UserDict):
     @safe_property
     def area_m2(self):
         return self['properties']['geom:area_square_m']
+
+    def db_row(self):
+        """Returns: models.Region
+        """
+        return Region(**{
+            col: getattr(self, col)
+            for col in Region.column_names()
+        })

@@ -127,3 +127,39 @@ class Locality(BaseModel):
     @safe_property
     def us_state_abbr(self):
         return us.states.lookup(self.name_a1).abbr
+
+
+class Region(BaseModel):
+
+    __tablename__ = 'region'
+
+    wof_id = Column(Integer, primary_key=True)
+
+    # TODO: wof_country_id
+    wof_parent_id = Column(Integer)
+
+    fips_code = Column(Integer)
+
+    geonames_id = Column(Integer)
+
+    geoplanet_id = Column(Integer)
+
+    iso_id = Column(String)
+
+    wikidata_id = Column(String)
+
+    name = Column(String, nullable=False)
+
+    name_abbr = Column(String)
+
+    country_iso = Column(String, nullable=False)
+
+    name_a0 = Column(String)
+
+    latitude = Column(Float)
+
+    longitude = Column(Float)
+
+    population = Column(Integer)
+
+    area_m2 = Column(Float)
