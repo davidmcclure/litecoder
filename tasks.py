@@ -2,22 +2,12 @@
 
 from invoke import task
 
-from litecoder.db import Base, engine, City
+from litecoder.db import BaseModel
 
 
 @task
-def drop_db(ctx):
-    Base.metadata.drop_all(engine)
-
-
-@task
-def create_db(ctx):
-    Base.metadata.create_all(engine)
-
-
-@task(drop_db, create_db)
 def reset_db(ctx):
-    pass
+    BaseModel.reset()
 
 
 @task

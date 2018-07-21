@@ -35,40 +35,35 @@ class WOFRepo:
         with Pool(num_procs) as p:
             yield from p.imap_unordered(read_json, self.paths_iter())
 
-
-class WOFRegionsRepo(WOFRepo):
+    def db_rows_iter(self):
+        raise NotImplementedError
 
     def load_db(self):
-        """Load US cities database.
+        """Load database rows.
         """
-        for doc in tqdm(self.docs_iter()):
+        for row in tqdm(self.db_rows_iter()):
 
             try:
-                row = WOFRegionDoc(doc).db_row()
                 session.add(row)
                 session.commit()
 
             except Exception as e:
                 session.rollback()
                 print(e)
+
+
+class WOFRegionsRepo(WOFRepo):
+
+    def db_rows_iter(self):
+        for doc in self.docs_iter():
+            yield WOFRegionDoc(doc).db_row()
 
 
 class WOFLocalitiesRepo(WOFRepo):
 
-    def load_db(self):
-        """Load US cities database.
-        """
-        for doc in tqdm(self.docs_iter()):
-
-            try:
-                row = WOFLocalityDoc(doc).db_row()
-                session.add(row)
-                session.commit()
-
-            except Exception as e:
-                session.rollback()
-                print(e)
-
+    def db_rows_iter(self):
+        for doc in self.docs_iter():
+            yield WOFLocalityDoc(doc).db_row()
 
 class WOFRegionDoc(UserDict):
 
