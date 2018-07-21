@@ -18,6 +18,9 @@ from .db import session
 from .models import Locality, Region
 
 
+DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
+
+
 @attr.s
 class WOFRepo:
 
@@ -54,12 +57,20 @@ class WOFRepo:
 
 class WOFRegionsRepo(WOFRepo):
 
+    @classmethod
+    def from_env(cls):
+        return cls(os.path.join(DATA_DIR, 'wof-region'))
+
     def db_rows_iter(self):
         for doc in self.docs_iter():
             yield WOFRegionDoc(doc).db_row()
 
 
 class WOFLocalitiesRepo(WOFRepo):
+
+    @classmethod
+    def from_env(cls):
+        return cls(os.path.join(DATA_DIR, 'wof-locality'))
 
     def db_rows_iter(self):
         for doc in self.docs_iter():
