@@ -11,6 +11,7 @@ from glob import iglob
 from boltons.iterutils import chunked_iter
 from multiprocessing import Pool
 from tqdm import tqdm
+from itertools import islice
 
 from . import logger
 from .utils import safe_property, first, read_json
@@ -91,7 +92,7 @@ class WOFRegionDoc(UserDict):
 
     @safe_property
     def wof_country_id(self):
-        return self['properties']['wof:parent_id']
+        return self['properties']['wof:hierarchy'][0]['country_id']
 
     @safe_property
     def fips_code(self):
@@ -202,7 +203,7 @@ class WOFLocalityDoc(UserDict):
 
     @safe_property
     def wof_region_id(self):
-        return self['properties']['wof:parent_id']
+        return self['properties']['wof:hierarchy'][0]['region_id']
 
     @safe_property
     def dbpedia_id(self):

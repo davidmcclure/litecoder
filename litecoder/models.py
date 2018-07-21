@@ -77,6 +77,14 @@ class Region(BaseModel):
 
     area_m2 = Column(Float)
 
+    def __repr__(self):
+        return '%s<%d, %s, %s>' % (
+            self.__class__.__name__,
+            self.wof_id,
+            self.name,
+            self.name_a0,
+        )
+
 
 # TODO: Make pluggable.
 CITY_ALT_NAMES = yaml.load(pkgutil.get_data(
