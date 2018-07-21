@@ -14,12 +14,6 @@ from .db import session, engine
 from .utils import safe_property
 
 
-# TODO: Seprate module?
-CITY_ALT_NAMES = yaml.load(pkgutil.get_data(
-    'litecoder', 'data/city-alt-names.yml'
-))
-
-
 class BaseModel:
 
     @classmethod
@@ -49,12 +43,19 @@ BaseModel = declarative_base(cls=BaseModel)
 BaseModel.query = session.query_property()
 
 
-class City(BaseModel):
+# TODO: Make pluggable.
+CITY_ALT_NAMES = yaml.load(pkgutil.get_data(
+    'litecoder', 'data/city-alt-names.yml'
+))
 
-    __tablename__ = 'city'
+
+class Locality(BaseModel):
+
+    __tablename__ = 'locality'
 
     wof_id = Column(Integer, primary_key=True)
 
+    # TODO: wof_region_id
     wof_parent_id = Column(Integer)
 
     dbpedia_id = Column(String)

@@ -8,7 +8,7 @@ from collections import defaultdict
 from itertools import product
 
 from . import logger
-from .models import City
+from .models import Locality
 
 
 USA_NAMES = (
@@ -43,11 +43,11 @@ class NamePopulations(defaultdict):
 
         logger.info('Indexing name -> populations.')
 
-        median_pop = City.median_population()
+        median_pop = Locality.median_population()
 
-        for city in tqdm(City.query):
-            for name in city.names:
-                self[keyify(name)].append(city.population or median_pop)
+        for row in tqdm(Locality.query):
+            for name in row.names:
+                self[keyify(name)].append(row.population or median_pop)
 
     def __getitem__(self, text):
         return super().__getitem__(keyify(text))
@@ -59,19 +59,19 @@ class AllowBareName:
         self.name_pops = NamePopulations()
         self.min_p1_p2_diff = min_p1_p2_diff
 
-    def __call__(self, city, name):
+    def __call__(self, row, name):
         """Is a city name unique enough that it should be indexed
         independently?
 
         Args:
-            city (models.City)
+            row (models.Locality)
             name (str)
 
         Returns: bool
         """
         all_pops = sorted(self.name_pops[name], reverse=True)
 
-        pop = city.population or 0
+        pop = row.population or 0
 
         return pop - sum(all_pops[1:]) > self.min_p1_p2_diff
 
@@ -81,18 +81,18 @@ class USCityKeyIter:
     def __init__(self, *args, **kwargs):
         self.allow_bare = AllowBareName(*args, **kwargs)
 
-    def _iter_keys(self, city):
+    def _iter_keys(self, row):
         """Enumerate index keys for a city.
 
         Args:
-            city (db.City)
+            row (db.Locality)
 
         Yields: str
         """
-        bare_names = [n for n in city.names if self.allow_bare(city, n)]
+        bare_names = [n for n in row.names if self.allow_bare(row, n)]
 
         # Get non-empty state names.
-        state_names = [n for n in (city.name_a1, city.us_state_abbr) if n]
+        state_names = [n for n in (row.name_a1, row.us_state_abbr) if n]
 
         # Bare name
         for name in bare_names:
@@ -103,15 +103,15 @@ class USCityKeyIter:
             yield ' '.join((name, usa))
 
         # Name, state
-        for name, state in product(city.names, state_names):
+        for name, state in product(row.names, state_names):
             yield ' '.join((name, state))
 
         # Name, state, USA
-        for name, state, usa in product(city.names, state_names, USA_NAMES):
+        for name, state, usa in product(row.names, state_names, USA_NAMES):
             yield ' '.join((name, state, usa))
 
-    def __call__(self, city):
-        for text in self._iter_keys(city):
+    def __call__(self, row):
+        for text in self._iter_keys(row):
             yield keyify(text)
 
 
@@ -134,18 +134,18 @@ class USCityIndex:
         """
         iter_keys = USCityKeyIter()
 
-        cities = City.query.filter(City.country_iso=='US')
+        cities = Locality.query.filter(Locality.country_iso=='US')
 
         logger.info('Indexing US cities.')
 
-        for city in tqdm(cities):
+        for row in tqdm(cities):
 
             # Generate keys, ensure no errors.
-            keys = list(iter_keys(city))
+            keys = list(iter_keys(row))
 
             # Index complete key set.
             for key in keys:
-                self[key].add(city.wof_id)
+                self[key].add(row.wof_id)
 
     def save(self, path):
         with open(path, 'wb') as fh:
@@ -162,6 +162,6 @@ class USCityIndex:
 
         # TODO: Preload db rows?
         return (
-            City.query.filter(City.wof_id.in_(ids)).all()
+            Locality.query.filter(Locality.wof_id.in_(ids)).all()
             if ids else []
         )

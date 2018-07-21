@@ -15,7 +15,7 @@ from tqdm import tqdm
 from . import logger
 from .utils import safe_property, first, read_json
 from .db import session
-from .models import City
+from .models import Locality
 
 
 @attr.s
@@ -47,7 +47,7 @@ class WOFLocalitiesRepo(WOFRepo):
     def load_db(self):
         """Load US cities database.
         """
-        City.reset()
+        Locality.reset()
 
         for loc in tqdm(self.locs_iter()):
 
@@ -249,11 +249,11 @@ class WOFLocalityGeojson(UserDict):
         return self['properties']['geom:area_square_m']
 
     def db_row(self):
-        """Build city database row instance.
+        """Build locality database row instance.
         """
-        return City(**{
+        return Locality(**{
             col: getattr(self, col)
-            for col in City.column_names()
+            for col in Locality.column_names()
         })
 
 
