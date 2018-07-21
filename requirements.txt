@@ -21,3 +21,4 @@ wordfreq
 pygraphviz
 pydot
 networkx
+datasketch
