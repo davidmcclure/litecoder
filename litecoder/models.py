@@ -8,7 +8,11 @@ import numpy as np
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import deferred, relationship
-from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey
+
+from sqlalchemy import (
+    Column, ForeignKey,
+    Integer, String, Float, Text, Boolean,
+)
 
 from .db import session, engine
 from .utils import safe_property
@@ -125,9 +129,9 @@ class Locality(BaseModel):
 
     wikipedia_page = Column(String)
 
-    name = Column(String, nullable=False)
+    name = Column(String)
 
-    country_iso = Column(String, nullable=False)
+    country_iso = Column(String)
 
     name_a0 = Column(String)
 
@@ -171,6 +175,7 @@ class Locality(BaseModel):
     def names(self):
         return set((self.name, *self.alt_names))
 
+    # TODO: Get from region?
     @safe_property
     def us_state_abbr(self):
         return us.states.lookup(self.name_a1).abbr
