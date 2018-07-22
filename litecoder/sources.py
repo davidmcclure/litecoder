@@ -53,7 +53,7 @@ class WOFRepo:
                 print(e)
 
 
-class WOFRegionsRepo(WOFRepo):
+class WOFRegionRepo(WOFRepo):
 
     @classmethod
     def from_env(cls):
@@ -64,7 +64,7 @@ class WOFRegionsRepo(WOFRepo):
             yield WOFRegionDoc(doc).db_row()
 
 
-class WOFLocalitiesRepo(WOFRepo):
+class WOFLocalityRepo(WOFRepo):
 
     @classmethod
     def from_env(cls):

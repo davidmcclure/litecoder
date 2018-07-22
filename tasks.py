@@ -3,7 +3,7 @@
 from invoke import task
 
 from litecoder import logger
-from litecoder.sources import WOFRegionsRepo, WOFLocalitiesRepo
+from litecoder.sources import WOFRegionRepo, WOFLocalityRepo
 from litecoder.db import engine
 from litecoder.models import BaseModel
 
@@ -19,7 +19,7 @@ def reset_db(ctx):
 def load_db(ctx):
 
     logger.info('Loading regions.')
-    WOFRegionsRepo.from_env().load_db()
+    WOFRegionRepo.from_env().load_db()
 
     logger.info('Loading localities.')
-    WOFLocalitiesRepo.from_env().load_db()
+    WOFLocalityRepo.from_env().load_db()

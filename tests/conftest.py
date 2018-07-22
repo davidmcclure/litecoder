@@ -2,7 +2,7 @@
 
 import pytest
 
-from litecoder.db import engine
+from litecoder.db import engine, session
 from litecoder.models import BaseModel
 
 
@@ -14,7 +14,7 @@ def init_testing_db():
     BaseModel.metadata.create_all(engine)
 
 
-@pytest.yield_fixture
+@pytest.yield_fixture(scope='module')
 def db():
     """Reset the testing database.
     """
