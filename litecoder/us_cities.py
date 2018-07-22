@@ -55,9 +55,9 @@ class NamePopulations(defaultdict):
 
 class AllowBareName:
 
-    def __init__(self, min_p1_p2_diff=200000):
+    def __init__(self, min_p1_gap=200000):
         self.name_pops = NamePopulations()
-        self.min_p1_p2_diff = min_p1_p2_diff
+        self.min_p1_gap = min_p1_gap
 
     def __call__(self, row, name):
         """Is a city name unique enough that it should be indexed
@@ -73,7 +73,7 @@ class AllowBareName:
 
         pop = row.population or 0
 
-        return pop - sum(all_pops[1:]) > self.min_p1_p2_diff
+        return pop - sum(all_pops[1:]) > self.min_p1_gap
 
 
 class USCityKeyIter:
