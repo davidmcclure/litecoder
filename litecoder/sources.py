@@ -170,7 +170,7 @@ class WOFRegionDoc(UserDict):
 
     @safe_property
     def longitude(self):
-        return self['properties']['geom:latitude']
+        return self['properties']['geom:longitude']
 
     @safe_property
     def _wof_population(self):
@@ -346,7 +346,7 @@ class WOFLocalityDoc(UserDict):
 
     @safe_property
     def longitude(self):
-        return self['properties']['geom:latitude']
+        return self['properties']['geom:longitude']
 
     @safe_property
     def _gn_population(self):
