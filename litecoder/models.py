@@ -21,13 +21,6 @@ from .utils import safe_property
 class BaseModel:
 
     @classmethod
-    def reset(cls):
-        """Drop and (re-)create table.
-        """
-        cls.metadata.drop_all(engine)
-        cls.metadata.create_all(engine)
-
-    @classmethod
     def column_names(cls):
         """Get a list of column names.
         """
