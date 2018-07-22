@@ -37,6 +37,7 @@ class BaseModel:
 
 
 BaseModel = declarative_base(cls=BaseModel)
+
 BaseModel.query = session.query_property()
 
 
@@ -160,15 +161,22 @@ class Locality(BaseModel):
             self.name_a0,
         )
 
+    # TODO: Make name list pluggable.
     @property
     def alt_names(self):
+        """Map alt names via Wikidata id.
+        """
         return CITY_ALT_NAMES.get(self.wikidata_id, [])
 
     @property
     def names(self):
+        """Name + alt names.
+        """
         return set((self.name, *self.alt_names))
 
     # TODO: Get from region?
     @safe_property
     def us_state_abbr(self):
+        """A1 name -> US state abbreviation.
+        """
         return us.states.lookup(self.name_a1).abbr

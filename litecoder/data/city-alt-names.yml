@@ -2,8 +2,14 @@
 
 # TODO: Separate neighborhoods list, for eg Hollywood / Bronx?
 
+# https://en.wikipedia.org/wiki/List_of_city_nicknames_in_the_United_States
+# https://web.archive.org/web/20080701040406/http://www.taglineguru.com:80/citymottosmonikers.html
+# https://abcnews.go.com/Lifestyle/10-popular-us-cities-nicknames/story?id=48236935
+
+# New York
 Q60:
   - NYC
+  - NY
   - New York City
   - Nueva York
   - Bronx
@@ -16,83 +22,141 @@ Q60:
   - Gotham
   - Big Apple
   - The Big Apple
+  - Empire City
 
-  # Ambiguous with state
-  - NY
-
-Q62:
-  - Bay Area
-  - The Bay Area
-  - San Francisco Bay Area
-  - SF Bay Area
-  - SF
-  - Frisco
-
+# Los Angeles
 Q65:
   - LA
   - La La Land
   - Hollywood
   - North Hollywood
+  - Tinseltown
+  - City of Angels
+  - The City of Angels
 
+# Chicago
+Q1297:
+  - Windy City
+  - The Windy City
+  - Chicagoland
+  - Chi-Town
+
+# Houston
+Q16555:
+  - Space City
+  - H-Town
+
+# Phoenix
+Q16556:
+  - Valley of the Sun
+  - The Valley of the Sun
+
+# Philadelphia
+Q1345:
+  - Philly
+  - PHL
+  - City of Brotherly Love
+  - The City of Brotherly Love
+
+# Austin
+Q16559:
+  - ATX
+
+# San Francisco
+Q62:
+  - SF
+  - Bay Area
+  - The Bay Area
+  - San Francisco Bay Area
+  - SF Bay Area
+  - Frisco
+  - Baghdad by the Bay
+
+# Washington DC
 Q61:
+  - Washington
   - Washington, D.C.
   - DC
 
-  # Ambiguous with state
-  - Washington
+# Boston
+Q100:
+  - Beantown
 
+# Seattle
+Q5083:
+  - Emerald City
+  - The Emerald City
+
+# New Orleans
 Q34404:
   - NOLA
+  - Big Easy
+  - The Big Easy
 
+# Las Vegas
 Q23768:
   - Vegas
   - Sin City
 
+# Detroit
+Q12439:
+  - Motor City
+  - Motown
+
+# Atlanta
 Q23556:
   - ATL
+  - The ATL
+  - Hotlanta
 
+Q16554:
+  - Mile High City
+  - The Mile High City
+
+# Houston
 Q16555:
   - HTX
 
+# Richmond
 Q43421:
   - RVA
 
+# St. Louis
 Q38022:
   - STL
 
-Q16559:
-  - ATX
-
+# San Antonia
 Q975:
   - SATX
 
-Q1345:
-  - Philly
-  - PHL
-
+# Dallas
 Q16557:
   - DTX
 
-Q1297:
-  - Chicagoland
-
+# Cleveland
 Q37320:
   - CLE
 
+# San Jose
 Q16553:
   - SJC
 
+# Portland
 Q6106:
   - PDX
 
+# Kansas City MO
 Q41819:
   - KCMO
 
+# Oklahoma City
 Q34863:
   - OKC
 
+# Milwaukee
 Q37836:
   - MKE
 
+# Salt Lake City
 Q23337:
   - SLC
