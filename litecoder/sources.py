@@ -13,13 +13,10 @@ from multiprocessing import Pool
 from tqdm import tqdm
 from itertools import islice
 
-from . import logger
+from . import logger, DATA_DIR
 from .utils import safe_property, first, read_json
 from .db import session
 from .models import Locality, Region
-
-
-DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 
 
 @attr.s

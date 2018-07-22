@@ -1,7 +1,11 @@
 
 
+import os
 import logging
 import sys
+
+
+DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 
 
 logging.basicConfig(
