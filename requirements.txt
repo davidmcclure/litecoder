@@ -14,6 +14,7 @@ pandas
 attrs
 wordfreq
 pytest
+pytest-env
 PyYAML
 ujson
 textblob
