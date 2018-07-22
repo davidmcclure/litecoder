@@ -3,8 +3,8 @@
 import os
 
 from sqlalchemy.engine.url import URL
-from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy import create_engine, event
 
 from . import DATA_DIR
 
@@ -19,8 +19,22 @@ def connect_db(db_path):
     """
     url = URL(drivername='sqlite', database=db_path)
     engine = create_engine(url)
+
+    # Fix transaction bugs in pysqlite.
+    # http://docs.sqlalchemy.org/en/latest/dialects/sqlite.html#pysqlite-serializable
+
+    @event.listens_for(engine, 'connect')
+    def on_connect(conn, record):
+        conn.execute('pragma foreign_keys=ON')
+        conn.isolation_level = None
+
+    @event.listens_for(engine, 'begin')
+    def on_begin(conn):
+        conn.execute('BEGIN')
+
     factory = sessionmaker(bind=engine)
     session = scoped_session(factory)
+
     return engine, session
 
 
