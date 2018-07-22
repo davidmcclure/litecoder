@@ -11,6 +11,7 @@ from . import logger
 from .models import Locality, Region
 
 
+# TODO: Country alt-names YAML.
 USA_NAMES = (
     'USA',
     'United States',
