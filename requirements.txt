@@ -3,6 +3,7 @@ ipython
 jupyter
 jupyterlab
 matplotlib
+seaborn
 sqlalchemy
 us
 boltons
