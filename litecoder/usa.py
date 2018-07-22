@@ -8,7 +8,7 @@ from collections import defaultdict
 from itertools import product
 
 from . import logger
-from .models import Locality
+from .models import Locality, Region
 
 
 USA_NAMES = (
@@ -34,7 +34,7 @@ def keyify(text):
     return text
 
 
-class NamePopulations(defaultdict):
+class CityNamePopulations(defaultdict):
 
     def __init__(self):
         """Index name -> [pops], using median pop if no metadata.
@@ -53,10 +53,10 @@ class NamePopulations(defaultdict):
         return super().__getitem__(keyify(text))
 
 
-class AllowBareName:
+class AllowBareCityName:
 
     def __init__(self, min_p1_gap=200000):
-        self.name_pops = NamePopulations()
+        self.name_pops = CityNamePopulations()
         self.min_p1_gap = min_p1_gap
 
     def __call__(self, row, name):
@@ -79,7 +79,7 @@ class AllowBareName:
 class USCityKeyIter:
 
     def __init__(self, *args, **kwargs):
-        self.allow_bare = AllowBareName(*args, **kwargs)
+        self.allow_bare = AllowBareCityName(*args, **kwargs)
 
     def _iter_keys(self, row):
         """Enumerate index keys for a city.
@@ -109,6 +109,40 @@ class USCityKeyIter:
         # Name, state, USA
         for name, state, usa in product(row.names, state_names, USA_NAMES):
             yield ' '.join((name, state, usa))
+
+    def __call__(self, row):
+        for text in self._iter_keys(row):
+            yield keyify(text)
+
+
+# Just function, with @keyify decorator?
+class USStateKeyIter:
+
+    def _iter_keys(self, row):
+        """Enumerate index keys for a state.
+
+        Args:
+            row (db.Region)
+
+        Yields: str
+        """
+        names = (row.name,)
+        abbrs = (row.name_abbr,)
+
+        # Name
+        yield from names
+
+        # TODO: ?
+        # Abbr
+        # yield from abbrs
+
+        # Name, USA
+        for name, usa in product(names, USA_NAMES):
+            yield ' '.join((name, usa))
+
+        # Abbr, USA
+        for abbr, usa in product(abbrs, USA_NAMES):
+            yield ' '.join((abbr, usa))
 
     def __call__(self, row):
         for text in self._iter_keys(row):
@@ -155,5 +189,49 @@ class USCityIndex:
         # TODO: Preload db rows?
         return (
             Locality.query.filter(Locality.wof_id.in_(ids)).all()
+            if ids else []
+        )
+
+
+class USStateIndex:
+
+    def __init__(self):
+        self._idx = defaultdict(set)
+
+    def __len__(self):
+        return len(self._idx)
+
+    def __repr__(self):
+        return '%s<%d keys>' % (self.__class__.__name__, len(self))
+
+    def __getitem__(self, text):
+        return self._idx[keyify(text)]
+
+    def build(self):
+        """Index all US states.
+        """
+        iter_keys = USStateKeyIter()
+
+        states = Region.query.filter(Region.country_iso=='US')
+
+        logger.info('Indexing US states.')
+
+        for row in tqdm(states):
+
+            # Generate keys, ensure no errors.
+            keys = list(iter_keys(row))
+
+            # Index complete key set.
+            for key in keys:
+                self[key].add(row.wof_id)
+
+    def query(self, text):
+        """Get ids, query database records.
+        """
+        ids = self[text]
+
+        # TODO: Preload db rows?
+        return (
+            Region.query.filter(Region.wof_id.in_(ids)).all()
             if ids else []
         )
