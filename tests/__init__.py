@@ -4,4 +4,5 @@ import os
 
 
 FIXTURES_DIR = os.path.join(os.path.dirname(__file__), 'fixtures')
-REGIONS_DIR = os.path.join(FIXTURES_DIR, 'wof-region')
+REGION_DIR = os.path.join(FIXTURES_DIR, 'wof-region')
+LOCALITY_DIR = os.path.join(FIXTURES_DIR, 'wof-locality')
