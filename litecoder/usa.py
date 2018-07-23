@@ -7,7 +7,7 @@ from tqdm import tqdm
 from collections import defaultdict
 from itertools import product
 
-from . import logger
+from . import logger, US_CITY_PATH, US_STATE_PATH
 from .models import Locality, Region
 
 
@@ -184,6 +184,10 @@ class Index:
 
 class USCityIndex(Index):
 
+    @classmethod
+    def load(cls, path=US_CITY_PATH):
+        return super().load(path)
+
     def build(self):
         """Index all US cities.
         """
@@ -204,6 +208,10 @@ class USCityIndex(Index):
 
 
 class USStateIndex(Index):
+
+    @classmethod
+    def load(cls, path=US_STATE_PATH):
+        return super().load(path)
 
     def build(self):
         """Index all US states.

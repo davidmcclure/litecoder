@@ -2,10 +2,11 @@
 
 from invoke import task
 
-from litecoder import logger
+from litecoder import logger, US_STATE_PATH, US_CITY_PATH
 from litecoder.sources import WOFRegionRepo, WOFLocalityRepo
 from litecoder.db import engine
 from litecoder.models import BaseModel
+from litecoder.usa import USStateIndex, USCityIndex
 
 
 @task
@@ -23,3 +24,15 @@ def load_db(ctx):
 
     logger.info('Loading localities.')
     WOFLocalityRepo.from_env().load_db()
+
+
+@task
+def build_indexes(ctx):
+
+    state_idx = USStateIndex()
+    state_idx.build()
+    state_idx.save(US_STATE_PATH)
+
+    city_idx = USCityIndex()
+    city_idx.build()
+    city_idx.save(US_CITY_PATH)
