@@ -2,7 +2,30 @@
 
 - query:
     - Massachusetts
-    - MASSACHUSETTS
+    - Massachusetts, USA
+    - Massachusetts, US
+    - Massachusetts, United States
+    - Massachusetts, United States of America
+    - Massachusetts, America
+  matches:
+    - 85688645
+
+# Ignore case
+- query:
     - massachusetts
+    - MASSACHUSETTS
+    - MaSsAcHuSeTtS
+  matches:
+    - 85688645
+
+# Don't require commas
+- query:
+    - Massachusetts USA
+  matches:
+    - 85688645
+
+# Comma -> space
+- query:
+    - Massachusetts,USA
   matches:
     - 85688645

@@ -41,7 +41,7 @@
   matches:
     - 85950361
 
-# Ignore commas
+# Don't require commas
 - query:
     - Boston USA
     - Boston MA USA
@@ -61,6 +61,13 @@
     - Washington DC
   matches:
     - 85931779
+
+# Normalize dashes
+- query:
+    - La-La Land
+    - La La Land
+  matches:
+    - 85923517
 
 # Nicknames
 - query:
