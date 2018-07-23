@@ -21,9 +21,9 @@ For now, Litecoder only supports US cities and states.
 
 ## Goals
 - Be fast. Lookups take ~20µs.
-- Work anywhere without hassle. The underlying data sits in SQLite and ships with the package - just `pip install`. Since everything is totally embedded, it can be used in ETL and big data workflows involving billions of inputs.
+- Work anywhere without hassle. The underlying data ships with the package, and gets pulled into ram when an index is loaded (~50m) - just `pip install`. Since everything sits in RAM, the library can be used in ETL and big data workflows involving billions of inputs. (And if you want, it's easy to access the underlying relational data in SQLite.)
+- First-class support for nicknames and abbreviations. Eg, `NYC` always means New York City.
 - Favor precision over recall. Litecoder will miss some things, but when it returns a result, it should be trustworthy.
-- Support non-standard names that clearly refer to a city or state. Eg, `NYC` always means New York City.
 - Some heuristics are unavoidable - eg, `Boston` should map to `Boston, MA`, not `Boston, GA` (which exists!). In these cases, do something simple and easy to reason about.
 
 ## Non-Goals
