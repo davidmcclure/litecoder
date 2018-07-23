@@ -5,7 +5,7 @@ import pytest
 from litecoder.db import engine, session
 from litecoder.models import BaseModel
 from litecoder.sources import WOFRegionRepo, WOFLocalityRepo
-from litecoder.usa import USCityIndex
+from litecoder.usa import USCityIndex, USStateIndex
 
 from tests import REGION_DIR, LOCALITY_DIR
 
@@ -38,3 +38,8 @@ def load_db(db):
 @pytest.fixture(scope='session')
 def city_idx():
     return USCityIndex.load()
+
+
+@pytest.fixture(scope='session')
+def state_idx():
+    return USStateIndex.load()

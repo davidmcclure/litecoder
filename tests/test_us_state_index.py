@@ -8,7 +8,7 @@ from tests.utils import read_yaml
 def yield_cases():
     """Generate cases from YAML file.
     """
-    cases = read_yaml(__file__, 'test_us_city_index.yml')
+    cases = read_yaml(__file__, 'test_us_state_index.yml')
 
     for group in cases:
 
@@ -22,9 +22,9 @@ def yield_cases():
 
 
 @pytest.mark.parametrize('query,matches', yield_cases())
-def test_us_city_index(city_idx, query, matches):
+def test_us_state_index(state_idx, query, matches):
 
-    res = city_idx[query]
+    res = state_idx[query]
 
     ids = [r.wof_id for r in res]
 

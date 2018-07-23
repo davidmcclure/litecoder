@@ -1,26 +1,58 @@
 ---
 
+# Basic variants
 - query:
 
     - Boston
-    - boston
-    - BOSTON
+    - Boston, USA
+    - Boston, US
+    - Boston, United States
+    - Boston, United States of America
+    - Boston, America
 
     - Boston, MA
-    - boston, ma
-    - BOSTON, MA
-
-    - Boston MA
-    - boston ma
-    - BOSTON MA
+    - Boston, MA, USA
+    - Boston, MA, US
+    - Boston, MA, United States
+    - Boston, MA, United States of America
+    - Boston, MA, America
 
     - Boston, Massachusetts
-    - boston, massachusetts
-    - BOSTON, MASSACHUSETTS
-
-    - Boston Massachusetts
-    - boston massachusetts
-    - BOSTON MASSACHUSETTS
+    - Boston, Massachusetts, USA
+    - Boston, Massachusetts, US
+    - Boston, Massachusetts, United States
+    - Boston, Massachusetts, United States of America
+    - Boston, Massachusetts, America
 
   matches:
     - 85950361
+
+# Ignore case
+- query:
+    - boston
+    - BOSTON
+    - BoStOn
+  matches:
+    - 85950361
+
+# Ignore commas
+- query:
+    - Boston USA
+    - Boston MA USA
+  matches:
+    - 85950361
+
+# Comma -> space
+- query:
+    - Boston,MA
+    - Boston,MA,USA
+  matches:
+    - 85950361
+
+# Nicknames
+- query:
+    - NYC
+    - Gotham
+    - Nueva York
+  matches:
+    - 85977539
