@@ -1,0 +1,26 @@
+---
+
+- query:
+
+    - Boston
+    - boston
+    - BOSTON
+
+    - Boston, MA
+    - boston, ma
+    - BOSTON, MA
+
+    - Boston MA
+    - boston ma
+    - BOSTON MA
+
+    - Boston, Massachusetts
+    - boston, massachusetts
+    - BOSTON, MASSACHUSETTS
+
+    - Boston Massachusetts
+    - boston massachusetts
+    - BOSTON MASSACHUSETTS
+
+  matches:
+    - 85950361
