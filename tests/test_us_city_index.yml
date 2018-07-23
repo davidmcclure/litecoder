@@ -69,3 +69,32 @@
     - Nueva York
   matches:
     - 85977539
+
+
+# ** Regressions **
+
+# Mainly a nickname for AL, but there's also a tiny town called "Sweet Home."
+- query: Sweet Home Alabama
+  matches: []
+
+# Dupe WOF records, take more complete.
+
+- query: Nashville, TN
+  matches:
+    - 101723183
+
+- query: Kansas City, MO
+  matches:
+    - 85970739
+
+- query: Louisville, KY
+  matches:
+    - 85947523
+
+- query: Virginia Beach, VA
+  matches:
+    - 101728745
+
+- query: Arlington, TX
+  matches:
+    - 101723641
