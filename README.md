@@ -20,7 +20,7 @@ Litecoder is a small library (~500 SLOC) that resolves location strings to recor
 For now, Litecoder only supports US cities and states.
 
 ## Goals
-- Be fast. Lookups take ~3ms.
+- Be very fast. Lookups take ~20µs.
 - Work anywhere without hassle. The underlying data sits in SQLite and ships with the package - just `pip install`. Since everything is totally embedded, it can be used in ETL and big data workflows involving billions of inputs.
 - Favor precision over recall. Litecoder will miss some things, but when it returns a result, it should be trustworthy.
 - Support non-standard names that clearly refer to a city or state. Eg, `NYC` always means New York City.
