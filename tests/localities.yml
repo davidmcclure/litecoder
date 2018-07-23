@@ -23,3 +23,27 @@
   wikipedia_wordcount: 10437
   elevation: 68
   area_m2: 184238380.3489
+
+85950361:
+  wof_region_id: 85688645
+  dbpedia_id: Boston
+  freebase_id: en.boston_massachusetts
+  factual_id: 08d07e10-8f76-11e1-848f-cfd5bf3ef515
+  fips_code: '2507000'
+  geonames_id: 4930956
+  geoplanet_id: 2367105
+  library_of_congress_id: n79045553
+  new_york_times_id: '87213190915053133621'
+  quattroshapes_id: 814561
+  wikidata_id: Q100
+  wikipedia_page: Boston
+  name: Boston
+  country_iso: US
+  name_a0: United States
+  name_a1: Massachusetts
+  latitude: 42.317974
+  longitude: -71.088246
+  population: 617594
+  wikipedia_wordcount: 14546
+  elevation: 14
+  area_m2: 135499549.583101
