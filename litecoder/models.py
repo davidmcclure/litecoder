@@ -52,7 +52,7 @@ class Region(BaseModel):
 
     wof_country_id = Column(Integer, nullable=False)
 
-    fips_code = Column(Integer)
+    fips_code = Column(String)
 
     geonames_id = Column(Integer)
 
@@ -107,7 +107,7 @@ class Locality(BaseModel):
 
     factual_id = Column(String)
 
-    fips_code = Column(Integer)
+    fips_code = Column(String)
 
     geonames_id = Column(Integer)
 
