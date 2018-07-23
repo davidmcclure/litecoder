@@ -152,6 +152,7 @@ class Locality(BaseModel):
         """
         dup_col = getattr(cls, dup_key)
 
+        # Select ids with 2+ records.
         query = (session
             .query(dup_col)
             .filter(dup_col != None)
@@ -160,8 +161,12 @@ class Locality(BaseModel):
 
         dupes = set()
         for r in query:
+
+            # Load rows, sort by completeness.
             rows = cls.query.filter(dup_col==r[0])
             rows = sorted(rows, key=lambda r: r.completeness, reverse=True)
+
+            # Add all but most complete to dupes.
             dupes.update([r.wof_id for r in rows[1:]])
 
         return dupes
