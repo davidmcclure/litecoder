@@ -6,6 +6,8 @@ import pickle
 from tqdm import tqdm
 from collections import defaultdict
 from itertools import product
+from cached_property import cached_property
+from sqlalchemy.inspection import inspect
 
 from . import logger, US_CITY_PATH, US_STATE_PATH
 from .models import Locality, Region
@@ -149,6 +151,49 @@ class USStateKeyIter:
             yield keyify(text)
 
 
+class IndexedRow:
+
+    def __init__(self, row):
+        """Set model class, PK, metadata.
+        """
+        state = inspect(row)
+
+        self._model_cls = state.class_
+        self._pk = state.identity
+
+        # Copy attributes.
+        for key, val in dict(row).items():
+            setattr(self, key, val)
+
+    def __iter__(self):
+        for col in self._model_cls.column_names():
+            yield col, getattr(self, col)
+
+    @cached_property
+    def db_row(self):
+        """Hydrate database row.
+        """
+        return self._model_cls.query.get(self._pk)
+
+
+class IndexedCity(IndexedRow):
+
+    def __repr__(self):
+        return '%s<%s, %s, %s, wof:%d>' % (
+            self.__class__.__name__,
+            self.name, self.name_a1, self.name_a0, self.wof_id,
+        )
+
+
+class IndexedState(IndexedRow):
+
+    def __repr__(self):
+        return '%s<%s, %s, wof:%d>' % (
+            self.__class__.__name__,
+            self.name, self.name_a0, self.wof_id,
+        )
+
+
 class Index:
 
     @classmethod
@@ -204,7 +249,7 @@ class USCityIndex(Index):
                 self._key_to_ids[key].append(row.wof_id)
 
             # ID -> city
-            self._id_to_city[row.wof_id] = dict(row)
+            self._id_to_city[row.wof_id] = IndexedCity(row)
 
 
 class USStateIndex(Index):
@@ -229,4 +274,4 @@ class USStateIndex(Index):
                 self._key_to_ids[key].append(row.wof_id)
 
             # ID -> city
-            self._id_to_city[row.wof_id] = dict(row)
+            self._id_to_city[row.wof_id] = IndexedState(row)

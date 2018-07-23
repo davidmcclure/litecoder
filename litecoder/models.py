@@ -79,11 +79,9 @@ class Region(BaseModel):
     area_m2 = Column(Float)
 
     def __repr__(self):
-        return '%s<%d, %s, %s>' % (
+        return '%s<%s, %s, wof:%d>' % (
             self.__class__.__name__,
-            self.wof_id,
-            self.name,
-            self.name_a0,
+            self.name, self.name_a0, self.wof_id,
         )
 
 
@@ -153,12 +151,9 @@ class Locality(BaseModel):
         return np.median(pops)
 
     def __repr__(self):
-        return '%s<%d, %s, %s, %s>' % (
+        return '%s<%s, %s, %s, wof:%d>' % (
             self.__class__.__name__,
-            self.wof_id,
-            self.name,
-            self.name_a1,
-            self.name_a0,
+            self.name, self.name_a1, self.name_a0, self.wof_id,
         )
 
     # TODO: Make name list pluggable.
