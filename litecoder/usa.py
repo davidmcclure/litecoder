@@ -151,7 +151,7 @@ class USStateKeyIter:
             yield keyify(text)
 
 
-class IndexedRow:
+class Match:
 
     def __init__(self, row):
         """Set model class, PK, metadata.
@@ -176,7 +176,7 @@ class IndexedRow:
         return self._model_cls.query.get(self._pk)
 
 
-class IndexedCity(IndexedRow):
+class CityMatch(Match):
 
     def __repr__(self):
         return '%s<%s, %s, %s, wof:%d>' % (
@@ -185,7 +185,7 @@ class IndexedCity(IndexedRow):
         )
 
 
-class IndexedState(IndexedRow):
+class StateMatch(Match):
 
     def __repr__(self):
         return '%s<%s, %s, wof:%d>' % (
@@ -249,7 +249,7 @@ class USCityIndex(Index):
                 self._key_to_ids[key].append(row.wof_id)
 
             # ID -> city
-            self._id_to_city[row.wof_id] = IndexedCity(row)
+            self._id_to_city[row.wof_id] = CityMatch(row)
 
 
 class USStateIndex(Index):
@@ -274,4 +274,4 @@ class USStateIndex(Index):
                 self._key_to_ids[key].append(row.wof_id)
 
             # ID -> city
-            self._id_to_city[row.wof_id] = IndexedState(row)
+            self._id_to_city[row.wof_id] = StateMatch(row)
