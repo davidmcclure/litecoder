@@ -6,7 +6,7 @@ from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import create_engine, event
 
-from . import DATA_DIR
+from . import LITECODER_ENV, DATA_DIR
 
 
 def connect_db(db_path):
@@ -38,8 +38,10 @@ def connect_db(db_path):
     return engine, session
 
 
-db_name = 'litecoder.%s.db' % os.environ.get('LITECODER_ENV', 'prod')
-db_path = os.path.join(DATA_DIR, db_name)
+db_path = os.path.join(DATA_DIR, 'litecoder.db')
 
+# In-memory for tests.
+if LITECODER_ENV == 'test':
+    db_path = None
 
 engine, session = connect_db(db_path)
