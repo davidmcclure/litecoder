@@ -11,7 +11,7 @@ from tests.utils import read_yaml
 pytestmark = pytest.mark.usefixtures('load_db')
 
 
-cases = read_yaml(__file__, 'regions.yml')
+cases = read_yaml(__file__, 'test_ingest_region.yml')
 
 
 @pytest.mark.parametrize('wof_id,fields', cases.items())
