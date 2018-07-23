@@ -53,13 +53,13 @@ class Region(BaseModel):
 
     wof_country_id = Column(Integer, nullable=False)
 
-    fips_code = Column(String)
+    fips_code = Column(String, index=True)
 
-    geonames_id = Column(Integer)
+    geonames_id = Column(Integer, index=True)
 
-    geoplanet_id = Column(Integer)
+    geoplanet_id = Column(Integer, index=True)
 
-    iso_id = Column(String)
+    iso_id = Column(String, index=True)
 
     wikidata_id = Column(String, index=True)
 
@@ -67,7 +67,7 @@ class Region(BaseModel):
 
     name_abbr = Column(String)
 
-    country_iso = Column(String)
+    country_iso = Column(String, index=True)
 
     name_a0 = Column(String)
 
@@ -100,23 +100,25 @@ class Locality(BaseModel):
 
     wof_region_id = Column(Integer, ForeignKey(Region.wof_id))
 
-    dbpedia_id = Column(String)
+    region = relationship(Region, primaryjoin=(wof_region_id==Region.wof_id))
 
-    freebase_id = Column(String)
+    dbpedia_id = Column(String, index=True)
 
-    factual_id = Column(String)
+    freebase_id = Column(String, index=True)
 
-    fips_code = Column(String)
+    factual_id = Column(String, index=True)
 
-    geonames_id = Column(Integer)
+    fips_code = Column(String, index=True)
 
-    geoplanet_id = Column(Integer)
+    geonames_id = Column(Integer, index=True)
 
-    library_of_congress_id = Column(String)
+    geoplanet_id = Column(Integer, index=True)
 
-    new_york_times_id = Column(String)
+    library_of_congress_id = Column(String, index=True)
 
-    quattroshapes_id = Column(Integer)
+    new_york_times_id = Column(String, index=True)
+
+    quattroshapes_id = Column(Integer, index=True)
 
     wikidata_id = Column(String, index=True)
 
@@ -124,7 +126,7 @@ class Locality(BaseModel):
 
     name = Column(String)
 
-    country_iso = Column(String)
+    country_iso = Column(String, index=True)
 
     name_a0 = Column(String)
 
@@ -142,7 +144,7 @@ class Locality(BaseModel):
 
     area_m2 = Column(Float)
 
-    region = relationship(Region, primaryjoin=(wof_region_id==Region.wof_id))
+    duplicate = deferred(Column(Boolean, default=False, nullable=False))
 
     @classmethod
     def duplicate_wof_ids(cls, dup_key):

@@ -71,7 +71,7 @@ class WOFLocalityRepo(WOFRepo):
         return cls(os.path.join(DATA_DIR, 'wof-locality'))
 
     def db_rows_iter(self):
-        for doc in self.docs_iter():
+        for doc in islice(self.docs_iter(), 1000):
             yield WOFLocalityDoc(doc).db_row()
 
 
@@ -394,4 +394,5 @@ class WOFLocalityDoc(UserDict):
         return Locality(**{
             col: getattr(self, col)
             for col in Locality.column_names()
+            if hasattr(self, col)
         })
