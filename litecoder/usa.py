@@ -149,9 +149,6 @@ class USStateKeyIter:
             yield keyify(text)
 
 
-# TODO: Dry up city / state.
-
-
 class Index:
 
     @classmethod
