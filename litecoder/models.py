@@ -60,7 +60,7 @@ class Region(BaseModel):
 
     iso_id = Column(String)
 
-    wikidata_id = Column(String)
+    wikidata_id = Column(String, index=True)
 
     name = Column(String)
 
@@ -117,7 +117,8 @@ class Locality(BaseModel):
 
     quattroshapes_id = Column(Integer)
 
-    wikidata_id = Column(String)
+    # Dedupe key.
+    wikidata_id = Column(String, index=True)
 
     wikipedia_page = Column(String)
 
@@ -155,6 +156,12 @@ class Locality(BaseModel):
             self.__class__.__name__,
             self.name, self.name_a1, self.name_a0, self.wof_id,
         )
+
+    @property
+    def completeness(self):
+        """Count non-null fields.
+        """
+        return len([k for k, v in dict(self).items() if v is not None])
 
     # TODO: Make name list pluggable.
     @property
