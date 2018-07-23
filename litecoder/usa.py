@@ -154,6 +154,11 @@ class USStateKeyIter:
 
 class Index:
 
+    @classmethod
+    def load(cls, path):
+        with open(path, 'rb') as fh:
+            return pickle.load(fh)
+
     def __init__(self):
         self._key_to_ids = defaultdict(list)
         self._id_to_city = dict()
@@ -174,6 +179,10 @@ class Index:
         ids = self._key_to_ids[keyify(text)]
 
         return [self._id_to_city[id] for id in ids]
+
+    def save(self, path):
+        with open(path, 'wb') as fh:
+            pickle.dump(self, fh)
 
 
 class USCityIndex(Index):
