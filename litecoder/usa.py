@@ -21,7 +21,6 @@ USA_NAMES = (
 )
 
 
-# TODO: Test
 def keyify(text):
     """Convert text -> normalized index key.
     """
@@ -150,19 +149,34 @@ class USStateKeyIter:
             yield keyify(text)
 
 
-class USCityIndex:
+# TODO: Dry up city / state.
+
+
+class Index:
 
     def __init__(self):
-        self._idx = defaultdict(set)
+        self._key_to_ids = defaultdict(list)
+        self._id_to_city = dict()
 
     def __len__(self):
-        return len(self._idx)
+        return len(self._key_to_ids)
 
     def __repr__(self):
-        return '%s<%d keys>' % (self.__class__.__name__, len(self))
+        return '%s<%d keys, %d entities>' % (
+            self.__class__.__name__,
+            len(self._key_to_ids),
+            len(self._id_to_city),
+        )
 
     def __getitem__(self, text):
-        return self._idx[keyify(text)]
+        """Get ids, map to records.
+        """
+        ids = self._key_to_ids[keyify(text)]
+
+        return [self._id_to_city[id] for id in ids]
+
+
+class USCityIndex(Index):
 
     def build(self):
         """Index all US cities.
@@ -175,38 +189,15 @@ class USCityIndex:
 
         for row in tqdm(cities):
 
-            # Generate keys, ensure no errors.
-            keys = list(iter_keys(row))
+            # Key -> id(s)
+            for key in list(iter_keys(row)):
+                self._key_to_ids[key].append(row.wof_id)
 
-            # Index complete key set.
-            for key in keys:
-                self[key].add(row.wof_id)
-
-    def query(self, text):
-        """Get ids, query database records.
-        """
-        ids = self[text]
-
-        # TODO: Preload db rows?
-        return (
-            Locality.query.filter(Locality.wof_id.in_(ids)).all()
-            if ids else []
-        )
+            # ID -> city
+            self._id_to_city[row.wof_id] = dict(row)
 
 
-class USStateIndex:
-
-    def __init__(self):
-        self._idx = defaultdict(set)
-
-    def __len__(self):
-        return len(self._idx)
-
-    def __repr__(self):
-        return '%s<%d keys>' % (self.__class__.__name__, len(self))
-
-    def __getitem__(self, text):
-        return self._idx[keyify(text)]
+class USStateIndex(Index):
 
     def build(self):
         """Index all US states.
@@ -219,20 +210,9 @@ class USStateIndex:
 
         for row in tqdm(states):
 
-            # Generate keys, ensure no errors.
-            keys = list(iter_keys(row))
+            # Key -> id(s)
+            for key in list(iter_keys(row)):
+                self._key_to_ids[key].append(row.wof_id)
 
-            # Index complete key set.
-            for key in keys:
-                self[key].add(row.wof_id)
-
-    def query(self, text):
-        """Get ids, query database records.
-        """
-        ids = self[text]
-
-        # TODO: Preload db rows?
-        return (
-            Region.query.filter(Region.wof_id.in_(ids)).all()
-            if ids else []
-        )
+            # ID -> city
+            self._id_to_city[row.wof_id] = dict(row)
