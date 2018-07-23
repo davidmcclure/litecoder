@@ -7,11 +7,6 @@ from litecoder.usa import USCityIndex
 from tests.utils import read_yaml
 
 
-@pytest.fixture(scope='module')
-def city_idx():
-    return USCityIndex.load()
-
-
 def yield_cases():
     """Generate cases from YAML file.
     """
