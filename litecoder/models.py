@@ -6,6 +6,7 @@ import yaml
 
 import numpy as np
 
+from sqlalchemy import func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import deferred, relationship
 
@@ -143,6 +144,26 @@ class Locality(BaseModel):
     area_m2 = Column(Float)
 
     region = relationship(Region, primaryjoin=(wof_region_id==Region.wof_id))
+
+    @classmethod
+    def duplicate_wof_ids(cls, dup_key='wikidata_id'):
+        """Dedupe WOF records.
+        """
+        dup_col = getattr(cls, dup_key)
+
+        query = (session
+            .query(dup_col)
+            .filter(dup_col != None)
+            .group_by(dup_col)
+            .having(func.count(dup_col) > 1))
+
+        dupes = set()
+        for r in query:
+            rows = cls.query.filter(dup_col==r[0])
+            rows = sorted(rows, key=lambda r: r.completeness, reverse=True)
+            dupes.update([r.wof_id for r in rows[1:]])
+
+        return dupes
 
     @classmethod
     def median_population(cls):
