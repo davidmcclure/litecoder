@@ -118,7 +118,6 @@ class Locality(BaseModel):
 
     quattroshapes_id = Column(Integer)
 
-    # Dedupe key.
     wikidata_id = Column(String, index=True)
 
     wikipedia_page = Column(String)
@@ -146,7 +145,7 @@ class Locality(BaseModel):
     region = relationship(Region, primaryjoin=(wof_region_id==Region.wof_id))
 
     @classmethod
-    def duplicate_wof_ids(cls, dup_key='wikidata_id'):
+    def duplicate_wof_ids(cls, dup_key):
         """Dedupe WOF records.
         """
         dup_col = getattr(cls, dup_key)
@@ -155,7 +154,7 @@ class Locality(BaseModel):
             .query(dup_col)
             .filter(dup_col != None)
             .group_by(dup_col)
-            .having(func.count(dup_col) > 1))
+            .having(func.count(cls.wof_id) > 1))
 
         dupes = set()
         for r in query:
