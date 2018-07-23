@@ -202,7 +202,7 @@ class Index:
             return pickle.load(fh)
 
     def __init__(self):
-        self._key_to_ids = defaultdict(list)
+        self._key_to_ids = defaultdict(set)
         self._id_to_city = dict()
 
     def __len__(self):
@@ -246,7 +246,7 @@ class USCityIndex(Index):
 
             # Key -> id(s)
             for key in list(iter_keys(row)):
-                self._key_to_ids[key].append(row.wof_id)
+                self._key_to_ids[key].add(row.wof_id)
 
             # ID -> city
             self._id_to_city[row.wof_id] = CityMatch(row)
@@ -271,7 +271,7 @@ class USStateIndex(Index):
 
             # Key -> id(s)
             for key in list(iter_keys(row)):
-                self._key_to_ids[key].append(row.wof_id)
+                self._key_to_ids[key].add(row.wof_id)
 
             # ID -> city
             self._id_to_city[row.wof_id] = StateMatch(row)

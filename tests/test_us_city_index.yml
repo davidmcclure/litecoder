@@ -27,6 +27,12 @@
   matches:
     - 85950361
 
+# Another Boston!
+- query:
+    - Boston, GA
+  matches:
+    - 85936819
+
 # Ignore case
 - query:
     - boston
@@ -48,6 +54,13 @@
     - Boston,MA,USA
   matches:
     - 85950361
+
+# Normalize periods
+- query:
+    - Washington D.C.
+    - Washington DC
+  matches:
+    - 85931779
 
 # Nicknames
 - query:
