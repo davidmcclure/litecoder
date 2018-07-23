@@ -4,6 +4,9 @@ import pytest
 
 from litecoder.db import engine, session
 from litecoder.models import BaseModel
+from litecoder.sources import WOFRegionRepo, WOFLocalityRepo
+
+from tests import REGION_DIR, LOCALITY_DIR
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -21,3 +24,11 @@ def db():
     session.begin_nested()
     yield
     session.remove()
+
+
+@pytest.fixture(scope='module')
+def load_db(db):
+    """Load tables.
+    """
+    WOFRegionRepo(REGION_DIR).load_db()
+    WOFLocalityRepo(LOCALITY_DIR).load_db()
