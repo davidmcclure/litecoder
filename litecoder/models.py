@@ -147,74 +147,6 @@ class Locality(BaseModel):
 
     area_m2 = Column(Float)
 
-    # duplicate = deferred(Column(Boolean, default=False, nullable=False))
-    #
-    # id_cols = (
-    #     'dbpedia_id',
-    #     'freebase_id',
-    #     'factual_id',
-    #     'fips_code',
-    #     'geonames_id',
-    #     'geoplanet_id',
-    #     'library_of_congress_id',
-    #     'new_york_times_id',
-    #     'quattroshapes_id',
-    #     'wikidata_id',
-    #     'wikipedia_page'
-    # )
-    #
-    # @classmethod
-    # def dup_wof_ids_by_col(cls, col_name):
-    #     """Dedupe WOF records.
-    #     """
-    #     dup_col = getattr(cls, col_name)
-    #
-    #     # Select ids with 2+ records.
-    #     query = (session
-    #         .query(dup_col)
-    #         .filter(dup_col != None)
-    #         .group_by(dup_col)
-    #         .having(func.count(cls.wof_id) > 1))
-    #
-    #     dupes = set()
-    #     for r in query:
-    #
-    #         # Load rows, sort by completeness.
-    #         rows = cls.query.filter(dup_col==r[0])
-    #         rows = sorted(rows, key=lambda r: r.completeness, reverse=True)
-    #
-    #         # Add all but most complete to dupes.
-    #         dupes.update([r.wof_id for r in rows[1:]])
-    #
-    #     return dupes
-    #
-    # @classmethod
-    # def dup_wof_ids(cls):
-    #     """Duplicate WOF ids for all identifier cols.
-    #     """
-    #     dupes = set()
-    #     for col in cls.id_cols:
-    #         logger.info('Deduping on `%s`' % col)
-    #         dupes.update(cls.dup_wof_ids_by_col(col))
-    #
-    #     return dupes
-    #
-    # # TODO: Separate table?
-    # @classmethod
-    # def dedupe(cls):
-    #     """Set duplicate flags.
-    #     """
-    #     dupes = list(cls.dup_wof_ids())
-    #
-    #     _ = (session.query(cls)
-    #         .filter(cls.wof_id.in_(dupes))
-    #         .update(
-    #             dict(duplicate=True),
-    #             synchronize_session=False
-    #         ))
-    #
-    #     session.commit()
-
     @classmethod
     def median_population(cls):
         """Get median population.
@@ -255,6 +187,18 @@ class Locality(BaseModel):
         return us.states.lookup(self.name_a1).abbr
 
 
+# TODO: What to include?
+LOCALITY_DUP_COLS = (
+    'dbpedia_id',
+    'freebase_id',
+    'factual_id',
+    'fips_code',
+    'geonames_id',
+    'wikipedia_page',
+    'wikidata_id',
+)
+
+
 class LocalityDup(BaseModel):
 
     __tablename__ = 'locality_dup'
@@ -274,7 +218,7 @@ class LocalityDup(BaseModel):
 
     @classmethod
     def dedupe_shared_id_col(cls, col_name):
-        """Dedupe localities via shared identifier.
+        """Dedupe localities via shared external identifier.
         """
         dup_col = getattr(Locality, col_name)
 
@@ -296,3 +240,11 @@ class LocalityDup(BaseModel):
             # Add all but most complete to dupes.
             for row in rows[1:]:
                 cls.set_dupe(row.wof_id)
+
+    @classmethod
+    def dedupe_shared_id_cols(cls):
+        """Dedupe all external identifiers.
+        """
+        for col in LOCALITY_DUP_COLS:
+            logger.info('Deduping on `%s`' % col)
+            cls.dedupe_shared_id_col(col)
