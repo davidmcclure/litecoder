@@ -42,8 +42,9 @@ class WOFRepo:
     def load_db(self, n=1000):
         """Load database rows.
         """
-        # TODO: bar on rows iter?
-        for rows in tqdm(chunked_iter(self.db_rows_iter(), n)):
+        rows = tqdm(self.db_rows_iter())
+
+        for rows in chunked_iter(iter(rows), n):
             session.bulk_save_objects(rows)
             session.commit()
 
