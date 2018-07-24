@@ -190,11 +190,7 @@ class Locality(BaseModel):
 # TODO: What to include?
 LOCALITY_DUP_COLS = (
     'dbpedia_id',
-    'freebase_id',
-    'factual_id',
-    'fips_code',
     'geonames_id',
-    'wikipedia_page',
     'wikidata_id',
 )
 

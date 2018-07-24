@@ -238,7 +238,7 @@ class USCityIndex(Index):
         """
         iter_keys = USCityKeyIter()
 
-        # US cities that aren't duplicates.
+        # Deduped US cities.
         cities = (Locality.query
             .join(LocalityDup, isouter=True)
             .filter(Locality.country_iso=='US')
