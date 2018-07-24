@@ -24,3 +24,5 @@ pygraphviz
 pydot
 networkx
 datasketch
+geopy
+shapely
