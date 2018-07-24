@@ -3,8 +3,8 @@
 import pytest
 
 from litecoder.db import engine, session
-from litecoder.models import BaseModel, WOFRegion, WOFLocality
-from litecoder.sources import WOFRegionRepo, WOFLocalityRepo
+from litecoder.models import BaseModel
+from litecoder.sources.wof import WOFRegionRepo, WOFLocalityRepo
 from litecoder.usa import USCityIndex, USStateIndex
 
 from tests import REGION_DIR, LOCALITY_DIR

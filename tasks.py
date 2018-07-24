@@ -3,7 +3,7 @@
 from invoke import task
 
 from litecoder import logger, US_STATE_PATH, US_CITY_PATH
-from litecoder.sources import WOFRegionRepo, WOFLocalityRepo
+from litecoder.sources.wof import WOFRegionRepo, WOFLocalityRepo
 from litecoder.db import engine
 from litecoder.models import BaseModel
 from litecoder.usa import USStateIndex, USCityIndex

@@ -2,7 +2,7 @@
 
 from sqlalchemy.ext.declarative import declarative_base
 
-from litecoder.db import session
+from ..db import session
 
 
 class BaseModel:

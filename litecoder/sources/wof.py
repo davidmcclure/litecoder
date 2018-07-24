@@ -13,10 +13,10 @@ from multiprocessing import Pool
 from tqdm import tqdm
 from itertools import islice
 
-from . import logger, DATA_DIR
-from .utils import safe_property, first, read_json
-from .db import session
-from .models import WOFLocality, WOFRegion
+from .. import logger, DATA_DIR
+from ..utils import safe_property, first, read_json
+from ..db import session
+from ..models import WOFLocality, WOFRegion
 
 
 @attr.s

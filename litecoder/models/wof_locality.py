@@ -8,7 +8,7 @@ import numpy as np
 
 from sqlalchemy import Column, Integer, String, Float, ForeignKey
 
-from litecoder.utils import safe_property
+from ..utils import safe_property
 from .base import BaseModel
 
 
