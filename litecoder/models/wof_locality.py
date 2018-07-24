@@ -8,7 +8,13 @@ import numpy as np
 
 from sqlalchemy import Column, Integer, String, Float, ForeignKey
 
+from tqdm import tqdm
+from shapely.strtree import STRtree
+from shapely.geometry import Point
+
+from .. import logger
 from ..utils import safe_property
+from ..db import session
 from .base import BaseModel
 
 
@@ -112,3 +118,57 @@ class WOFLocality(BaseModel):
         """A1 name -> US state abbreviation.
         """
         return us.states.lookup(self.name_a1).abbr
+
+
+class WOFLocalityDup(BaseModel):
+
+    __tablename__ = 'locality_dup'
+
+    wof_id = Column(Integer, ForeignKey(WOFLocality.wof_id), primary_key=True)
+
+    @classmethod
+    def set_dupe(cls, wof_id):
+        """Register duplicate locality.
+        """
+        try:
+            session.add(cls(wof_id=wof_id))
+            session.commit()
+        except:
+            session.rollback()
+
+    # TODO: slow
+    @classmethod
+    def dedupe_by_proximity(cls, buffer=0.1):
+        """For each locality, get neighbors within N degrees. If any of these
+        (a) has the same name and (b) has more complete metadata, set dupe.
+        """
+        # Cache rows for speed.
+        rows = WOFLocality.query.filter(WOFLocality.country_iso=='US').all()
+        id_row = {row.wof_id: row for row in rows}
+
+        logger.info('Building rtree on %d localities' % len(rows))
+
+        # Build rtree index.
+        points = []
+        for row in tqdm(rows):
+            p = Point(row.longitude, row.latitude)
+            p.wof_id = row.wof_id
+            points.append(p)
+
+        idx = STRtree(points)
+
+        logger.info('Querying for duplicates')
+
+        for row, point in zip(tqdm(rows), points):
+
+            # Find localities within a given radius.
+            close = idx.query(point.buffer(buffer))
+            close_ids = [p.wof_id for p in close if p.wof_id != row.wof_id]
+            nn = [id_row[id] for id in close_ids]
+
+            # If same name and more complete, register this row as a dupe.
+            for other in nn:
+                if (other.name == row.name and
+                    other.completeness > row.completeness):
+                    cls.set_dupe(row.wof_id)
+                    break
