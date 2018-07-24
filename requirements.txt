@@ -25,4 +25,6 @@ pydot
 networkx
 datasketch
 geopy
+geopandas
+descartes
 shapely
