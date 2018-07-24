@@ -200,6 +200,21 @@ class Locality(BaseModel):
         return dupes
 
     @classmethod
+    def dedupe(cls):
+        """Set duplicate flags.
+        """
+        dupes = list(cls.dup_wof_ids())
+
+        _ = (session.query(cls)
+            .filter(cls.wof_id.in_(dupes))
+            .update(
+                dict(duplicate=True),
+                synchronize_session=False
+            ))
+
+        session.commit()
+
+    @classmethod
     def median_population(cls):
         """Get median population.
         """
