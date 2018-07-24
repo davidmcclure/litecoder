@@ -6,7 +6,7 @@ import us
 
 import numpy as np
 
-from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, func
 
 from tqdm import tqdm
 from shapely.strtree import STRtree
@@ -127,7 +127,7 @@ class WOFLocalityDup(BaseModel):
     wof_id = Column(Integer, ForeignKey(WOFLocality.wof_id), primary_key=True)
 
     @classmethod
-    def set_dupes(cls, wof_ids):
+    def update(cls, wof_ids):
         """Merge in new dupes.
 
         Args:
@@ -139,7 +139,6 @@ class WOFLocalityDup(BaseModel):
         session.bulk_save_objects([cls(wof_id=wof_id) for wof_id in new])
         session.commit()
 
-    # TODO: slow
     @classmethod
     def dedupe_by_proximity(cls, buffer=0.1):
         """For each locality, get neighbors within N degrees. If any of these
@@ -177,4 +176,31 @@ class WOFLocalityDup(BaseModel):
                     dupes.add(row.wof_id)
                     break
 
-        cls.set_dupes(dupes)
+        cls.update(dupes)
+
+    @classmethod
+    def dedupe_shared_id_col(cls, col_name):
+        """Dedupe localities via shared external identifier.
+        """
+        dup_col = getattr(WOFLocality, col_name)
+
+        # Select ids with 2+ records.
+        query = (session
+            .query(dup_col)
+            .filter(dup_col != None)
+            .group_by(dup_col)
+            .having(func.count(WOFLocality.wof_id) > 1)
+            .all())
+
+        dupes = set()
+        for r in tqdm(query):
+
+            # Load rows, sort by completeness.
+            rows = WOFLocality.query.filter(dup_col==r[0])
+            rows = sorted(rows, key=lambda r: r.completeness, reverse=True)
+
+            # Add all but most complete to dupes.
+            for row in rows[1:]:
+                dupes.add(row.wof_id)
+
+        cls.update(dupes)
