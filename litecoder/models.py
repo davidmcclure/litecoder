@@ -6,6 +6,8 @@ import yaml
 
 import numpy as np
 
+from tqdm import tqdm
+
 from sqlalchemy import func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import deferred, relationship
@@ -15,8 +17,9 @@ from sqlalchemy import (
     Integer, String, Float, Text, Boolean,
 )
 
-from .db import session, engine
+from . import logger
 from .utils import safe_property
+from .db import session, engine
 
 
 class BaseModel:
@@ -146,11 +149,25 @@ class Locality(BaseModel):
 
     duplicate = deferred(Column(Boolean, default=False, nullable=False))
 
+    id_cols = (
+        'dbpedia_id',
+        'freebase_id',
+        'factual_id',
+        'fips_code',
+        'geonames_id',
+        'geoplanet_id',
+        'library_of_congress_id',
+        'new_york_times_id',
+        'quattroshapes_id',
+        'wikidata_id',
+        'wikipedia_page'
+    )
+
     @classmethod
-    def duplicate_wof_ids(cls, dup_key):
+    def dup_wof_ids_by_col(cls, col_name):
         """Dedupe WOF records.
         """
-        dup_col = getattr(cls, dup_key)
+        dup_col = getattr(cls, col_name)
 
         # Select ids with 2+ records.
         query = (session
@@ -168,6 +185,17 @@ class Locality(BaseModel):
 
             # Add all but most complete to dupes.
             dupes.update([r.wof_id for r in rows[1:]])
+
+        return dupes
+
+    @classmethod
+    def dup_wof_ids(cls):
+        """Duplicate WOF ids for all identifier cols.
+        """
+        dupes = set()
+        for col in cls.id_cols:
+            logger.info('Deduping on `%s`' % col)
+            dupes.update(cls.dup_wof_ids_by_col(col))
 
         return dupes
 

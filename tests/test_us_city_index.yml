@@ -27,7 +27,7 @@
   matches:
     - 85950361
 
-# Another Boston!
+# Different Boston
 - query:
     - Boston, GA
   matches:
