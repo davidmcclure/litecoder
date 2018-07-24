@@ -14,18 +14,24 @@ def yield_cases():
 
         queries = group['query']
 
+        xfail = group.get('xfail', False)
+
         if type(queries) is str:
             queries = [queries]
 
         for query in queries:
-            yield query, group['matches']
+            yield query, group['matches'], xfail
 
 
-@pytest.mark.parametrize('query,matches', yield_cases())
-def test_us_city_index(city_idx, query, matches):
+@pytest.mark.parametrize('query,matches,xfail', yield_cases())
+def test_us_city_index(city_idx, query, matches, xfail):
+
+    if xfail:
+        pytest.xfail()
 
     res = city_idx[query]
 
     ids = [r.wof_id for r in res]
 
+    # Exact id list match.
     assert sorted(ids) == sorted(matches)

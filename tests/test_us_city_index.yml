@@ -83,25 +83,31 @@
 # Mainly a nickname for AL, but there's also a tiny town called "Sweet Home."
 - query: Sweet Home Alabama
   matches: []
+  xfail: true
 
 # Dupe WOF records, take more complete.
 
 - query: Nashville, TN
   matches:
     - 101723183
+  xfail: true
 
 - query: Kansas City, MO
   matches:
     - 85970739
+  xfail: true
 
 - query: Louisville, KY
   matches:
     - 85947523
+  xfail: true
 
 - query: Virginia Beach, VA
   matches:
     - 101728745
+  xfail: true
 
 - query: Arlington, TX
   matches:
     - 101723641
+  xfail: true
