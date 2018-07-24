@@ -1,6 +1,8 @@
 ---
 
 85914453:
+  wof_continent_id: 102191575
+  wof_country_id: 85633793
   wof_region_id: 85688675
   dbp_id: Tuscaloosa%2C_Alabama
   fb_id: en.tuscaloosa
@@ -26,6 +28,8 @@
   area_m2: 184238380.3489
 
 85950361:
+  wof_continent_id: 102191575
+  wof_country_id: 85633793
   wof_region_id: 85688645
   dbp_id: Boston
   fb_id: en.boston_massachusetts

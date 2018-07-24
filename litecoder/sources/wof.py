@@ -221,9 +221,19 @@ class WOFLocalityDoc(UserDict):
         return self['id']
 
     @safe_property
+    def wof_continent_id(self):
+        cid = self['properties']['wof:hierarchy'][0]['continent_id']
+        return cid if cid > 0 else None
+
+    @safe_property
+    def wof_country_id(self):
+        cid = self['properties']['wof:hierarchy'][0]['country_id']
+        return cid if cid > 0 else None
+
+    @safe_property
     def wof_region_id(self):
         rid = self['properties']['wof:hierarchy'][0]['region_id']
-        return rid if rid != -1 else None
+        return rid if rid > 0 else None
 
     @safe_property
     def dbp_id(self):

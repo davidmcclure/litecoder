@@ -24,6 +24,10 @@ class WOFLocality(BaseModel):
 
     wof_id = Column(Integer, primary_key=True)
 
+    wof_continent_id = Column(Integer)
+
+    wof_country_id = Column(Integer)
+
     wof_region_id = Column(Integer)
 
     dbp_id = Column(String)
