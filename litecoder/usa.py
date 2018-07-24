@@ -167,7 +167,8 @@ class Match:
 
     def __iter__(self):
         for col in self._model_cls.column_names():
-            yield col, getattr(self, col)
+            if hasattr(self, col):
+                yield col, getattr(self, col)
 
     @cached_property
     def db_row(self):
@@ -238,7 +239,9 @@ class USCityIndex(Index):
         """
         iter_keys = USCityKeyIter()
 
-        cities = Locality.query.filter(Locality.country_iso=='US')
+        cities = (Locality.query
+            .filter(Locality.country_iso=='US')
+            .filter(Locality.duplicate==False))
 
         logger.info('Indexing US cities.')
 

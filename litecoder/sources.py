@@ -71,7 +71,7 @@ class WOFLocalityRepo(WOFRepo):
         return cls(os.path.join(DATA_DIR, 'wof-locality'))
 
     def db_rows_iter(self):
-        for doc in islice(self.docs_iter(), 1000):
+        for doc in self.docs_iter():
             yield WOFLocalityDoc(doc).db_row()
 
 

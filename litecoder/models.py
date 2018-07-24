@@ -199,6 +199,7 @@ class Locality(BaseModel):
 
         return dupes
 
+    # TODO: Separate table?
     @classmethod
     def dedupe(cls):
         """Set duplicate flags.
