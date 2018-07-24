@@ -9,8 +9,7 @@ import numpy as np
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, func
 
 from tqdm import tqdm
-from shapely.strtree import STRtree
-from shapely.geometry import Point
+from scipy.spatial import cKDTree
 
 from .. import logger
 from ..utils import safe_property
@@ -94,7 +93,7 @@ class WOFLocality(BaseModel):
         )
 
     @property
-    def completeness(self):
+    def field_count(self):
         """Count non-null fields.
         """
         return len([k for k, v in dict(self).items() if v is not None])
@@ -144,37 +143,25 @@ class WOFLocalityDup(BaseModel):
         """For each locality, get neighbors within N degrees. If any of these
         (a) has the same name and (b) has more complete metadata, set dupe.
         """
-        # Cache rows for speed.
+        # Pre-load rows.
         rows = WOFLocality.query.filter(WOFLocality.country_iso=='US').all()
-        id_row = {row.wof_id: row for row in rows}
+        id_row = {i: row for i, row in enumerate(rows)}
 
-        logger.info('Building rtree on %d localities' % len(rows))
-
-        # Build rtree index.
-        points = []
-        for row in tqdm(rows):
-            p = Point(row.longitude, row.latitude)
-            p.wof_id = row.wof_id
-            points.append(p)
-
-        idx = STRtree(points)
-
-        logger.info('Querying for duplicates')
+        # Build index.
+        data = [[r.longitude, r.latitude] for r in rows]
+        idx = cKDTree(data)
 
         dupes = set()
-        for row, point in zip(tqdm(rows), points):
+        for id1, id2 in idx.query_pairs(buffer):
 
-            # Find localities within a given radius.
-            close = idx.query(point.buffer(buffer))
-            close_ids = [p.wof_id for p in close if p.wof_id != row.wof_id]
-            nn = [id_row[id] for id in close_ids]
+            row1, row2 = id_row[id1], id_row[id2]
 
-            # If same name and more complete, register this row as a dupe.
-            for other in nn:
-                if (other.name == row.name and
-                    other.completeness > row.completeness):
-                    dupes.add(row.wof_id)
-                    break
+            if row1.name == row2.name:
+
+                dupes.add(
+                    row1.wof_id if row1.field_count < row2.field_count
+                    else row2.wof_id
+                )
 
         cls.update(dupes)
 
