@@ -94,19 +94,27 @@ class WOFRegionDoc(UserDict):
         return self['properties']['wof:concordances']['fips:code']
 
     @safe_property
-    def geonames_id(self):
+    def gn_id(self):
         return self['properties']['wof:concordances']['gn:id']
 
     @safe_property
-    def geoplanet_id(self):
+    def gp_id(self):
         return self['properties']['wof:concordances']['gp:id']
+
+    @safe_property
+    def hasc_id(self):
+        return self['properties']['wof:concordances']['hasc:id']
 
     @safe_property
     def iso_id(self):
         return self['properties']['wof:concordances']['iso:id']
 
     @safe_property
-    def wikidata_id(self):
+    def unlc_id(self):
+        return self['properties']['wof:concordances']['unlc:id']
+
+    @safe_property
+    def wd_id(self):
         return self['properties']['wof:concordances']['wd:id']
 
     @safe_property

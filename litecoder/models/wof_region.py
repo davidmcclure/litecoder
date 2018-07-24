@@ -15,13 +15,17 @@ class WOFRegion(BaseModel):
 
     fips_code = Column(String)
 
-    geonames_id = Column(Integer)
+    gn_id = Column(Integer)
 
-    geoplanet_id = Column(Integer)
+    gp_id = Column(Integer)
+
+    hasc_id = Column(String)
 
     iso_id = Column(String)
 
-    wikidata_id = Column(String)
+    unlc_id = Column(String)
+
+    wd_id = Column(String)
 
     name = Column(String)
 
