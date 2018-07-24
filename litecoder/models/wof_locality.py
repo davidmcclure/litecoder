@@ -98,7 +98,7 @@ class WOFLocality(BaseModel):
     def alt_names(self):
         """Map alt names via Wikidata id.
         """
-        return CITY_ALT_NAMES.get(self.wikidata_id, [])
+        return CITY_ALT_NAMES.get(self.wd_id, [])
 
     @property
     def names(self):
