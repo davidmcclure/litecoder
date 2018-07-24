@@ -283,13 +283,14 @@ class LocalityDup(BaseModel):
             .query(dup_col)
             .filter(dup_col != None)
             .group_by(dup_col)
-            .having(func.count(Locality.wof_id) > 1))
+            .having(func.count(Locality.wof_id) > 1)
+            .all())
 
         dupes = set()
         for r in tqdm(query):
 
             # Load rows, sort by completeness.
-            rows = cls.query.filter(dup_col==r[0])
+            rows = Locality.query.filter(dup_col==r[0])
             rows = sorted(rows, key=lambda r: r.completeness, reverse=True)
 
             # Add all but most complete to dupes.
