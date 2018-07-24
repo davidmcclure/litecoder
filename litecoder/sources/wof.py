@@ -213,15 +213,15 @@ class WOFLocalityDoc(UserDict):
         return rid if rid != -1 else None
 
     @safe_property
-    def dbpedia_id(self):
+    def dbp_id(self):
         return self['properties']['wof:concordances']['dbp:id']
 
     @safe_property
-    def freebase_id(self):
+    def fb_id(self):
         return self['properties']['wof:concordances']['fb:id']
 
     @safe_property
-    def factual_id(self):
+    def fct_id(self):
         return self['properties']['wof:concordances']['fct:id']
 
     @safe_property
@@ -229,31 +229,35 @@ class WOFLocalityDoc(UserDict):
         return self['properties']['wof:concordances']['fips:code']
 
     @safe_property
-    def geonames_id(self):
+    def gn_id(self):
         return self['properties']['wof:concordances']['gn:id']
 
     @safe_property
-    def geoplanet_id(self):
+    def gp_id(self):
         return self['properties']['wof:concordances']['gp:id']
 
     @safe_property
-    def library_of_congress_id(self):
+    def loc_id(self):
         return self['properties']['wof:concordances']['loc:id']
 
     @safe_property
-    def new_york_times_id(self):
+    def nyt_id(self):
         return self['properties']['wof:concordances']['nyt:id']
 
     @safe_property
-    def quattroshapes_id(self):
+    def qs_id(self):
         return self['properties']['wof:concordances']['qs:id']
 
     @safe_property
-    def wikidata_id(self):
+    def qs_pg_id(self):
+        return self['properties']['wof:concordances']['qs_pg:id']
+
+    @safe_property
+    def wd_id(self):
         return self['properties']['wof:concordances']['wd:id']
 
     @safe_property
-    def wikipedia_page(self):
+    def wk_page(self):
         return self['properties']['wof:concordances']['wk:page']
 
     @safe_property

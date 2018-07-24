@@ -2,17 +2,18 @@
 
 85914453:
   wof_region_id: 85688675
-  dbpedia_id: Tuscaloosa%2C_Alabama
-  freebase_id: en.tuscaloosa
-  factual_id: 08cd654a-8f76-11e1-848f-cfd5bf3ef515
+  dbp_id: Tuscaloosa%2C_Alabama
+  fb_id: en.tuscaloosa
+  fct_id: 08cd654a-8f76-11e1-848f-cfd5bf3ef515
   fips_code: '0177256'
-  geonames_id: 4094455
-  geoplanet_id: 2508913
-  library_of_congress_id: n79133761
-  new_york_times_id: N18156493493895625421
-  quattroshapes_id: 831987
-  wikidata_id: Q79580
-  wikipedia_page: Tuscaloosa, Alabama
+  gn_id: 4094455
+  gp_id: 2508913
+  loc_id: n79133761
+  nyt_id: N18156493493895625421
+  qs_id: 831987
+  qs_pg_id: 831987
+  wd_id: Q79580
+  wk_page: Tuscaloosa, Alabama
   name: Tuscaloosa
   country_iso: US
   name_a0: United States
@@ -26,17 +27,18 @@
 
 85950361:
   wof_region_id: 85688645
-  dbpedia_id: Boston
-  freebase_id: en.boston_massachusetts
-  factual_id: 08d07e10-8f76-11e1-848f-cfd5bf3ef515
+  dbp_id: Boston
+  fb_id: en.boston_massachusetts
+  fct_id: 08d07e10-8f76-11e1-848f-cfd5bf3ef515
   fips_code: '2507000'
-  geonames_id: 4930956
-  geoplanet_id: 2367105
-  library_of_congress_id: n79045553
-  new_york_times_id: '87213190915053133621'
-  quattroshapes_id: 814561
-  wikidata_id: Q100
-  wikipedia_page: Boston
+  gn_id: 4930956
+  gp_id: 2367105
+  loc_id: n79045553
+  nyt_id: '87213190915053133621'
+  qs_id: 814561
+  qs_pg_id: 814561
+  wd_id: Q100
+  wk_page: Boston
   name: Boston
   country_iso: US
   name_a0: United States

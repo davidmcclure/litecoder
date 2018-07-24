@@ -26,27 +26,29 @@ class WOFLocality(BaseModel):
 
     wof_region_id = Column(Integer)
 
-    dbpedia_id = Column(String)
+    dbp_id = Column(String)
 
-    freebase_id = Column(String)
+    fb_id = Column(String)
 
-    factual_id = Column(String)
+    fct_id = Column(String)
 
     fips_code = Column(String)
 
-    geonames_id = Column(Integer)
+    gn_id = Column(Integer)
 
-    geoplanet_id = Column(Integer)
+    gp_id = Column(Integer)
 
-    library_of_congress_id = Column(String)
+    loc_id = Column(String)
 
-    new_york_times_id = Column(String)
+    nyt_id = Column(String)
 
-    quattroshapes_id = Column(Integer)
+    qs_id = Column(Integer)
 
-    wikidata_id = Column(String)
+    qs_pg_id = Column(Integer)
 
-    wikipedia_page = Column(String)
+    wd_id = Column(String)
+
+    wk_page = Column(String)
 
     name = Column(String)
 
