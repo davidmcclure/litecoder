@@ -85,9 +85,14 @@ class WOFRegionDoc(UserDict):
         return self['id']
 
     @safe_property
+    def wof_continent_id(self):
+        cid = self['properties']['wof:hierarchy'][0]['continent_id']
+        return cid if cid > 0 else None
+
+    @safe_property
     def wof_country_id(self):
         cid = self['properties']['wof:hierarchy'][0]['country_id']
-        return cid if cid != -1 else None
+        return cid if cid > 0 else None
 
     @safe_property
     def fips_code(self):

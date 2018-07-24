@@ -1,6 +1,7 @@
 ---
 
 85688637:
+  wof_continent_id: 102191575
   wof_country_id: 85633793
   fips_code: US06
   gn_id: 5332921
@@ -19,6 +20,7 @@
   area_m2: 423822167986.132935
 
 85688645:
+  wof_continent_id: 102191575
   wof_country_id: 85633793
   fips_code: US25
   gn_id: 6254926
@@ -37,6 +39,7 @@
   area_m2: 27295005534.622452
 
 85688675:
+  wof_continent_id: 102191575
   wof_country_id: 85633793
   fips_code: US01
   gn_id: 4829764

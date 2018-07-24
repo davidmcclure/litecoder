@@ -11,6 +11,8 @@ class WOFRegion(BaseModel):
 
     wof_id = Column(Integer, primary_key=True)
 
+    wof_continent_id = Column(Integer)
+
     wof_country_id = Column(Integer)
 
     fips_code = Column(String)
