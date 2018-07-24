@@ -54,7 +54,7 @@ class Region(BaseModel):
 
     wof_id = Column(Integer, primary_key=True)
 
-    wof_country_id = Column(Integer, nullable=False)
+    wof_country_id = Column(Integer)
 
     fips_code = Column(String, index=True)
 
@@ -101,7 +101,7 @@ class Locality(BaseModel):
 
     wof_id = Column(Integer, primary_key=True)
 
-    wof_region_id = Column(Integer, ForeignKey(Region.wof_id))
+    wof_region_id = Column(Integer, ForeignKey(Region.wof_id), nullable=True)
 
     region = relationship(Region, primaryjoin=(wof_region_id==Region.wof_id))
 
@@ -253,3 +253,45 @@ class Locality(BaseModel):
         """A1 name -> US state abbreviation.
         """
         return us.states.lookup(self.name_a1).abbr
+
+
+class LocalityDup(BaseModel):
+
+    __tablename__ = 'locality_dup'
+
+    wof_id = Column(Integer, ForeignKey(Locality.wof_id), primary_key=True)
+
+    @classmethod
+    def set_dupe(cls, wof_id):
+        """Register duplicate locality.
+        """
+        try:
+            session.add(cls(wof_id=wof_id))
+            session.commit()
+
+        except:
+            session.rollback()
+
+    @classmethod
+    def dedupe_shared_id_col(cls, col_name):
+        """Dedupe localities via shared identifier.
+        """
+        dup_col = getattr(Locality, col_name)
+
+        # Select ids with 2+ records.
+        query = (session
+            .query(dup_col)
+            .filter(dup_col != None)
+            .group_by(dup_col)
+            .having(func.count(Locality.wof_id) > 1))
+
+        dupes = set()
+        for r in tqdm(query):
+
+            # Load rows, sort by completeness.
+            rows = cls.query.filter(dup_col==r[0])
+            rows = sorted(rows, key=lambda r: r.completeness, reverse=True)
+
+            # Add all but most complete to dupes.
+            for row in rows[1:]:
+                cls.set_dupe(row.wof_id)

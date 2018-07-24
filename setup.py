@@ -14,16 +14,4 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     package_data={'litecoder': ['litecoder.db']},
-    install_requires=[
-        'sqlalchemy',
-        'us',
-        'boltons',
-        'invoke',
-        'cached-property',
-        'tqdm',
-        'wordfreq',
-        'pandas',
-        'attrs',
-        'pytest',
-    ],
 )

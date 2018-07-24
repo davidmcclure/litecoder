@@ -71,7 +71,7 @@ class WOFLocalityRepo(WOFRepo):
         return cls(os.path.join(DATA_DIR, 'wof-locality'))
 
     def db_rows_iter(self):
-        for doc in self.docs_iter():
+        for doc in islice(self.docs_iter(), 10000):
             yield WOFLocalityDoc(doc).db_row()
 
 
@@ -90,7 +90,8 @@ class WOFRegionDoc(UserDict):
 
     @safe_property
     def wof_country_id(self):
-        return self['properties']['wof:hierarchy'][0]['country_id']
+        cid = self['properties']['wof:hierarchy'][0]['country_id']
+        return cid if cid != -1 else None
 
     @safe_property
     def fips_code(self):
@@ -212,7 +213,8 @@ class WOFLocalityDoc(UserDict):
 
     @safe_property
     def wof_region_id(self):
-        return self['properties']['wof:hierarchy'][0]['region_id']
+        rid = self['properties']['wof:hierarchy'][0]['region_id']
+        return rid if rid != -1 else None
 
     @safe_property
     def dbpedia_id(self):
