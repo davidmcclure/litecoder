@@ -3,10 +3,12 @@
 85688637:
   wof_country_id: 85633793
   fips_code: US06
-  geonames_id: 5332921
-  geoplanet_id: 2347563
+  gn_id: 5332921
+  gp_id: 2347563
+  hasc_id: US.CA
   iso_id: US-CA
-  wikidata_id: Q99
+  unlc_id: US-CA
+  wd_id: Q99
   name: California
   name_abbr: CA
   country_iso: US
@@ -19,10 +21,12 @@
 85688645:
   wof_country_id: 85633793
   fips_code: US25
-  geonames_id: 6254926
-  geoplanet_id: 2347580
+  gn_id: 6254926
+  gp_id: 2347580
+  hasc_id: US.MA
   iso_id: US-MA
-  wikidata_id: Q771
+  unlc_id: US-MA
+  wd_id: Q771
   name: Massachusetts
   name_abbr: MA
   country_iso: US
@@ -35,10 +39,12 @@
 85688675:
   wof_country_id: 85633793
   fips_code: US01
-  geonames_id: 4829764
-  geoplanet_id: 2347559
+  gn_id: 4829764
+  gp_id: 2347559
+  hasc_id: US.AL
   iso_id: US-AL
-  wikidata_id: Q173
+  unlc_id: US-AL
+  wd_id: Q173
   name: Alabama
   name_abbr: AL
   country_iso: US
