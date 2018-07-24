@@ -10,7 +10,7 @@ from cached_property import cached_property
 from sqlalchemy.inspection import inspect
 
 from . import logger, US_CITY_PATH, US_STATE_PATH
-from .models import WOFRegion, WOFLocality
+from .models import WOFRegion, WOFLocality, WOFLocalityDup
 
 
 # TODO: Country alt-names YAML.
@@ -238,7 +238,11 @@ class USCityIndex(Index):
         """
         iter_keys = USCityKeyIter()
 
-        cities = WOFLocality.query.filter(WOFLocality.country_iso=='US')
+        # Deduped cities.
+        cities = (WOFLocality.query
+            .join(WOFLocalityDup, isouter=True)
+            .filter(WOFLocality.country_iso=='US')
+            .filter(WOFLocalityDup.wof_id==None))
 
         logger.info('Indexing US cities.')
 

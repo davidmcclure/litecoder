@@ -127,14 +127,17 @@ class WOFLocalityDup(BaseModel):
     wof_id = Column(Integer, ForeignKey(WOFLocality.wof_id), primary_key=True)
 
     @classmethod
-    def set_dupe(cls, wof_id):
-        """Register duplicate locality.
+    def set_dupes(cls, wof_ids):
+        """Merge in new dupes.
+
+        Args:
+            wof_ids (set)
         """
-        try:
-            session.add(cls(wof_id=wof_id))
-            session.commit()
-        except:
-            session.rollback()
+        existing = set([r.wof_id for r in cls.query])
+        new = wof_ids - existing
+
+        session.bulk_save_objects([cls(wof_id=wof_id) for wof_id in new])
+        session.commit()
 
     # TODO: slow
     @classmethod
@@ -159,6 +162,7 @@ class WOFLocalityDup(BaseModel):
 
         logger.info('Querying for duplicates')
 
+        dupes = set()
         for row, point in zip(tqdm(rows), points):
 
             # Find localities within a given radius.
@@ -170,5 +174,7 @@ class WOFLocalityDup(BaseModel):
             for other in nn:
                 if (other.name == row.name and
                     other.completeness > row.completeness):
-                    cls.set_dupe(row.wof_id)
+                    dupes.add(row.wof_id)
                     break
+
+        cls.set_dupes(dupes)
