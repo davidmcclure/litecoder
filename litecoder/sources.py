@@ -16,7 +16,7 @@ from itertools import islice
 from . import logger, DATA_DIR
 from .utils import safe_property, first, read_json
 from .db import session
-from .models import Locality, Region
+from .models import WOFLocality, WOFRegion
 
 
 @attr.s
@@ -39,18 +39,13 @@ class WOFRepo:
     def db_rows_iter(self):
         raise NotImplementedError
 
-    def load_db(self):
+    def load_db(self, n=1000):
         """Load database rows.
         """
-        for row in tqdm(self.db_rows_iter()):
-
-            try:
-                session.add(row)
-                session.commit()
-
-            except Exception as e:
-                session.rollback()
-                print(e)
+        # TODO: bar on rows iter?
+        for rows in tqdm(chunked_iter(self.db_rows_iter(), n)):
+            session.bulk_save_objects(rows)
+            session.commit()
 
 
 class WOFRegionRepo(WOFRepo):
@@ -192,9 +187,9 @@ class WOFRegionDoc(UserDict):
     def db_row(self):
         """Returns: models.Region
         """
-        return Region(**{
+        return WOFRegion(**{
             col: getattr(self, col)
-            for col in Region.column_names()
+            for col in WOFRegion.column_names()
         })
 
 
@@ -393,8 +388,8 @@ class WOFLocalityDoc(UserDict):
     def db_row(self):
         """Returns: models.Locality
         """
-        return Locality(**{
+        return WOFLocality(**{
             col: getattr(self, col)
-            for col in Locality.column_names()
+            for col in WOFLocality.column_names()
             if hasattr(self, col)
         })

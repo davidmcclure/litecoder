@@ -10,7 +10,7 @@ from cached_property import cached_property
 from sqlalchemy.inspection import inspect
 
 from . import logger, US_CITY_PATH, US_STATE_PATH
-from .models import Region, Locality
+from .models import WOFRegion, WOFLocality
 
 
 # TODO: Country alt-names YAML.
@@ -45,9 +45,9 @@ class CityNamePopulations(defaultdict):
 
         logger.info('Indexing name -> populations.')
 
-        median_pop = Locality.median_population()
+        median_pop = WOFLocality.median_population()
 
-        for row in tqdm(Locality.query):
+        for row in tqdm(WOFLocality.query):
             for name in row.names:
                 self[keyify(name)].append(row.population or median_pop)
 
@@ -238,7 +238,7 @@ class USCityIndex(Index):
         """
         iter_keys = USCityKeyIter()
 
-        cities = Locality.query.filter(Locality.country_iso=='US')
+        cities = WOFLocality.query.filter(WOFLocality.country_iso=='US')
 
         logger.info('Indexing US cities.')
 
@@ -263,7 +263,7 @@ class USStateIndex(Index):
         """
         iter_keys = USStateKeyIter()
 
-        states = Region.query.filter(Region.country_iso=='US')
+        states = WOFRegion.query.filter(WOFRegion.country_iso=='US')
 
         logger.info('Indexing US states.')
 

@@ -3,32 +3,24 @@
 import pytest
 
 from litecoder.db import engine, session
-from litecoder.models import BaseModel
+from litecoder.models import BaseModel, WOFRegion, WOFLocality
 from litecoder.sources import WOFRegionRepo, WOFLocalityRepo
 from litecoder.usa import USCityIndex, USStateIndex
 
 from tests import REGION_DIR, LOCALITY_DIR
 
 
-@pytest.fixture(scope='session', autouse=True)
-def init_testing_db():
+# TODO: Toggle between build disk db / testing mem db?
+@pytest.fixture(scope='module')
+def reset_db():
     """Drop and recreate the tables.
     """
     BaseModel.metadata.drop_all(engine)
     BaseModel.metadata.create_all(engine)
 
 
-@pytest.yield_fixture(scope='module')
-def db():
-    """Reset the testing database.
-    """
-    session.begin_nested()
-    yield
-    session.remove()
-
-
 @pytest.fixture(scope='module')
-def load_db(db):
+def load_db(reset_db):
     """Load tables.
     """
     WOFRegionRepo(REGION_DIR).load_db()

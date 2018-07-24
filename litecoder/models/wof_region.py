@@ -5,9 +5,9 @@ from sqlalchemy import Column, Integer, String, Float
 from .base import BaseModel
 
 
-class Region(BaseModel):
+class WOFRegion(BaseModel):
 
-    __tablename__ = 'region'
+    __tablename__ = 'wof_region'
 
     wof_id = Column(Integer, primary_key=True)
 

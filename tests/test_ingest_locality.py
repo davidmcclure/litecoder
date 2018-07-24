@@ -3,7 +3,7 @@
 import pytest
 import os
 
-from litecoder.models import Locality
+from litecoder.models import WOFLocality
 
 from tests.utils import read_yaml
 
@@ -17,8 +17,7 @@ cases = read_yaml(__file__, 'test_ingest_locality.yml')
 @pytest.mark.parametrize('wof_id,fields', cases.items())
 def test_test(wof_id, fields):
 
-    row = Locality.query.get(wof_id)
-    print(row)
+    row = WOFLocality.query.get(wof_id)
 
     for col, val in fields.items():
         assert getattr(row, col) == val

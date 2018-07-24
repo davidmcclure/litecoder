@@ -18,9 +18,9 @@ CITY_ALT_NAMES = yaml.load(pkgutil.get_data(
 ))
 
 
-class Locality(BaseModel):
+class WOFLocality(BaseModel):
 
-    __tablename__ = 'locality'
+    __tablename__ = 'wof_locality'
 
     wof_id = Column(Integer, primary_key=True)
 
