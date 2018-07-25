@@ -1,6 +1,7 @@
 ---
 
 # TODO: Separate neighborhoods list, for eg Hollywood / Bronx?
+# TODO: Switch to WOF ids, since some don't have Wikidata?
 
 # https://en.wikipedia.org/wiki/List_of_city_nicknames_in_the_United_States
 # https://web.archive.org/web/20080701040406/http://www.taglineguru.com:80/citymottosmonikers.html
@@ -43,6 +44,7 @@ Q1297:
 
 # Houston
 Q16555:
+  - HTX
   - Space City
   - H-Town
 
@@ -109,13 +111,10 @@ Q23556:
   - The ATL
   - Hotlanta
 
+# Denver
 Q16554:
   - Mile High City
   - The Mile High City
-
-# Houston
-Q16555:
-  - HTX
 
 # Richmond
 Q43421:
@@ -125,7 +124,7 @@ Q43421:
 Q38022:
   - STL
 
-# San Antonia
+# San Antonio
 Q975:
   - SATX
 
