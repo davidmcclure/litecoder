@@ -3,10 +3,12 @@
 from sqlalchemy import Column, Integer, ForeignKey, func
 
 from tqdm import tqdm
+from collections import defaultdict
 from scipy.spatial import cKDTree
 
 from .base import BaseModel
 from .wof_locality import WOFLocality
+from .. import logger
 from ..db import session
 
 
@@ -51,6 +53,7 @@ class WOFLocalityDup(BaseModel):
                 )
 
         cls.update(dupes)
+        return len(dupes)
 
     @classmethod
     def dedupe_shared_id_col(cls, col_name):
@@ -58,23 +61,24 @@ class WOFLocalityDup(BaseModel):
         """
         dup_col = getattr(WOFLocality, col_name)
 
-        # Select ids with 2+ records.
-        query = (session
-            .query(dup_col)
-            .filter(dup_col != None)
-            .group_by(dup_col)
-            .having(func.count(WOFLocality.wof_id) > 1)
-            .all())
+        logger.info('Mapping `%s` -> rows' % col_name)
+
+        id_rows = defaultdict(list)
+        for row in tqdm(WOFLocality.query.filter(dup_col != None)):
+            id_rows[getattr(row, col_name)].append(row)
+
+        logger.info('Deduping rows with shared `%s`' % col_name)
 
         dupes = set()
-        for r in tqdm(query):
+        for rows in tqdm(id_rows.values()):
+            if len(rows) > 1:
 
-            # Load rows, sort by completeness.
-            rows = WOFLocality.query.filter(dup_col==r[0])
-            rows = sorted(rows, key=lambda r: r.field_count, reverse=True)
+                # Sort by completeness.
+                rows = sorted(rows, key=lambda r: r.field_count, reverse=True)
 
-            # Add all but most complete to dupes.
-            for row in rows[1:]:
-                dupes.add(row.wof_id)
+                # Add all but most complete to dupes.
+                for row in rows[1:]:
+                    dupes.add(row.wof_id)
 
         cls.update(dupes)
+        return len(dupes)
