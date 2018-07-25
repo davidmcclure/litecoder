@@ -78,12 +78,12 @@ class AllowBareCityName:
         return pop - sum(all_pops[1:]) > self.min_p1_gap
 
 
-class USCityKeyIter:
+class CityKeyIter:
 
     def __init__(self, *args, **kwargs):
         self.allow_bare = AllowBareCityName(*args, **kwargs)
 
-    def _iter_keys(self, row):
+    def __call__(self, row):
         """Enumerate index keys for a city.
 
         Args:
@@ -112,43 +112,30 @@ class USCityKeyIter:
         for name, state, usa in product(row.names, state_names, USA_NAMES):
             yield ' '.join((name, state, usa))
 
-    def __call__(self, row):
-        for text in self._iter_keys(row):
-            yield keyify(text)
 
+def state_key_iter(row):
+    """Enumerate index keys for a state.
 
-# Just function, with @keyify decorator?
-class USStateKeyIter:
+    Args:
+        row (db.Region)
 
-    def _iter_keys(self, row):
-        """Enumerate index keys for a state.
+    Yields: str
+    """
+    names = (row.name,)
+    abbrs = (row.name_abbr,)
 
-        Args:
-            row (db.Region)
+    # Name
+    yield from names
 
-        Yields: str
-        """
-        names = (row.name,)
-        abbrs = (row.name_abbr,)
+    # TODO: Bare abbrs?
 
-        # Name
-        yield from names
+    # Name, USA
+    for name, usa in product(names, USA_NAMES):
+        yield ' '.join((name, usa))
 
-        # TODO: ?
-        # Abbr
-        # yield from abbrs
-
-        # Name, USA
-        for name, usa in product(names, USA_NAMES):
-            yield ' '.join((name, usa))
-
-        # Abbr, USA
-        for abbr, usa in product(abbrs, USA_NAMES):
-            yield ' '.join((abbr, usa))
-
-    def __call__(self, row):
-        for text in self._iter_keys(row):
-            yield keyify(text)
+    # Abbr, USA
+    for abbr, usa in product(abbrs, USA_NAMES):
+        yield ' '.join((abbr, usa))
 
 
 class Match:
@@ -236,7 +223,7 @@ class USCityIndex(Index):
     def build(self):
         """Index all US cities.
         """
-        iter_keys = USCityKeyIter()
+        iter_keys = CityKeyIter()
 
         # Deduped cities.
         cities = (WOFLocality.clean_query()
@@ -247,7 +234,7 @@ class USCityIndex(Index):
         for row in tqdm(cities):
 
             # Key -> id(s)
-            for key in list(iter_keys(row)):
+            for key in map(keyify, iter_keys(row)):
                 self._key_to_ids[key].add(row.wof_id)
 
             # ID -> city
@@ -263,8 +250,6 @@ class USStateIndex(Index):
     def build(self):
         """Index all US states.
         """
-        iter_keys = USStateKeyIter()
-
         states = WOFRegion.query.filter(WOFRegion.country_iso=='US')
 
         logger.info('Indexing US states.')
@@ -272,7 +257,7 @@ class USStateIndex(Index):
         for row in tqdm(states):
 
             # Key -> id(s)
-            for key in list(iter_keys(row)):
+            for key in map(keyify, state_key_iter(row)):
                 self._key_to_ids[key].add(row.wof_id)
 
             # ID -> city

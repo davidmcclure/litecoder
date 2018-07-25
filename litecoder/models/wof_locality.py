@@ -104,6 +104,7 @@ class WOFLocality(BaseModel):
         """
         dupes = cls.query.filter(cls.wof_id.in_(wof_ids))
         dupes.update({cls.duplicate: True}, synchronize_session=False)
+        session.commit()
 
     @classmethod
     def dedupe_id_col(cls, name):

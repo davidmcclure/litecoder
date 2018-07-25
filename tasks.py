@@ -25,7 +25,7 @@ def reset_db(ctx):
 
 
 @task(reset_db)
-def build_db(ctx):
+def load_db(ctx):
 
     logger.info('Loading regions.')
     WOFRegionRepo.from_env().load_db()
@@ -33,12 +33,15 @@ def build_db(ctx):
     logger.info('Loading localities.')
     WOFLocalityRepo.from_env().load_db()
 
+
+@task
+def clean_db(ctx):
     logger.info('Cleaning localities.')
     WOFLocality.dedupe()
 
 
 @task
-def build_indexes(ctx):
+def build_usa(ctx):
 
     state_idx = USStateIndex()
     state_idx.build()
@@ -49,6 +52,6 @@ def build_indexes(ctx):
     city_idx.save(US_CITY_PATH)
 
 
-@task(build_db, build_indexes)
+@task(load_db, clean_db, build_usa)
 def build(ctx):
     pass
