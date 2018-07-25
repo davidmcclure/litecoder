@@ -84,6 +84,8 @@ class WOFLocalityDup(BaseModel):
         data = [[r.longitude, r.latitude] for r in rows]
         idx = cKDTree(data)
 
+        logger.info('Deduping rows within %.2f°' % buffer)
+
         dupes = set()
         for id1, id2 in tqdm(idx.query_pairs(buffer)):
 
@@ -103,6 +105,8 @@ class WOFLocalityDup(BaseModel):
     def dedupe(cls):
         """Dedupe on all id cols + proximity.
         """
+        cls.query.delete()
+
         for name in ID_COLS:
             cls.dedupe_id_col(name)
 
