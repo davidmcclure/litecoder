@@ -4,7 +4,7 @@ from invoke import task
 
 from litecoder.db import engine
 from litecoder import logger, US_STATE_PATH, US_CITY_PATH
-from litecoder.models import BaseModel, WOFLocalityDup
+from litecoder.models import BaseModel, WOFLocality
 from litecoder.sources.wof import WOFRegionRepo, WOFLocalityRepo
 from litecoder.usa import USStateIndex, USCityIndex
 
@@ -33,11 +33,8 @@ def build_db(ctx):
     logger.info('Loading localities.')
     WOFLocalityRepo.from_env().load_db()
 
-
-@task
-def dedupe(ctx):
-    WOFLocalityDup.dedupe()
-    logger.info('Added %d dupes.' % WOFLocalityDup.count_unique())
+    logger.info('Cleaning localities.')
+    WOFLocality.dedupe()
 
 
 @task
@@ -52,6 +49,6 @@ def build_indexes(ctx):
     city_idx.save(US_CITY_PATH)
 
 
-@task(build_db, dedupe, build_indexes)
+@task(build_db, build_indexes)
 def build(ctx):
     pass

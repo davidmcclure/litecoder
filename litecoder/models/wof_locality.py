@@ -24,6 +24,22 @@ CITY_ALT_NAMES = yaml.load(pkgutil.get_data(
 ))
 
 
+ID_COLS = (
+    'dbp_id',
+    'fb_id',
+    'fct_id',
+    'fips_code',
+    'gn_id',
+    'gp_id',
+    'loc_id',
+    'nyt_id',
+    'qs_id',
+    'qs_pg_id',
+    'wd_id',
+    'wk_page',
+)
+
+
 class WOFLocality(BaseModel):
 
     __tablename__ = 'wof_locality'
@@ -90,32 +106,6 @@ class WOFLocality(BaseModel):
         dupes.update({cls.duplicate: True}, synchronize_session=False)
 
     @classmethod
-    def dedupe_proximity(cls, buffer=0.1):
-        """Find duplicates within N degrees.
-        """
-        # Pre-load rows.
-        rows = cls.query.all()
-        id_row = {i: row for i, row in enumerate(rows)}
-
-        # Build index.
-        data = [[r.longitude, r.latitude] for r in rows]
-        idx = cKDTree(data)
-
-        logger.info('Deduping rows within %.2f°' % buffer)
-
-        dupes = set()
-        for id1, id2 in tqdm(idx.query_pairs(buffer)):
-
-            row1, row2 = id_row[id1], id_row[id2]
-
-            if row1.name == row2.name:
-
-                dupes.add(row1.wof_id if row1.field_count < row2.field_count
-                    else row2.wof_id)
-
-        cls.set_dupes(dupes)
-
-    @classmethod
     def dedupe_id_col(cls, name):
         """Dedupe localities via identifier column.
         """
@@ -142,15 +132,46 @@ class WOFLocality(BaseModel):
 
         cls.set_dupes(dupes)
 
-    # @classmethod
-    # def deduped_query(cls):
-    #     """Build deduped query.
-    #     """
-    #     from .wof_locality_dup import WOFLocalityDup
-    #
-    #     return (cls.query
-    #         .join(WOFLocalityDup, isouter=True)
-    #         .filter(WOFLocalityDup.wof_id==None))
+    @classmethod
+    def dedupe_proximity(cls, buffer=0.1):
+        """Find duplicates within N degrees.
+        """
+        # Pre-load rows.
+        rows = cls.query.all()
+        id_row = {i: row for i, row in enumerate(rows)}
+
+        # Build index.
+        data = [[r.longitude, r.latitude] for r in rows]
+        idx = cKDTree(data)
+
+        logger.info('Deduping rows within %.2f°' % buffer)
+
+        dupes = set()
+        for id1, id2 in tqdm(idx.query_pairs(buffer)):
+
+            row1, row2 = id_row[id1], id_row[id2]
+
+            if row1.name == row2.name:
+
+                dupes.add(row1.wof_id if row1.field_count < row2.field_count
+                    else row2.wof_id)
+
+        cls.set_dupes(dupes)
+
+    @classmethod
+    def dedupe(cls, *args, **kwargs):
+        """Dedupe by shared ids + proximity.
+        """
+        for name in ID_COLS:
+            cls.dedupe_id_col(name)
+
+        cls.dedupe_proximity(*args, **kwargs)
+
+    @classmethod
+    def clean_query(cls):
+        """Build deduped query.
+        """
+        return cls.query.filter(cls.duplicate==False)
 
     @classmethod
     def median_population(cls):
