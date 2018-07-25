@@ -115,31 +115,32 @@ class WOFLocality(BaseModel):
 
         cls.set_dupes(dupes)
 
-    # @classmethod
-    # def dedupe_id_col(cls, name):
-    #     """Dedupe localities via shared identifier column.
-    #     """
-    #     dup_col = getattr(WOFLocality, name)
-    #
-    #     logger.info('Mapping `%s` -> rows' % name)
-    #
-    #     id_rows = defaultdict(list)
-    #     for row in tqdm(cls.query.filter(dup_col != None)):
-    #         id_rows[getattr(row, name)].append(row)
-    #
-    #     logger.info('Deduping rows with shared `%s`' % name)
-    #
-    #     for rows in tqdm(id_rows.values()):
-    #         if len(rows) > 1:
-    #
-    #             # Sort by completeness.
-    #             rows = sorted(rows, key=lambda r: r.field_count, reverse=True)
-    #
-    #             # Add all but most complete to dupes.
-    #             for row in rows[1:]:
-    #                 session.delete(row)
-    #
-    #     session.commit()
+    @classmethod
+    def dedupe_id_col(cls, name):
+        """Dedupe localities via identifier column.
+        """
+        dup_col = getattr(cls, name)
+
+        logger.info('Mapping `%s` -> rows' % name)
+
+        id_rows = defaultdict(list)
+        for row in tqdm(cls.query.filter(dup_col != None)):
+            id_rows[getattr(row, name)].append(row)
+
+        logger.info('Deduping rows with shared `%s`' % name)
+
+        dupes = set()
+        for rows in tqdm(id_rows.values()):
+            if len(rows) > 1:
+
+                # Sort by completeness.
+                rows = sorted(rows, key=lambda r: r.field_count, reverse=True)
+
+                # Add all but most complete to dupes.
+                for row in rows[1:]:
+                    dupes.add(row.wof_id)
+
+        cls.set_dupes(dupes)
 
     # @classmethod
     # def deduped_query(cls):
