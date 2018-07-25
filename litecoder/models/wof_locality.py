@@ -6,10 +6,15 @@ import us
 
 import numpy as np
 
-from sqlalchemy import Column, Integer, String, Float
+from tqdm import tqdm
+from collections import defaultdict
+from scipy.spatial import cKDTree
 
-from ..utils import safe_property
+from sqlalchemy import Column, Integer, String, Float, Boolean
+
 from ..db import session
+from ..utils import safe_property
+from .. import logger
 from .base import BaseModel
 
 
@@ -75,15 +80,76 @@ class WOFLocality(BaseModel):
 
     area_m2 = Column(Float)
 
-    @classmethod
-    def deduped_query(cls):
-        """Build deduped query.
-        """
-        from .wof_locality_dup import WOFLocalityDup
+    duplicate = Column(Boolean, default=False)
 
-        return (cls.query
-            .join(WOFLocalityDup, isouter=True)
-            .filter(WOFLocalityDup.wof_id==None))
+    @classmethod
+    def set_dupes(cls, wof_ids):
+        """Apply duplicate list.
+        """
+        dupes = cls.query.filter(cls.wof_id.in_(wof_ids))
+        dupes.update({cls.duplicate: True}, synchronize_session=False)
+
+    @classmethod
+    def dedupe_proximity(cls, buffer=0.1):
+        """Find duplicates within N degrees.
+        """
+        # Pre-load rows.
+        rows = cls.query.all()
+        id_row = {i: row for i, row in enumerate(rows)}
+
+        # Build index.
+        data = [[r.longitude, r.latitude] for r in rows]
+        idx = cKDTree(data)
+
+        logger.info('Deduping rows within %.2f°' % buffer)
+
+        dupes = set()
+        for id1, id2 in tqdm(idx.query_pairs(buffer)):
+
+            row1, row2 = id_row[id1], id_row[id2]
+
+            if row1.name == row2.name:
+
+                dupes.add(row1.wof_id if row1.field_count < row2.field_count
+                    else row2.wof_id)
+
+        cls.set_dupes(dupes)
+
+    # @classmethod
+    # def dedupe_id_col(cls, name):
+    #     """Dedupe localities via shared identifier column.
+    #     """
+    #     dup_col = getattr(WOFLocality, name)
+    #
+    #     logger.info('Mapping `%s` -> rows' % name)
+    #
+    #     id_rows = defaultdict(list)
+    #     for row in tqdm(cls.query.filter(dup_col != None)):
+    #         id_rows[getattr(row, name)].append(row)
+    #
+    #     logger.info('Deduping rows with shared `%s`' % name)
+    #
+    #     for rows in tqdm(id_rows.values()):
+    #         if len(rows) > 1:
+    #
+    #             # Sort by completeness.
+    #             rows = sorted(rows, key=lambda r: r.field_count, reverse=True)
+    #
+    #             # Add all but most complete to dupes.
+    #             for row in rows[1:]:
+    #                 session.delete(row)
+    #
+    #     session.commit()
+
+    # @classmethod
+    # def deduped_query(cls):
+    #     """Build deduped query.
+    #     """
+    #     from .wof_locality_dup import WOFLocalityDup
+    #
+    #     return (cls.query
+    #         .join(WOFLocalityDup, isouter=True)
+    #         .filter(WOFLocalityDup.wof_id==None))
 
     @classmethod
     def median_population(cls):
