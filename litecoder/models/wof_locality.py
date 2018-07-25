@@ -121,9 +121,11 @@ class WOFLocality(BaseModel):
 
 class WOFLocalityDup(BaseModel):
 
-    __tablename__ = 'locality_dup'
+    __tablename__ = 'wof_locality_dup'
 
-    wof_id = Column(Integer, ForeignKey(WOFLocality.wof_id), primary_key=True)
+    id = Column(Integer, primary_key=True)
+
+    wof_id = Column(Integer, ForeignKey(WOFLocality.wof_id))
 
     @classmethod
     def update(cls, wof_ids):
@@ -132,10 +134,7 @@ class WOFLocalityDup(BaseModel):
         Args:
             wof_ids (set)
         """
-        existing = set([r.wof_id for r in cls.query])
-        new = wof_ids - existing
-
-        session.bulk_save_objects([cls(wof_id=wof_id) for wof_id in new])
+        session.bulk_save_objects([cls(wof_id=wof_id) for wof_id in wof_ids])
         session.commit()
 
     @classmethod
@@ -144,7 +143,7 @@ class WOFLocalityDup(BaseModel):
         (a) has the same name and (b) has more complete metadata, set dupe.
         """
         # Pre-load rows.
-        rows = WOFLocality.query.filter(WOFLocality.country_iso=='US').all()
+        rows = WOFLocality.query.all()
         id_row = {i: row for i, row in enumerate(rows)}
 
         # Build index.
@@ -184,7 +183,7 @@ class WOFLocalityDup(BaseModel):
 
             # Load rows, sort by completeness.
             rows = WOFLocality.query.filter(dup_col==r[0])
-            rows = sorted(rows, key=lambda r: r.completeness, reverse=True)
+            rows = sorted(rows, key=lambda r: r.field_count, reverse=True)
 
             # Add all but most complete to dupes.
             for row in rows[1:]:

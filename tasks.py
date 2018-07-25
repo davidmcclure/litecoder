@@ -10,10 +10,18 @@ from litecoder.usa import USStateIndex, USCityIndex
 
 
 @task
-def reset_db(ctx):
-    logger.info('Resetting database.')
-    BaseModel.metadata.drop_all(engine)
+def create_db(ctx):
     BaseModel.metadata.create_all(engine)
+
+
+@task
+def drop_db(ctx):
+    BaseModel.metadata.drop_all(engine)
+
+
+@task(drop_db, create_db)
+def reset_db(ctx):
+    pass
 
 
 @task(reset_db)
