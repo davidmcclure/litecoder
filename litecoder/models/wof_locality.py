@@ -76,6 +76,16 @@ class WOFLocality(BaseModel):
     area_m2 = Column(Float)
 
     @classmethod
+    def deduped_query(cls):
+        """Build deduped query.
+        """
+        from .wof_locality_dup import WOFLocalityDup
+
+        return (cls.query
+            .join(WOFLocalityDup, isouter=True)
+            .filter(WOFLocalityDup.wof_id==None))
+
+    @classmethod
     def median_population(cls):
         """Get median population.
         """

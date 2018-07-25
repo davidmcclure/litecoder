@@ -239,10 +239,8 @@ class USCityIndex(Index):
         iter_keys = USCityKeyIter()
 
         # Deduped cities.
-        cities = (WOFLocality.query
-            .join(WOFLocalityDup, isouter=True)
-            .filter(WOFLocality.country_iso=='US')
-            .filter(WOFLocalityDup.wof_id==None))
+        cities = (WOFLocality.deduped_query()
+            .filter(WOFLocality.country_iso=='US'))
 
         logger.info('Indexing US cities.')
 
