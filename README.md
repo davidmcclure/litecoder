@@ -57,11 +57,12 @@ idx['BOSTON MA']
 idx['Boston']
 >> [CityMatch<Boston, Massachusetts, United States, wof:85950361>]
 
-# Since "Boston" alone almost certainly doesn't refer to Boston, GA!
+# Since "Boston" alone (almost) never refers to Boston, GA!
 idx['Boston, GA']
 >> [CityMatch<Boston, Georgia, United States, wof:85936819>]
 
-# But don't guess when there isn't a clear "major" city.
+# But don't guess when there isn't a clear "major" city, until more
+# information is provided.
 idx['Springfield']
 >> []
 idx['Springfield, IL']
@@ -90,9 +91,9 @@ idx['Massachusetts, USA']
 >> [StateMatch<Massachusetts, United States, wof:85688645>]
 ```
 
-## Match objects
+## Metadata
 
-The city and state indexes return "match" objects that act as proxies for the underlying data in SQLite. These objects store copies of all metadata associated with the location:
+The city and state indexes return "match" objects that act as proxies for the underlying data in SQLite. These objects store all metadata associated with the location, as well as denormalized copies of parent entities:
 
 ```python
 idx = USCityIndex.load()
@@ -161,3 +162,13 @@ sf.data.to_dict()
  'wof_country_id': 85633793,
  'wof_id': 85922583,
  'wof_region_id': 85688637}
+```
+
+Or, use the `db_row` attribute, which (lazily) queries the underlying SQLite database.
+
+```python
+sf.db_row
+>> WOFLocality<San Francisco, California, United States, wof:85922583>
+```
+
+Since this is lazy, though, and all the metadata is stored in RAM, Litecoder can be used in parallelized / distributed environments where highly concurrent SQLite queries would be problematic. For example, in a Spark job, a Litecoder index can be serialized and shipped to workers just like any other variable.
