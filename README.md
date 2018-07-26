@@ -65,6 +65,7 @@ idx['Boston, GA']
 # information is provided.
 idx['Springfield']
 >> []
+
 idx['Springfield, IL']
 >> [CityMatch<Springfield, Illinois, United States, wof:85940429>]
 
