@@ -175,3 +175,45 @@ sf.db_row
 ```
 
 This usually shouldn't be needed, since a copy of the metadata is stored under `data`. This means that Litecoder can be used in parallelized / distributed environments where highly concurrent SQLite queries would be problematic. For example, in a Spark job, a Litecoder index can be serialized and shipped to workers just like any other variable.
+
+### US states
+
+```python
+idx = USStateIndex.load()
+
+ca = idx['California'][0]
+
+ca.data.name
+>> 'California'
+
+ca.data.population
+>> 37253956
+
+ca.data.area_m2
+>> 423822167986.13293
+
+ca.data.to_dict()
+>>
+{'area_m2': 423822167986.13293,
+ 'country_iso': 'US',
+ 'fips_code': 'US06',
+ 'gn_id': 5332921,
+ 'gp_id': 2347563,
+ 'hasc_id': 'US.CA',
+ 'iso_id': 'US-CA',
+ 'latitude': 37.215297,
+ 'longitude': -119.663837,
+ 'name': 'California',
+ 'name_a0': 'United States',
+ 'name_abbr': 'CA',
+ 'population': 37253956,
+ 'unlc_id': 'US-CA',
+ 'wd_id': 'Q99',
+ 'wof_continent_id': 102191575,
+ 'wof_country_id': 85633793,
+ 'wof_id': 85688637}
+
+# Generates SQLite query.
+ca.db_row
+>> WOFRegion<California, United States, wof:85688637>
+```
