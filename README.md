@@ -22,19 +22,19 @@ Litecoder is a small library that resolves location strings to records in the [W
 
 For now, Litecoder only supports US cities and states.
 
-## Goals
+## 🌎 Goals
 - Be fast. Lookups take ~20µs.
 - Work anywhere without hassle. The underlying data ships with the package and is small enough to fit in memory (~100m). Since everything sits in RAM, the library can be used in ETL and big data workflows involving billions of inputs.
 - Comprehensive, curated support for nicknames and abbreviations. Eg, `Windy City` always means Chicago.
 - Favor precision over recall. Litecoder will miss some things, but when it returns a result, it should be trustworthy.
 - Some heuristics are unavoidable - eg, `Boston` should map to `Boston, MA`, not `Boston, GA` (which exists!). In these cases, do something simple and easy to reason about.
 
-## Future
+## 🌎 Future
 - Extract locations that are embedded inside of surrounding text. The assumption is that you've got a snippet of text that represents a location, and the goal is to figure out which one.
 - Include locations more granular than the city / town - major parks, venues, etc.
 - Include international cities + countries.
 
-## Examples
+## 🌎 Examples
 
 ### US cities
 
@@ -96,7 +96,7 @@ idx['Massachusetts, USA']
 >> [StateMatch<Massachusetts, United States, wof:85688645>]
 ```
 
-## Metadata
+## 🌎 Metadata
 
 The city and state indexes return "match" objects that act as proxies for the underlying data in SQLite. These objects store all metadata associated with the location, as well as denormalized copies of parent entities.
 
