@@ -108,6 +108,9 @@ class WOFLocality(BaseModel):
     @classmethod
     def set_dupes(cls, wof_ids):
         """Apply duplicate list.
+
+        Args:
+            wof_ids (iter)
         """
         dupes = cls.query.filter(cls.wof_id.in_(wof_ids))
         dupes.update({cls.duplicate: True}, synchronize_session=False)

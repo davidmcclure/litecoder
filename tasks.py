@@ -73,6 +73,6 @@ def test(ctx):
     call(['pytest', 'tests/prod_db'])
 
 
-@task(load_db, clean_db, build_indexes)
+@task(load_db, clean_db, build_indexes, test)
 def build(ctx):
     pass
