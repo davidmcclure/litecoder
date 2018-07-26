@@ -33,6 +33,8 @@ python-box = "*"
 SQLAlchemy = "*"
 PyYAML = "*"
 Shapely = "*"
+numpy = "*"
+scipy = "*"
 
 [dev-packages]
 
