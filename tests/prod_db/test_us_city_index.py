@@ -2,6 +2,8 @@
 
 import pytest
 
+from litecoder.models import WOFLocality
+
 from tests.utils import read_yaml
 
 
@@ -35,3 +37,8 @@ def test_us_city_index(city_idx, query, matches, xfail):
 
     # Exact id list match.
     assert sorted(ids) == sorted(matches)
+
+
+def test_test():
+    print(WOFLocality.query.count())
+    assert False
