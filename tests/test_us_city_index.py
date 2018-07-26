@@ -31,7 +31,7 @@ def test_us_city_index(city_idx, query, matches, xfail):
 
     res = city_idx[query]
 
-    ids = [r.wof_id for r in res]
+    ids = [r.data.wof_id for r in res]
 
     # Exact id list match.
     assert sorted(ids) == sorted(matches)

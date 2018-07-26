@@ -153,12 +153,6 @@ class Match:
 
         self.data = Box(dict(row))
 
-    def __getattr__(self, key):
-        return getattr(self.data, key)
-
-    def __dir__(self):
-        return self.data.keys()
-
     @cached_property
     def db_row(self):
         """Hydrate database row, lazily.
@@ -171,7 +165,10 @@ class CityMatch(Match):
     def __repr__(self):
         return '%s<%s, %s, %s, wof:%d>' % (
             self.__class__.__name__,
-            self.name, self.name_a1, self.name_a0, self.wof_id,
+            self.data.name,
+            self.data.name_a1,
+            self.data.name_a0,
+            self.data.wof_id,
         )
 
 
@@ -180,7 +177,9 @@ class StateMatch(Match):
     def __repr__(self):
         return '%s<%s, %s, wof:%d>' % (
             self.__class__.__name__,
-            self.name, self.name_a0, self.wof_id,
+            self.data.name,
+            self.data.name_a0,
+            self.data.wof_id,
         )
 
 

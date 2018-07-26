@@ -26,6 +26,6 @@ def test_us_state_index(state_idx, query, matches):
 
     res = state_idx[query]
 
-    ids = [r.wof_id for r in res]
+    ids = [r.data.wof_id for r in res]
 
     assert sorted(ids) == sorted(matches)
