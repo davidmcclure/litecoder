@@ -26,7 +26,7 @@ def yield_cases():
 
 
 @pytest.mark.parametrize('query,matches,xfail', yield_cases())
-def test_us_city_index(city_idx, query, matches, xfail):
+def test_cases(city_idx, query, matches, xfail):
 
     if xfail:
         pytest.xfail()
@@ -39,6 +39,19 @@ def test_us_city_index(city_idx, query, matches, xfail):
     assert sorted(ids) == sorted(matches)
 
 
-def test_test():
-    print(WOFLocality.query.count())
-    assert False
+topn = (WOFLocality.clean_query()
+    .filter(WOFLocality.country_iso=='US')
+    .filter(WOFLocality.name != None)
+    .filter(WOFLocality.name_a1 != None)
+    .order_by(WOFLocality.population.desc())
+    .limit(1000))
+
+
+@pytest.mark.parametrize('city', topn)
+def test_topn(city_idx, city):
+    """Smoke test N most populous cities.
+    """
+    res = city_idx['%s, %s' % (city.name, city.name_a1)]
+    res_ids = [r.data.wof_id for r in res]
+
+    assert city.wof_id in res_ids
