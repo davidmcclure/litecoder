@@ -9,9 +9,8 @@ It's not uncommon to have free-text "location" fields - for example, from Twitte
 - `Boston`
 - `bellingham washington`
 - `NYC`
-- `big apple`
 - `tuscaloosa al`
-- `VT`
+- `big apple`
 
 To make use of these, they generally need to be linked against some kind of canonical set of geographic entities. One approach is to throw them at a commercial geocoder like [Google](https://developers.google.com/places/web-service/search) or [Mapbox](https://www.mapbox.com/geocoding/), but this is slow and expensive, and there are often [onerous terms-of-service restrictions](https://www.mapbox.com/tos/#[YmouYmoq]) on the results. And, really, a full-blown geocoder is overkill here, since these kinds of location fields almost never contain street addresses, just references to a smaller set of high-level locations.
 
@@ -74,4 +73,19 @@ idx['New York City']
 idx['Big Apple']
 idx['Nueva York']
 >> [CityMatch<New York, New York, United States, wof:85977539>]
+```
+
+### US states
+
+```python
+from litecoder.usa import USStateIndex
+
+# Load the pre-built index.
+idx = USStateIndex.load()
+>> USStateIndex<561 keys, 51 entities>
+
+# Basic state, country.
+idx['Massachusetts']
+idx['Massachusetts, USA']
+>> [StateMatch<Massachusetts, United States, wof:85688645>]
 ```
