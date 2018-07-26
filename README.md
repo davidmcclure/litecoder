@@ -6,7 +6,7 @@
 ![San Francisco](sf.jpg)
 <sup>[February 7, 2016 ~ Digital Globe](http://blog.digitalglobe.com/industry/download-it-explore-it-showcase-it/) ~ Creative Commons</sup>
 
-Sometimes you've got "location" fields (eg, Twitter user profiles) that contain a mix of cities and states. Stuff like:
+Sometimes you've got "location" fields that contain a weird, messy mix of cities and states. Stuff like:
 
 - `SF`
 - `Los Angeles, CA`
