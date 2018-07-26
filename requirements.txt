@@ -28,3 +28,4 @@ geopy
 geopandas
 descartes
 shapely
+python-box

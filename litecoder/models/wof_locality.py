@@ -11,6 +11,7 @@ from collections import defaultdict
 from scipy.spatial import cKDTree
 
 from sqlalchemy import Column, Integer, String, Float, Boolean
+from sqlalchemy.orm import relationship
 
 from ..db import session
 from ..utils import safe_property
@@ -97,6 +98,12 @@ class WOFLocality(BaseModel):
     area_m2 = Column(Float)
 
     duplicate = Column(Boolean, default=False)
+
+    region = relationship(
+        'WOFRegion',
+        primaryjoin='WOFRegion.wof_id==WOFLocality.wof_region_id',
+        foreign_keys=[wof_region_id],
+    )
 
     @classmethod
     def set_dupes(cls, wof_ids):

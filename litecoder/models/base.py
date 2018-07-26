@@ -1,6 +1,7 @@
 
 
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.inspection import inspect
 
 from ..db import session
 
@@ -18,9 +19,13 @@ class BaseModel:
 
         Yields: (key, val)
         """
-        for key in self.column_names():
-            if key in self.__dict__:
-                yield (key, getattr(self, key))
+        md = inspect(self.__class__)
+
+        for key in md.attrs.keys():
+            yield (key, getattr(self, key))
+
+        for key in md.relationships.keys():
+            yield (key, dict(getattr(self, key)))
 
 
 BaseModel = declarative_base(cls=BaseModel)
