@@ -25,7 +25,7 @@ For now, Litecoder only supports US cities and states.
 - Favor precision over recall. Litecoder will miss some things, but when it returns a result, it should be trustworthy.
 - Some heuristics are unavoidable - eg, `Boston` should map to `Boston, MA`, not `Boston, GA` (which exists!). In these cases, do something simple and easy to reason about.
 
-## Future / TBD
+## Future
 - No support (yet) for extracting locations that are embedded inside of surrounding text. The assumption is that you've got a snippet of text that represents a location, and the goal is to figure out which one.
 - Nothing more granular than the city / town. (With the exception of NYC boroughs, which map to NYC.)
 - International cities + countries.
@@ -98,14 +98,19 @@ The city and state indexes return "match" objects that act as proxies for the un
 idx = USCityIndex.load()
 
 sf = idx['San Francisco'][0]
+
 sf.data.name
 >> 'San Francisco'
+
 sf.data.name_a1
 >> 'California'
+
 sf.data.latitude
 >> 37.759715
+
 sf.data.longitude
 >> -122.693976
+
 sf.data.region.name_abbr
 >> 'CA'
 
