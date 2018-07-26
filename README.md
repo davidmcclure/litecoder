@@ -8,17 +8,17 @@
 Sometimes you've got "location" fields (eg, Twitter user profiles) that contain a mix of cities and states. Stuff like:
 
 - **`SF`**
-- `Los Angeles, CA`
-- `Boston`
-- `California`
-- `bellingham washington`
-- `NYC`
-- `tuscaloosa AL`
-- `big apple`
+- **`Los Angeles, CA`**
+- **`Boston`**
+- **`California`**
+- **`bellingham washington`**
+- **`NYC`**
+- **`tuscaloosa AL`**
+- **`big apple`**
 
 To make use of these, they generally need to be linked against some kind of canonical set of geographic entities. One approach is to throw them at a commercial geocoder like [Google](https://developers.google.com/places/web-service/search) or [Mapbox](https://www.mapbox.com/geocoding/), but this is slow and expensive, and there are often [onerous terms-of-service restrictions](https://www.mapbox.com/tos/#[YmouYmoq]) on the results. And, really, a full-blown geocoder is overkill here, since these kinds of location fields almost never contain street addresses, just references to a smaller set of high-level locations.
 
-Litecoder is a small library (~1k SLOC) that resolves location strings to records in the [Who's On First](https://www.whosonfirst.org/) (WOF) gazetteer from Mapzen, which aggregates geographic metadata as well as IDs for corresponding records in other gazetteers and knowledge databases (Wikipedia, Wikidata, DBpedia, Geonames, etc). Mapzen sadly doesn't exist anymore, but the WOF data is [CC-0](https://github.com/whosonfirst-data/whosonfirst-data/blob/master/LICENSE.md).
+Litecoder is a small library that resolves location strings to records in the [Who's On First](https://www.whosonfirst.org/) (WOF) gazetteer from Mapzen, which aggregates geographic metadata as well as IDs for corresponding records in a number of other gazetteers and knowledge databases (Wikipedia, Wikidata, DBpedia, Geonames, etc). Mapzen sadly doesn't exist anymore, but the WOF data is [CC-0](https://github.com/whosonfirst-data/whosonfirst-data/blob/master/LICENSE.md).
 
 For now, Litecoder only supports US cities and states.
 
