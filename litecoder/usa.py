@@ -7,6 +7,8 @@ from tqdm import tqdm
 from collections import defaultdict
 from itertools import product
 from cached_property import cached_property
+from box import Box
+
 from sqlalchemy.inspection import inspect
 
 from . import logger, US_CITY_PATH, US_STATE_PATH
@@ -145,20 +147,21 @@ class Match:
         """
         state = inspect(row)
 
+        # Don't store the actual row, so we can serialize.
         self._model_cls = state.class_
         self._pk = state.identity
 
-        # Copy attributes.
-        for key, val in dict(row).items():
-            setattr(self, key, val)
+        self.data = Box(dict(row))
 
-    def __iter__(self):
-        for col in self._model_cls.column_names():
-            yield col, getattr(self, col)
+    def __getattr__(self, key):
+        return getattr(self.data, key)
+
+    def __dir__(self):
+        return self.data.keys()
 
     @cached_property
     def db_row(self):
-        """Hydrate database row.
+        """Hydrate database row, lazily.
         """
         return self._model_cls.query.get(self._pk)
 

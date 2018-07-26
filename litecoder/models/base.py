@@ -25,7 +25,13 @@ class BaseModel:
             yield (key, getattr(self, key))
 
         for key in md.relationships.keys():
-            yield (key, dict(getattr(self, key)))
+
+            # Try to hydrate FK.
+            row = getattr(self, key)
+
+            # If exists, make nested dict.
+            if row:
+                yield (key, dict(getattr(self, key)))
 
 
 BaseModel = declarative_base(cls=BaseModel)
