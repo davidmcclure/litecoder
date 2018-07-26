@@ -5,7 +5,7 @@
 
 ![San Francisco](sf.jpg)
 
-Sometimes you've got unstructured "location" fields (eg, Twitter user profiles) that contain a mix of cities and states. Stuff like:
+Sometimes you've got "location" fields (eg, Twitter user profiles) that contain a mix of cities and states. Stuff like:
 
 - `SF`
 - `Los Angeles, CA`
