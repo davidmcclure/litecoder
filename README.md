@@ -3,6 +3,8 @@
 
 > US city + state geocoding, without a heavy webservice. With [Who's On First](https://www.whosonfirst.org/) and SQLite.
 
+![San Francisco](sf.jpg)
+
 It's not uncommon to have free-text "location" fields - for example, from Twitter user profiles - that contain a mix of cities, states, and countries. Eg, things like:
 
 - `Los Angeles, CA`
