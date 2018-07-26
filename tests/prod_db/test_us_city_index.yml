@@ -81,9 +81,9 @@
 # ** Regressions **
 
 # Mainly a nickname for AL, but there's also a tiny town called "Sweet Home."
-- query: Sweet Home Alabama
-  matches: []
-  xfail: true
+# - query: Sweet Home Alabama
+#   matches: []
+#   xfail: true
 
 # Dupe WOF records, take more complete.
 
