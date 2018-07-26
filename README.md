@@ -1,5 +1,5 @@
 
-# Litecoder [WIP]
+# Litecoder
 
 > US city + state geocoding, without a heavy webservice. With [Who's On First](https://www.whosonfirst.org/) and SQLite.
 
@@ -29,6 +29,7 @@ For now, Litecoder only supports US cities and states.
 ## Future / TBD
 - No support (yet) for extracting locations that are embedded inside of surrounding text. The assumption is that you've got a snippet of text that represents a location, and the goal is to figure out which one.
 - Nothing more granular than the city / town. (With the exception of NYC boroughs, which map to NYC.)
+- International cities + countries.
 
 ## Examples
 
