@@ -38,7 +38,7 @@ CLASSIFIERS = [
 
 setup(
     name='litecoder',
-    version='0.1.0',
+    version='0.1.1',
     description='US city + state geocoding.',
     url='https://github.com/davidmcclure/litecoder',
     license='MIT',
