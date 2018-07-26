@@ -21,7 +21,7 @@ For now, Litecoder only supports US cities and states.
 ## Goals
 - Be fast. Lookups take ~20µs.
 - Work anywhere without hassle. The underlying data ships with the package, and gets pulled into memory when an index is loaded (~100m). Since everything sits in RAM, the library can be used in ETL and big data workflows involving billions of inputs. (And if you want, it's easy to access the underlying relational data in SQLite.)
-- First-class support for nicknames and abbreviations. Eg, `NYC` always means New York City, `Windy City` means Chicago.
+- First-class support for nicknames and abbreviations. Eg, `Windy City` always means Chicago.
 - Favor precision over recall. Litecoder will miss some things, but when it returns a result, it should be trustworthy.
 - Some heuristics are unavoidable - eg, `Boston` should map to `Boston, MA`, not `Boston, GA` (which exists!). In these cases, do something simple and easy to reason about.
 
@@ -89,3 +89,70 @@ idx['Massachusetts']
 idx['Massachusetts, USA']
 >> [StateMatch<Massachusetts, United States, wof:85688645>]
 ```
+
+## Match objects
+
+The city and state indexes return "match" objects that act as proxies for the underlying data in SQLite. These objects store copies of all metadata associated with the location:
+
+```python
+idx = USCityIndex.load()
+
+sf = idx['San Francisco'][0]
+sf.data.name
+>> 'San Francisco'
+sf.data.name_a1
+>> 'California'
+sf.data.latitude
+>> 37.759715
+sf.data.longitude
+>> -122.693976
+sf.data.region.name_abbr
+>> 'CA'
+
+sf.data.to_dict()
+>>
+{'area_m2': 600307527.980684,
+ 'country_iso': 'US',
+ 'dbp_id': 'San_Francisco',
+ 'duplicate': False,
+ 'elevation': 16,
+ 'fb_id': 'en.san_francisco',
+ 'fct_id': '08cb9cb0-8f76-11e1-848f-cfd5bf3ef515',
+ 'fips_code': '667000',
+ 'gn_id': 5391959,
+ 'gp_id': 2487956,
+ 'latitude': 37.759715,
+ 'loc_id': 'n79018452',
+ 'longitude': -122.693976,
+ 'name': 'San Francisco',
+ 'name_a0': 'United States',
+ 'name_a1': 'California',
+ 'nyt_id': '9223372036854775807',
+ 'population': 805235,
+ 'qs_id': 240388,
+ 'qs_pg_id': 240388,
+ 'region': {'area_m2': 423822167986.13293,
+  'country_iso': 'US',
+  'fips_code': 'US06',
+  'gn_id': 5332921,
+  'gp_id': 2347563,
+  'hasc_id': 'US.CA',
+  'iso_id': 'US-CA',
+  'latitude': 37.215297,
+  'longitude': -119.663837,
+  'name': 'California',
+  'name_a0': 'United States',
+  'name_abbr': 'CA',
+  'population': 37253956,
+  'unlc_id': 'US-CA',
+  'wd_id': 'Q99',
+  'wof_continent_id': 102191575,
+  'wof_country_id': 85633793,
+  'wof_id': 85688637},
+ 'wd_id': 'Q62',
+ 'wikipedia_wordcount': None,
+ 'wk_page': 'San Francisco',
+ 'wof_continent_id': 102191575,
+ 'wof_country_id': 85633793,
+ 'wof_id': 85922583,
+ 'wof_region_id': 85688637}
