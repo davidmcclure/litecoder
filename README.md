@@ -29,7 +29,7 @@ For now, Litecoder only supports US cities and states.
 - Some heuristics are unavoidable - eg, `Boston` should map to `Boston, MA`, not `Boston, GA` (which exists!). In these cases, do something simple and easy to reason about.
 
 ## 🌎 Future
-- Extract locations that are embedded inside of surrounding text. The assumption is that you've got a snippet of text that represents a location, and the goal is to figure out which one.
+- Extract locations that are embedded inside of surrounding text. For now, the assumption is that you've got a snippet of text that represents a location, and the goal is to figure out which one.
 - Locations more granular than cities / towns - major parks, venues, etc.
 - International cities + countries.
 
