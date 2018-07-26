@@ -1,5 +1,5 @@
 
-# Litecoder
+# Litecoder 🌇🏙️
 
 > US city + state geocoding, without a heavy webservice. With [Who's On First](https://www.whosonfirst.org/) and SQLite.
 
@@ -24,15 +24,15 @@ For now, Litecoder only supports US cities and states.
 
 ## Goals
 - Be fast. Lookups take ~20µs.
-- Work anywhere without hassle. The underlying data ships with the package, and gets pulled into memory when an index is loaded (~100m). Since everything sits in RAM, the library can be used in ETL and big data workflows involving billions of inputs. (And if you want, it's easy to access the underlying relational data in SQLite.)
-- First-class support for nicknames and abbreviations. Eg, `Windy City` always means Chicago.
+- Work anywhere without hassle. The underlying data ships with the package and is small enough to fit in memory (~100m). Since everything sits in RAM, the library can be used in ETL and big data workflows involving billions of inputs.
+- Comprehensive, curated support for nicknames and abbreviations. Eg, `Windy City` always means Chicago.
 - Favor precision over recall. Litecoder will miss some things, but when it returns a result, it should be trustworthy.
 - Some heuristics are unavoidable - eg, `Boston` should map to `Boston, MA`, not `Boston, GA` (which exists!). In these cases, do something simple and easy to reason about.
 
 ## Future
-- No support (yet) for extracting locations that are embedded inside of surrounding text. The assumption is that you've got a snippet of text that represents a location, and the goal is to figure out which one.
-- Nothing more granular than the city / town. (With the exception of NYC boroughs, which map to NYC.)
-- International cities + countries.
+- Extract locations that are embedded inside of surrounding text. The assumption is that you've got a snippet of text that represents a location, and the goal is to figure out which one.
+- Include locations more granular than the city / town - major parks, venues, etc.
+- Include international cities + countries.
 
 ## Examples
 
