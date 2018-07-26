@@ -7,7 +7,7 @@
 
 Sometimes you've got "location" fields (eg, Twitter user profiles) that contain a mix of cities and states. Stuff like:
 
-- `SF`
+- **`SF`**
 - `Los Angeles, CA`
 - `Boston`
 - `California`
