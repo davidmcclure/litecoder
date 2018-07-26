@@ -16,7 +16,7 @@ Sometimes you've got "location" fields (eg, Twitter user profiles) that contain 
 - `tuscaloosa AL`
 - `big apple`
 
-To make use of these, they generally need to be linked against some kind of canonical set of geographic entities. One approach is to throw them at a commercial geocoder like [Google](https://developers.google.com/places/web-service/search) or [Mapbox](https://www.mapbox.com/geocoding/), but this is slow and expensive, and there are often [onerous terms-of-service restrictions](https://www.mapbox.com/tos/#[YmouYmoq]) on the results. And, really, a full-blown geocoder is overkill here, since these kinds of location fields almost never contain street addresses, just references to a smaller set of high-level locations.
+To make use of these, they generally need to be linked against some kind of canonical set of geographic entities. One approach is to throw them at a commercial geocoder like [Google](https://developers.google.com/places/web-service/search) or [Mapbox](https://www.mapbox.com/geocoding/), but this is slow and expensive, and there are often [onerous terms-of-service restrictions](https://www.mapbox.com/tos/#[YmouYmoq]) on the results. And, really, a full-blown geocoder is overkill here, since these kinds of location fields almost never contain street addresses, just references to a smaller set of high-level locations. But, they're also weird / messy / inconsistent,
 
 Litecoder is a small library that resolves location strings to records in the [Who's On First](https://www.whosonfirst.org/) (WOF) gazetteer from Mapzen, which aggregates geographic metadata as well as IDs for corresponding records in a number of other gazetteers and knowledge databases (Wikipedia, Wikidata, DBpedia, Geonames, etc). Mapzen sadly doesn't exist anymore, but the WOF data is [CC-0](https://github.com/whosonfirst-data/whosonfirst-data/blob/master/LICENSE.md).
 
@@ -25,8 +25,7 @@ For now, Litecoder only supports US cities and states.
 ## 🌎 Goals
 - Be fast. Lookups take ~20µs.
 - Work anywhere without hassle. The underlying data ships with the package and is small enough to fit in memory (~100m). Since everything sits in RAM, the library can be used in ETL and big data workflows involving billions of inputs.
-- Comprehensive, curated support for nicknames and abbreviations. Eg, `Windy City` always means Chicago.
-- Favor precision over recall. Litecoder will miss some things, but when it returns a result, it should be trustworthy.
+- Comprehensive support for [nicknames and abbreviations](litecoder/data/city-alt-names.yml). Eg, `Windy City` always means Chicago.
 - Some heuristics are unavoidable - eg, `Boston` should map to `Boston, MA`, not `Boston, GA` (which exists!). In these cases, do something simple and easy to reason about.
 
 ## 🌎 Future
