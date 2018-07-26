@@ -182,6 +182,15 @@ class WOFLocality(BaseModel):
         return cls.query.filter(cls.duplicate==False)
 
     @classmethod
+    def clean_us_cities(cls):
+        """Select clean US cities with city + state names.
+        """
+        return (cls.clean_query()
+            .filter(cls.country_iso=='US')
+            .filter(cls.name != None)
+            .filter(cls.name_a1 != None))
+
+    @classmethod
     def median_population(cls):
         """Get median population.
         """

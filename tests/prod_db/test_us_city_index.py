@@ -39,10 +39,7 @@ def test_cases(city_idx, query, matches, xfail):
     assert sorted(ids) == sorted(matches)
 
 
-topn = (WOFLocality.clean_query()
-    .filter(WOFLocality.country_iso=='US')
-    .filter(WOFLocality.name != None)
-    .filter(WOFLocality.name_a1 != None)
+topn = (WOFLocality.clean_us_cities()
     .order_by(WOFLocality.population.desc())
     .limit(1000))
 
