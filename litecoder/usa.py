@@ -192,8 +192,7 @@ class Index:
 
     def __init__(self):
         self._key_to_ids = defaultdict(set)
-        # TODO: city -> entity
-        self._id_to_city = dict()
+        self._id_to_loc = dict()
 
     def __len__(self):
         return len(self._key_to_ids)
@@ -202,7 +201,7 @@ class Index:
         return '%s<%d keys, %d entities>' % (
             self.__class__.__name__,
             len(self._key_to_ids),
-            len(self._id_to_city),
+            len(self._id_to_loc),
         )
 
     def __getitem__(self, text):
@@ -210,7 +209,7 @@ class Index:
         """
         ids = self._key_to_ids[keyify(text)]
 
-        return [self._id_to_city[id] for id in ids]
+        return [self._id_to_loc[id] for id in ids]
 
     def save(self, path):
         with open(path, 'wb') as fh:
@@ -240,7 +239,7 @@ class USCityIndex(Index):
                 self._key_to_ids[key].add(row.wof_id)
 
             # ID -> city
-            self._id_to_city[row.wof_id] = CityMatch(row)
+            self._id_to_loc[row.wof_id] = CityMatch(row)
 
 
 class USStateIndex(Index):
@@ -263,4 +262,4 @@ class USStateIndex(Index):
                 self._key_to_ids[key].add(row.wof_id)
 
             # ID -> city
-            self._id_to_city[row.wof_id] = StateMatch(row)
+            self._id_to_loc[row.wof_id] = StateMatch(row)
