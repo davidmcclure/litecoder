@@ -192,6 +192,7 @@ class Index:
 
     def __init__(self):
         self._key_to_ids = defaultdict(set)
+        # TODO: city -> entity
         self._id_to_city = dict()
 
     def __len__(self):
