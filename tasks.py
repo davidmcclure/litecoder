@@ -67,7 +67,7 @@ def build_indexes(ctx):
     city_idx.save(US_CITY_PATH)
 
 
-@task
+@task(build_indexes)
 def test(ctx):
     call(['pytest', 'tests/test_db'])
     call(['pytest', 'tests/prod_db'])

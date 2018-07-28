@@ -211,6 +211,12 @@ class Index:
 
         return [self._id_to_loc[id] for id in ids]
 
+    def add_key(self, key, id):
+        self._key_to_ids[key].add(id)
+
+    def add_location(self, id, location):
+        self._id_to_loc[id] = location
+
     def save(self, path):
         with open(path, 'wb') as fh:
             pickle.dump(self, fh)
@@ -236,10 +242,10 @@ class USCityIndex(Index):
 
             # Key -> id(s)
             for key in map(keyify, iter_keys(row)):
-                self._key_to_ids[key].add(row.wof_id)
+                self.add_key(key, row.wof_id)
 
             # ID -> city
-            self._id_to_loc[row.wof_id] = CityMatch(row)
+            self.add_location(row.wof_id, CityMatch(row))
 
 
 class USStateIndex(Index):
@@ -259,7 +265,7 @@ class USStateIndex(Index):
 
             # Key -> id(s)
             for key in map(keyify, state_key_iter(row)):
-                self._key_to_ids[key].add(row.wof_id)
+                self.add_key(key, row.wof_id)
 
-            # ID -> city
-            self._id_to_loc[row.wof_id] = StateMatch(row)
+            # ID -> state
+            self.add_location(row.wof_id, StateMatch(row))
