@@ -217,6 +217,9 @@ class Index:
     def add_location(self, id, location):
         self._id_to_loc[id] = location
 
+    def locations(self):
+        return list(self._id_to_loc.values())
+
     def save(self, path):
         with open(path, 'wb') as fh:
             pickle.dump(self, fh)
