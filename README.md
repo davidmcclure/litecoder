@@ -4,7 +4,7 @@
 > US city + state geocoding, without a heavy webservice. With [Who's On First](https://www.whosonfirst.org/) and SQLite.
 
 ![San Francisco](sf.jpg)
-<sup>[February 7, 2016 ~ Digital Globe](http://blog.digitalglobe.com/industry/download-it-explore-it-showcase-it/) ~ Creative Commons</sup>
+<sup>[February 7, 2016](http://blog.digitalglobe.com/industry/download-it-explore-it-showcase-it/) ~ Digital Globe, Creative Commons</sup>
 
 Sometimes you've got "location" fields that contain a weird mix of cities and states. Stuff like:
 
