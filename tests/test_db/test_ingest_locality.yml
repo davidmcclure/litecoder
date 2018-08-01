@@ -20,8 +20,8 @@
   country_iso: US
   name_a0: United States
   name_a1: Alabama
-  latitude: 33.234518
-  longitude: -87.527011
+  latitude: 33.20984
+  longitude: -87.56917
   population: 90468
   wikipedia_wordcount: 10437
   elevation: 68
@@ -47,8 +47,8 @@
   country_iso: US
   name_a0: United States
   name_a1: Massachusetts
-  latitude: 42.317974
-  longitude: -71.088246
+  latitude: 42.35843
+  longitude: -71.05977
   population: 617594
   wikipedia_wordcount: 14546
   elevation: 14

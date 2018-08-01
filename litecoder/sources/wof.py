@@ -363,12 +363,34 @@ class WOFLocalityDoc(UserDict):
         )
 
     @safe_property
-    def latitude(self):
+    def _gn_latitude(self):
+        return self['properties']['gn:latitude']
+
+    @safe_property
+    def _geom_latitude(self):
         return self['properties']['geom:latitude']
 
     @safe_property
-    def longitude(self):
+    def latitude(self):
+        return first(
+            self._gn_latitude,
+            self._geom_latitude,
+        )
+
+    @safe_property
+    def _gn_longitude(self):
+        return self['properties']['gn:longitude']
+
+    @safe_property
+    def _geom_longitude(self):
         return self['properties']['geom:longitude']
+
+    @safe_property
+    def longitude(self):
+        return first(
+            self._gn_longitude,
+            self._geom_longitude,
+        )
 
     @safe_property
     def _gn_population(self):
