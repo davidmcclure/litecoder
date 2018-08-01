@@ -28,14 +28,14 @@ def drop_db(ctx):
 
 @task(drop_db, create_db)
 def reset_db(ctx):
-    """Drop + (re-)create.
+    """Drop + create tables.
     """
     pass
 
 
 @task(reset_db)
 def load_db(ctx):
-    """Load WOF data.
+    """Load SQLite tables.
     """
     logger.info('Loading regions.')
     WOFRegionRepo.from_env().load_db()
@@ -54,7 +54,7 @@ def clean_db(ctx):
 
 @task
 def build_indexes(ctx):
-    """Build + serialize prod indexes.
+    """Build dist indexes.
     """
     logger.info('Indexing states.')
     state_idx = USStateIndex()
@@ -69,10 +69,14 @@ def build_indexes(ctx):
 
 @task(build_indexes)
 def test(ctx):
+    """Run test suite.
+    """
     call(['pytest', 'tests/test_db'])
     call(['pytest', 'tests/prod_db'])
 
 
 @task(load_db, clean_db, build_indexes, test)
 def build(ctx):
+    """Load SQLite, build indexes, test.
+    """
     pass
