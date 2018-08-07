@@ -188,173 +188,63 @@ class WOFDoc(UserDict):
     def wk_page(self):
         return self['properties']['wof:concordances']['wk:page']
 
-
-class WOFRegionDoc(WOFDoc):
-
-    @safe_property
-    def _name_eng_x_preferred(self):
-        return self['properties']['name:eng_x_preferred'][0]
-
-    @safe_property
-    def _wof_name(self):
-        return self['properties']['wof:name']
-
-    @safe_property
-    def name(self):
-        return first(
-            self._name_eng_x_preferred,
-            self._wof_name,
-        )
-
-    @safe_property
-    def _abrv_eng_x_preferred(self):
-        return self['properties']['abrv:eng_x_preferred'][0]
-
-    @safe_property
-    def _wof_abbreviation(self):
-        return self['properties']['wof:abbreviation']
-
-    @safe_property
-    def name_abbr(self):
-        return first(
-            self._abrv_eng_x_preferred,
-            self._wof_abbreviation,
-        )
-
     @safe_property
     def country_iso(self):
         return self['properties']['iso:country']
 
     @safe_property
-    def _qs_a0(self):
-        return self['properties']['qs:a0']
+    def _gn_latitude(self):
+        return self['properties']['gn:latitude']
 
     @safe_property
-    def _qs_adm0(self):
-        return self['properties']['qs:adm0']
-
-    @safe_property
-    def name_a0(self):
-        return first(
-            self._qs_a0,
-            self._qs_adm0,
-        )
-
-    @safe_property
-    def latitude(self):
+    def _geom_latitude(self):
         return self['properties']['geom:latitude']
 
     @safe_property
-    def longitude(self):
+    def latitude(self):
+        return first(
+            self._gn_latitude,
+            self._geom_latitude,
+        )
+
+    @safe_property
+    def _gn_longitude(self):
+        return self['properties']['gn:longitude']
+
+    @safe_property
+    def _geom_longitude(self):
         return self['properties']['geom:longitude']
+
+    @safe_property
+    def longitude(self):
+        return first(
+            self._gn_longitude,
+            self._geom_longitude,
+        )
+
+    @safe_property
+    def _gn_population(self):
+        return self['properties']['gn:population']
 
     @safe_property
     def _wof_population(self):
         return self['properties']['wof:population']
 
     @safe_property
-    def _statoids_population(self):
-        return self['properties']['statoids:population']
+    def _wk_population(self):
+        return self['properties']['wk:population']
 
     @safe_property
     def population(self):
         return first(
+            self._gn_population,
             self._wof_population,
-            self._statoids_population,
+            self._wk_population,
         )
 
     @safe_property
     def area_m2(self):
         return self['properties']['geom:area_square_m']
-
-    def db_row(self):
-        """Returns: models.WOFRegion
-        """
-        return WOFRegion(**{
-            col: getattr(self, col)
-            for col in WOFRegion.column_names()
-            if hasattr(self, col)
-        })
-
-
-class WOFCountyDoc(WOFDoc):
-
-    @safe_property
-    def _name_eng_x_preferred(self):
-        return self['properties']['name:eng_x_preferred'][0]
-
-    @safe_property
-    def _wof_name(self):
-        return self['properties']['wof:name']
-
-    @safe_property
-    def name(self):
-        return first(
-            self._name_eng_x_preferred,
-            self._wof_name,
-        )
-
-    @safe_property
-    def country_iso(self):
-        return self['properties']['iso:country']
-
-    @safe_property
-    def _qs_a0(self):
-        return self['properties']['qs:a0']
-
-    @safe_property
-    def _qs_adm0(self):
-        return self['properties']['qs:adm0']
-
-    @safe_property
-    def name_a0(self):
-        return first(
-            self._qs_a0,
-            self._qs_adm0,
-        )
-
-    @safe_property
-    def name_a1(self):
-        return self['properties']['qs:a1']
-
-    @safe_property
-    def latitude(self):
-        return self['properties']['geom:latitude']
-
-    @safe_property
-    def longitude(self):
-        return self['properties']['geom:longitude']
-
-    @safe_property
-    def _wof_population(self):
-        return self['properties']['wof:population']
-
-    @safe_property
-    def _statoids_population(self):
-        return self['properties']['statoids:population']
-
-    @safe_property
-    def population(self):
-        return first(
-            self._wof_population,
-            self._statoids_population,
-        )
-
-    @safe_property
-    def area_m2(self):
-        return self['properties']['geom:area_square_m']
-
-    def db_row(self):
-        """Returns: models.WOFCounty
-        """
-        return WOFCounty(**{
-            col: getattr(self, col)
-            for col in WOFCounty.column_names()
-            if hasattr(self, col)
-        })
-
-
-class WOFLocalityDoc(WOFDoc):
 
     @safe_property
     def _name_eng_x_preferred(self):
@@ -376,9 +266,81 @@ class WOFLocalityDoc(WOFDoc):
             self._qs_pg_name,
         )
 
+
+class WOFRegionDoc(WOFDoc):
+
     @safe_property
-    def country_iso(self):
-        return self['properties']['iso:country']
+    def _abrv_eng_x_preferred(self):
+        return self['properties']['abrv:eng_x_preferred'][0]
+
+    @safe_property
+    def _wof_abbreviation(self):
+        return self['properties']['wof:abbreviation']
+
+    @safe_property
+    def name_abbr(self):
+        return first(
+            self._abrv_eng_x_preferred,
+            self._wof_abbreviation,
+        )
+
+    @safe_property
+    def _qs_a0(self):
+        return self['properties']['qs:a0']
+
+    @safe_property
+    def _qs_adm0(self):
+        return self['properties']['qs:adm0']
+
+    @safe_property
+    def name_a0(self):
+        return first(
+            self._qs_a0,
+            self._qs_adm0,
+        )
+
+    def db_row(self):
+        """Returns: models.WOFRegion
+        """
+        return WOFRegion(**{
+            col: getattr(self, col)
+            for col in WOFRegion.column_names()
+            if hasattr(self, col)
+        })
+
+
+class WOFCountyDoc(WOFDoc):
+
+    @safe_property
+    def _qs_a0(self):
+        return self['properties']['qs:a0']
+
+    @safe_property
+    def _qs_adm0(self):
+        return self['properties']['qs:adm0']
+
+    @safe_property
+    def name_a0(self):
+        return first(
+            self._qs_a0,
+            self._qs_adm0,
+        )
+
+    @safe_property
+    def name_a1(self):
+        return self['properties']['qs:a1']
+
+    def db_row(self):
+        """Returns: models.WOFCounty
+        """
+        return WOFCounty(**{
+            col: getattr(self, col)
+            for col in WOFCounty.column_names()
+            if hasattr(self, col)
+        })
+
+
+class WOFLocalityDoc(WOFDoc):
 
     @safe_property
     def _qs_a0(self):
@@ -436,56 +398,6 @@ class WOFLocalityDoc(WOFDoc):
         )
 
     @safe_property
-    def _gn_latitude(self):
-        return self['properties']['gn:latitude']
-
-    @safe_property
-    def _geom_latitude(self):
-        return self['properties']['geom:latitude']
-
-    @safe_property
-    def latitude(self):
-        return first(
-            self._gn_latitude,
-            self._geom_latitude,
-        )
-
-    @safe_property
-    def _gn_longitude(self):
-        return self['properties']['gn:longitude']
-
-    @safe_property
-    def _geom_longitude(self):
-        return self['properties']['geom:longitude']
-
-    @safe_property
-    def longitude(self):
-        return first(
-            self._gn_longitude,
-            self._geom_longitude,
-        )
-
-    @safe_property
-    def _gn_population(self):
-        return self['properties']['gn:population']
-
-    @safe_property
-    def _wof_population(self):
-        return self['properties']['wof:population']
-
-    @safe_property
-    def _wk_population(self):
-        return self['properties']['wk:population']
-
-    @safe_property
-    def population(self):
-        return first(
-            self._gn_population,
-            self._wof_population,
-            self._wk_population,
-        )
-
-    @safe_property
     def wikipedia_wordcount(self):
         return self['properties']['wk:wordcount']
 
@@ -503,10 +415,6 @@ class WOFLocalityDoc(WOFDoc):
             self._gn_elevation,
             self._ne_elevation,
         )
-
-    @safe_property
-    def area_m2(self):
-        return self['properties']['geom:area_square_m']
 
     def db_row(self):
         """Returns: models.WOFLocality
