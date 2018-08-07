@@ -55,3 +55,32 @@
   wikipedia_wordcount: 14546
   elevation: 14
   area_m2: 135499549.583101
+
+85977539:
+  wof_continent_id: 102191575
+  wof_country_id: 85633793
+  wof_region_id: 85688543
+  # TODO: Handle NYC boroughs / counties.
+  wof_county_id: null
+  dbp_id: Manhattan
+  fb_id: en.new_york_county
+  fct_id: 08d08428-8f76-11e1-848f-cfd5bf3ef515
+  fips_code: '3651000'
+  gn_id: 5128581
+  gp_id: 2459115
+  loc_id: n79007751
+  nyt_id: 'N63718991197345770861'
+  qs_id: 826077
+  qs_pg_id: 826077
+  wd_id: Q60
+  wk_page: New York City
+  name: New York
+  country_iso: US
+  name_a0: United States
+  name_a1: New York
+  latitude: 40.71427
+  longitude: -74.00597
+  population: 8175133
+  wikipedia_wordcount: 27531
+  elevation: 10
+  area_m2: 783424470.067211
