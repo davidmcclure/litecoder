@@ -22,3 +22,21 @@ class WOFCounty(BaseModel):
     hasc_id = Column(String)
 
     wd_id = Column(String)
+
+    name = Column(String)
+
+    country_iso = Column(String)
+
+    name_a0 = Column(String)
+
+    name_a1 = Column(String)
+
+    latitude = Column(Float)
+
+    longitude = Column(Float)
+
+    population = Column(Integer)
+
+    wikipedia_wordcount = Column(Integer)
+
+    area_m2 = Column(Float)

@@ -215,6 +215,7 @@ class WOFRegionDoc(UserDict):
         return WOFRegion(**{
             col: getattr(self, col)
             for col in WOFRegion.column_names()
+            if hasattr(self, col)
         })
 
 
@@ -264,6 +265,7 @@ class WOFCountyDoc(UserDict):
         return WOFCounty(**{
             col: getattr(self, col)
             for col in WOFCounty.column_names()
+            if hasattr(self, col)
         })
 
 
