@@ -85,7 +85,7 @@ class WOFLocalityRepo(WOFRepo):
             yield WOFLocalityDoc(doc).db_row()
 
 
-class WOFRegionDoc(UserDict):
+class WOFDoc(UserDict):
 
     @classmethod
     def from_path(cls, path):
@@ -97,6 +97,9 @@ class WOFRegionDoc(UserDict):
     @safe_property
     def wof_id(self):
         return self['id']
+
+
+class WOFRegionDoc(WOFDoc):
 
     @safe_property
     def wof_continent_id(self):
@@ -222,18 +225,7 @@ class WOFRegionDoc(UserDict):
         })
 
 
-class WOFCountyDoc(UserDict):
-
-    @classmethod
-    def from_path(cls, path):
-        return cls(read_json(path))
-
-    def __repr__(self):
-        return '%s<%d>' % (self.__class__.__name__, self.wof_id)
-
-    @safe_property
-    def wof_id(self):
-        return self['id']
+class WOFCountyDoc(WOFDoc):
 
     @safe_property
     def wof_continent_id(self):
@@ -337,18 +329,7 @@ class WOFCountyDoc(UserDict):
         })
 
 
-class WOFLocalityDoc(UserDict):
-
-    @classmethod
-    def from_path(cls, path):
-        return cls(read_json(path))
-
-    def __repr__(self):
-        return '%s<%d>' % (self.__class__.__name__, self.wof_id)
-
-    @safe_property
-    def wof_id(self):
-        return self['id']
+class WOFLocalityDoc(WOFDoc):
 
     @safe_property
     def wof_continent_id(self):
