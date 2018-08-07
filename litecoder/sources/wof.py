@@ -19,6 +19,9 @@ from ..db import session
 from ..models import WOFLocality, WOFRegion, WOFCounty
 
 
+# TODO: Dry up the shared WOF getters?
+
+
 @attr.s
 class WOFRepo:
 
@@ -258,6 +261,71 @@ class WOFCountyDoc(UserDict):
     @safe_property
     def wd_id(self):
         return self['properties']['wof:concordances']['wd:id']
+
+    @safe_property
+    def _name_eng_x_preferred(self):
+        return self['properties']['name:eng_x_preferred'][0]
+
+    @safe_property
+    def _wof_name(self):
+        return self['properties']['wof:name']
+
+    @safe_property
+    def name(self):
+        return first(
+            self._name_eng_x_preferred,
+            self._wof_name,
+        )
+
+    @safe_property
+    def country_iso(self):
+        return self['properties']['iso:country']
+
+    @safe_property
+    def _qs_a0(self):
+        return self['properties']['qs:a0']
+
+    @safe_property
+    def _qs_adm0(self):
+        return self['properties']['qs:adm0']
+
+    @safe_property
+    def name_a0(self):
+        return first(
+            self._qs_a0,
+            self._qs_adm0,
+        )
+
+    @safe_property
+    def name_a1(self):
+        return self['properties']['qs:a1']
+
+    @safe_property
+    def latitude(self):
+        return self['properties']['geom:latitude']
+
+    @safe_property
+    def longitude(self):
+        return self['properties']['geom:longitude']
+
+    @safe_property
+    def _wof_population(self):
+        return self['properties']['wof:population']
+
+    @safe_property
+    def _statoids_population(self):
+        return self['properties']['statoids:population']
+
+    @safe_property
+    def population(self):
+        return first(
+            self._wof_population,
+            self._statoids_population,
+        )
+
+    @safe_property
+    def area_m2(self):
+        return self['properties']['geom:area_square_m']
 
     def db_row(self):
         """Returns: models.WOFCounty
