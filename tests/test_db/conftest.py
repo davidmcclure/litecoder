@@ -10,7 +10,7 @@ from litecoder.models import BaseModel
 from litecoder.sources.wof import WOFRegionRepo, WOFLocalityRepo
 from litecoder.usa import USCityIndex, USStateIndex
 
-from tests.test_db import REGION_DIR, LOCALITY_DIR
+from . import REGION_DIR, LOCALITY_DIR
 
 
 @pytest.fixture(scope='module')
