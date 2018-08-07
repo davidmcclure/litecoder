@@ -37,6 +37,4 @@ class WOFCounty(BaseModel):
 
     population = Column(Integer)
 
-    wikipedia_wordcount = Column(Integer)
-
     area_m2 = Column(Float)

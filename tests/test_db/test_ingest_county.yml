@@ -7,3 +7,11 @@
   fips_code: '06075'
   hasc_id: US.CA.SF
   wd_id: Q62
+  name: San Francisco
+  country_iso: US
+  name_a0: United States
+  name_a1: California
+  latitude: 37.759715
+  longitude: -122.693976
+  population: 805235
+  area_m2: 600307659.301179
