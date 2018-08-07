@@ -20,4 +20,8 @@ def test_test(wof_id, fields):
     row = WOFRegion.query.get(wof_id)
 
     for col, val in fields.items():
+
+        if type(val) is float:
+            val = pytest.approx(val, 0.001)
+
         assert getattr(row, col) == val
