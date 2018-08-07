@@ -60,6 +60,13 @@ class WOFRegionRepo(WOFRepo):
             yield WOFRegionDoc(doc).db_row()
 
 
+class WOFCountyRepo(WOFRepo):
+
+    @classmethod
+    def from_env(cls):
+        return cls(os.path.join(DATA_DIR, 'wof-county'))
+
+
 class WOFLocalityRepo(WOFRepo):
 
     @classmethod
@@ -205,6 +212,47 @@ class WOFRegionDoc(UserDict):
             col: getattr(self, col)
             for col in WOFRegion.column_names()
         })
+
+
+class WOFCountyDoc(UserDict):
+
+    @classmethod
+    def from_path(cls, path):
+        return cls(read_json(path))
+
+    def __repr__(self):
+        return '%s<%d>' % (self.__class__.__name__, self.wof_id)
+
+    @safe_property
+    def wof_id(self):
+        return self['id']
+
+    @safe_property
+    def wof_continent_id(self):
+        cid = self['properties']['wof:hierarchy'][0]['continent_id']
+        return cid if cid > 0 else None
+
+    @safe_property
+    def wof_country_id(self):
+        cid = self['properties']['wof:hierarchy'][0]['country_id']
+        return cid if cid > 0 else None
+
+    @safe_property
+    def wof_region_id(self):
+        rid = self['properties']['wof:hierarchy'][0]['region_id']
+        return rid if rid > 0 else None
+
+    @safe_property
+    def fips_code(self):
+        return self['properties']['wof:concordances']['fips:code']
+
+    @safe_property
+    def hasc_id(self):
+        return self['properties']['wof:concordances']['hasc:id']
+
+    @safe_property
+    def wd_id(self):
+        return self['properties']['wof:concordances']['wd:id']
 
 
 class WOFLocalityDoc(UserDict):
