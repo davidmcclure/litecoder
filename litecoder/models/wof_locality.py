@@ -101,6 +101,7 @@ class WOFLocality(BaseModel):
 
     duplicate = Column(Boolean, default=False)
 
+    # TODO: Handle NYC, with separate county for each borough.
     county = relationship(
         'WOFCounty',
         primaryjoin='WOFCounty.wof_id==WOFLocality.wof_county_id',
