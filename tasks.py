@@ -8,8 +8,11 @@ from subprocess import call
 from litecoder.db import engine
 from litecoder import logger, US_STATE_PATH, US_CITY_PATH
 from litecoder.models import BaseModel, WOFLocality
-from litecoder.sources.wof import WOFRegionRepo, WOFLocalityRepo
 from litecoder.usa import USStateIndex, USCityIndex
+
+from litecoder.sources.wof import (
+    WOFRegionRepo, WOFCountyRepo, WOFLocalityRepo
+)
 
 
 @task
@@ -39,6 +42,9 @@ def load_db(ctx):
     """
     logger.info('Loading regions.')
     WOFRegionRepo.from_env().load_db()
+
+    logger.info('Loading counties.')
+    WOFCountyRepo.from_env().load_db()
 
     logger.info('Loading localities.')
     WOFLocalityRepo.from_env().load_db()
