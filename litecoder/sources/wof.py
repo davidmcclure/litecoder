@@ -128,8 +128,17 @@ class WOFDoc(UserDict):
     def wof_county_id(self):
         return self._wof_hierarchy_id('county')
 
+    @safe_property
+    def dbp_id(self):
+        return self['properties']['wof:concordances']['dbp:id']
 
-class WOFRegionDoc(WOFDoc):
+    @safe_property
+    def fb_id(self):
+        return self['properties']['wof:concordances']['fb:id']
+
+    @safe_property
+    def fct_id(self):
+        return self['properties']['wof:concordances']['fct:id']
 
     @safe_property
     def fips_code(self):
@@ -156,8 +165,31 @@ class WOFRegionDoc(WOFDoc):
         return self['properties']['wof:concordances']['unlc:id']
 
     @safe_property
+    def loc_id(self):
+        return self['properties']['wof:concordances']['loc:id']
+
+    @safe_property
+    def nyt_id(self):
+        return self['properties']['wof:concordances']['nyt:id']
+
+    @safe_property
+    def qs_id(self):
+        return self['properties']['wof:concordances']['qs:id']
+
+    @safe_property
+    def qs_pg_id(self):
+        return self['properties']['wof:concordances']['qs_pg:id']
+
+    @safe_property
     def wd_id(self):
         return self['properties']['wof:concordances']['wd:id']
+
+    @safe_property
+    def wk_page(self):
+        return self['properties']['wof:concordances']['wk:page']
+
+
+class WOFRegionDoc(WOFDoc):
 
     @safe_property
     def _name_eng_x_preferred(self):
@@ -248,18 +280,6 @@ class WOFRegionDoc(WOFDoc):
 class WOFCountyDoc(WOFDoc):
 
     @safe_property
-    def fips_code(self):
-        return self['properties']['wof:concordances']['fips:code']
-
-    @safe_property
-    def hasc_id(self):
-        return self['properties']['wof:concordances']['hasc:id']
-
-    @safe_property
-    def wd_id(self):
-        return self['properties']['wof:concordances']['wd:id']
-
-    @safe_property
     def _name_eng_x_preferred(self):
         return self['properties']['name:eng_x_preferred'][0]
 
@@ -335,54 +355,6 @@ class WOFCountyDoc(WOFDoc):
 
 
 class WOFLocalityDoc(WOFDoc):
-
-    @safe_property
-    def dbp_id(self):
-        return self['properties']['wof:concordances']['dbp:id']
-
-    @safe_property
-    def fb_id(self):
-        return self['properties']['wof:concordances']['fb:id']
-
-    @safe_property
-    def fct_id(self):
-        return self['properties']['wof:concordances']['fct:id']
-
-    @safe_property
-    def fips_code(self):
-        return self['properties']['wof:concordances']['fips:code']
-
-    @safe_property
-    def gn_id(self):
-        return self['properties']['wof:concordances']['gn:id']
-
-    @safe_property
-    def gp_id(self):
-        return self['properties']['wof:concordances']['gp:id']
-
-    @safe_property
-    def loc_id(self):
-        return self['properties']['wof:concordances']['loc:id']
-
-    @safe_property
-    def nyt_id(self):
-        return self['properties']['wof:concordances']['nyt:id']
-
-    @safe_property
-    def qs_id(self):
-        return self['properties']['wof:concordances']['qs:id']
-
-    @safe_property
-    def qs_pg_id(self):
-        return self['properties']['wof:concordances']['qs_pg:id']
-
-    @safe_property
-    def wd_id(self):
-        return self['properties']['wof:concordances']['wd:id']
-
-    @safe_property
-    def wk_page(self):
-        return self['properties']['wof:concordances']['wk:page']
 
     @safe_property
     def _name_eng_x_preferred(self):
