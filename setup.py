@@ -38,15 +38,15 @@ CLASSIFIERS = [
 
 setup(
     name='litecoder',
-    version='0.1.1',
+    version='0.2.0',
     description='US city + state geocoding.',
     url='https://github.com/davidmcclure/litecoder',
     license='MIT',
     author='David McClure',
     author_email='dclure@mit.edu',
-    classifiers=CLASSIFIERS,
     packages=find_packages(),
     include_package_data=True,
+    classifiers=CLASSIFIERS,
     install_requires=INSTALL_REQUIRES,
     package_data=PACKAGE_DATA,
 )
