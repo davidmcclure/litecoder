@@ -101,6 +101,12 @@ class WOFLocality(BaseModel):
 
     duplicate = Column(Boolean, default=False)
 
+    county = relationship(
+        'WOFCounty',
+        primaryjoin='WOFCounty.wof_id==WOFLocality.wof_county_id',
+        foreign_keys=[wof_county_id],
+    )
+
     region = relationship(
         'WOFRegion',
         primaryjoin='WOFRegion.wof_id==WOFLocality.wof_region_id',
