@@ -15,3 +15,19 @@
   longitude: -122.693976
   population: 805235
   area_m2: 600307659.301179
+
+102085553:
+  wof_continent_id: 102191575
+  wof_country_id: 85633793
+  wof_region_id: 85688675
+  fips_code: '01125'
+  hasc_id: US.AL.TU
+  wd_id: Q503877
+  name: Tuscaloosa
+  country_iso: US
+  name_a0: United States
+  name_a1: Alabama
+  latitude: 33.28955
+  longitude: -87.52503
+  population: 194656
+  area_m2: 3501516373.58
