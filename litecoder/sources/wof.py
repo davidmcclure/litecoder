@@ -16,7 +16,7 @@ from itertools import islice
 from .. import logger, DATA_DIR
 from ..utils import safe_property, first, read_json
 from ..db import session
-from ..models import WOFLocality, WOFRegion
+from ..models import WOFLocality, WOFRegion, WOFCounty
 
 
 @attr.s
@@ -65,6 +65,10 @@ class WOFCountyRepo(WOFRepo):
     @classmethod
     def from_env(cls):
         return cls(os.path.join(DATA_DIR, 'wof-county'))
+
+    def db_rows_iter(self):
+        for doc in self.docs_iter():
+            yield WOFCountyDoc(doc).db_row()
 
 
 class WOFLocalityRepo(WOFRepo):
@@ -206,7 +210,7 @@ class WOFRegionDoc(UserDict):
         return self['properties']['geom:area_square_m']
 
     def db_row(self):
-        """Returns: models.Region
+        """Returns: models.WOFRegion
         """
         return WOFRegion(**{
             col: getattr(self, col)
@@ -253,6 +257,14 @@ class WOFCountyDoc(UserDict):
     @safe_property
     def wd_id(self):
         return self['properties']['wof:concordances']['wd:id']
+
+    def db_row(self):
+        """Returns: models.WOFCounty
+        """
+        return WOFCounty(**{
+            col: getattr(self, col)
+            for col in WOFCounty.column_names()
+        })
 
 
 class WOFLocalityDoc(UserDict):
@@ -484,7 +496,7 @@ class WOFLocalityDoc(UserDict):
         return self['properties']['geom:area_square_m']
 
     def db_row(self):
-        """Returns: models.Locality
+        """Returns: models.WOFLocality
         """
         return WOFLocality(**{
             col: getattr(self, col)
