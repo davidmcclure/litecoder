@@ -19,9 +19,6 @@ from ..db import session
 from ..models import WOFLocality, WOFRegion, WOFCounty
 
 
-# TODO: Dry up the shared WOF getters?
-
-
 @attr.s
 class WOFRepo:
 
