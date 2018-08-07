@@ -100,13 +100,13 @@ class WOFRegionDoc(UserDict):
 
     @safe_property
     def wof_continent_id(self):
-        cid = self['properties']['wof:hierarchy'][0]['continent_id']
-        return cid if cid > 0 else None
+        id = self['properties']['wof:hierarchy'][0]['continent_id']
+        return id if id > 0 else None
 
     @safe_property
     def wof_country_id(self):
-        cid = self['properties']['wof:hierarchy'][0]['country_id']
-        return cid if cid > 0 else None
+        id = self['properties']['wof:hierarchy'][0]['country_id']
+        return id if id > 0 else None
 
     @safe_property
     def fips_code(self):
@@ -237,18 +237,18 @@ class WOFCountyDoc(UserDict):
 
     @safe_property
     def wof_continent_id(self):
-        cid = self['properties']['wof:hierarchy'][0]['continent_id']
-        return cid if cid > 0 else None
+        id = self['properties']['wof:hierarchy'][0]['continent_id']
+        return id if id > 0 else None
 
     @safe_property
     def wof_country_id(self):
-        cid = self['properties']['wof:hierarchy'][0]['country_id']
-        return cid if cid > 0 else None
+        id = self['properties']['wof:hierarchy'][0]['country_id']
+        return id if id > 0 else None
 
     @safe_property
     def wof_region_id(self):
-        rid = self['properties']['wof:hierarchy'][0]['region_id']
-        return rid if rid > 0 else None
+        id = self['properties']['wof:hierarchy'][0]['region_id']
+        return id if id > 0 else None
 
     @safe_property
     def fips_code(self):
@@ -352,18 +352,23 @@ class WOFLocalityDoc(UserDict):
 
     @safe_property
     def wof_continent_id(self):
-        cid = self['properties']['wof:hierarchy'][0]['continent_id']
-        return cid if cid > 0 else None
+        id = self['properties']['wof:hierarchy'][0]['continent_id']
+        return id if id > 0 else None
 
     @safe_property
     def wof_country_id(self):
-        cid = self['properties']['wof:hierarchy'][0]['country_id']
-        return cid if cid > 0 else None
+        id = self['properties']['wof:hierarchy'][0]['country_id']
+        return id if id > 0 else None
 
     @safe_property
     def wof_region_id(self):
-        rid = self['properties']['wof:hierarchy'][0]['region_id']
-        return rid if rid > 0 else None
+        id = self['properties']['wof:hierarchy'][0]['region_id']
+        return id if id > 0 else None
+
+    @safe_property
+    def wof_county_id(self):
+        id = self['properties']['wof:hierarchy'][0]['county_id']
+        return id if id > 0 else None
 
     @safe_property
     def dbp_id(self):

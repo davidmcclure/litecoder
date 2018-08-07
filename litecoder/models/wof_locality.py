@@ -53,6 +53,8 @@ class WOFLocality(BaseModel):
 
     wof_region_id = Column(Integer)
 
+    wof_county_id = Column(Integer)
+
     dbp_id = Column(String)
 
     fb_id = Column(String)
