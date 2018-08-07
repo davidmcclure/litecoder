@@ -266,82 +266,6 @@ class WOFDoc(UserDict):
             self._qs_pg_name,
         )
 
-
-class WOFRegionDoc(WOFDoc):
-
-    @safe_property
-    def _abrv_eng_x_preferred(self):
-        return self['properties']['abrv:eng_x_preferred'][0]
-
-    @safe_property
-    def _wof_abbreviation(self):
-        return self['properties']['wof:abbreviation']
-
-    @safe_property
-    def name_abbr(self):
-        return first(
-            self._abrv_eng_x_preferred,
-            self._wof_abbreviation,
-        )
-
-    @safe_property
-    def _qs_a0(self):
-        return self['properties']['qs:a0']
-
-    @safe_property
-    def _qs_adm0(self):
-        return self['properties']['qs:adm0']
-
-    @safe_property
-    def name_a0(self):
-        return first(
-            self._qs_a0,
-            self._qs_adm0,
-        )
-
-    def db_row(self):
-        """Returns: models.WOFRegion
-        """
-        return WOFRegion(**{
-            col: getattr(self, col)
-            for col in WOFRegion.column_names()
-            if hasattr(self, col)
-        })
-
-
-class WOFCountyDoc(WOFDoc):
-
-    @safe_property
-    def _qs_a0(self):
-        return self['properties']['qs:a0']
-
-    @safe_property
-    def _qs_adm0(self):
-        return self['properties']['qs:adm0']
-
-    @safe_property
-    def name_a0(self):
-        return first(
-            self._qs_a0,
-            self._qs_adm0,
-        )
-
-    @safe_property
-    def name_a1(self):
-        return self['properties']['qs:a1']
-
-    def db_row(self):
-        """Returns: models.WOFCounty
-        """
-        return WOFCounty(**{
-            col: getattr(self, col)
-            for col in WOFCounty.column_names()
-            if hasattr(self, col)
-        })
-
-
-class WOFLocalityDoc(WOFDoc):
-
     @safe_property
     def _qs_a0(self):
         return self['properties']['qs:a0']
@@ -374,7 +298,7 @@ class WOFLocalityDoc(WOFDoc):
 
     @safe_property
     def _qs_a1(self):
-        return self['properties']['qs:a1'][1:]
+        return self['properties']['qs:a1'].strip('*')
 
     @safe_property
     def _ne_adm1name(self):
@@ -396,6 +320,48 @@ class WOFLocalityDoc(WOFDoc):
             self._qs_pg_name_adm1,
             self._woe_name_adm1,
         )
+
+
+class WOFRegionDoc(WOFDoc):
+
+    @safe_property
+    def _abrv_eng_x_preferred(self):
+        return self['properties']['abrv:eng_x_preferred'][0]
+
+    @safe_property
+    def _wof_abbreviation(self):
+        return self['properties']['wof:abbreviation']
+
+    @safe_property
+    def name_abbr(self):
+        return first(
+            self._abrv_eng_x_preferred,
+            self._wof_abbreviation,
+        )
+
+    def db_row(self):
+        """Returns: models.WOFRegion
+        """
+        return WOFRegion(**{
+            col: getattr(self, col)
+            for col in WOFRegion.column_names()
+            if hasattr(self, col)
+        })
+
+
+class WOFCountyDoc(WOFDoc):
+
+    def db_row(self):
+        """Returns: models.WOFCounty
+        """
+        return WOFCounty(**{
+            col: getattr(self, col)
+            for col in WOFCounty.column_names()
+            if hasattr(self, col)
+        })
+
+
+class WOFLocalityDoc(WOFDoc):
 
     @safe_property
     def wikipedia_wordcount(self):
