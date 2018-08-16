@@ -54,6 +54,7 @@ idx['Boston, MA, USA']
 # Normalize differences in capitalization, spacing, commas.
 idx['boston, ma']
 idx['boston ma']
+idx['   boston   ma   ']
 idx['BOSTON MA']
 >> [CityMatch<Boston, Massachusetts, United States, wof:85950361>]
 
