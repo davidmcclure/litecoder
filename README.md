@@ -3,9 +3,6 @@
 
 > US city + state geocoding, without a heavy webservice. With [Who's On First](https://www.whosonfirst.org/) and SQLite.
 
-![San Francisco](sf.jpg)
-<sup>[February 7, 2016](http://blog.digitalglobe.com/industry/download-it-explore-it-showcase-it/) ~ Digital Globe, Creative Commons</sup>
-
 Sometimes you've got "location" fields that contain a weird mix of cities and states. Stuff like:
 
 - `SF`
@@ -23,18 +20,18 @@ Litecoder is a small library that links these kinds of free-text location string
 
 For now, Litecoder only supports US cities and states.
 
-## 🌎 Goals
+## Goals
 - Be fast. Lookups take ~20µs.
 - Work anywhere without hassle. The underlying data ships with the package and is small enough to fit in memory (~100m). Since everything sits in RAM, the library can be used in ETL and big data workflows involving billions of inputs.
 - Comprehensive support for [nicknames and abbreviations](litecoder/data/city-alt-names.yml). Eg, `Windy City` always means Chicago.
 - Some heuristics are unavoidable - eg, `Boston` should map to `Boston, MA`, not `Boston, GA` (which exists!). In these cases, do something simple and easy to reason about.
 
 ## 🌎 Future
-- Extract locations that are embedded inside of surrounding text. For now, the assumption is that you've got a snippet of text that represents a location, and the goal is to figure out which one.
+- Match locations embedded inside of surrounding text. For now, the assumption is that you've got a snippet of text that represents a location, and the goal is to figure out which one.
 - Locations more granular than cities / towns - major parks, venues, etc.
 - International cities + countries.
 
-## 🌎 Examples
+## Examples
 
 ### US cities
 
@@ -97,7 +94,7 @@ idx['Massachusetts, USA']
 >> [StateMatch<Massachusetts, United States, wof:85688645>]
 ```
 
-## 🌎 Metadata
+## Metadata
 
 The city and state indexes return "match" objects that act as proxies for the underlying data in SQLite. These objects store all metadata associated with the location, as well as denormalized copies of parent entities.
 
