@@ -26,7 +26,7 @@ For now, Litecoder only supports US cities and states.
 - Comprehensive support for [nicknames and abbreviations](litecoder/data/city-alt-names.yml). Eg, `Windy City` always means Chicago.
 - Some heuristics are unavoidable - eg, `Boston` should map to `Boston, MA`, not `Boston, GA` (which exists!). In these cases, do something simple and easy to reason about.
 
-## 🌎 Future
+## Future
 - Match locations embedded inside of surrounding text. For now, the assumption is that you've got a snippet of text that represents a location, and the goal is to figure out which one.
 - Locations more granular than cities / towns - major parks, venues, etc.
 - International cities + countries.
