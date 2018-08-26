@@ -59,25 +59,32 @@ class CityNamePopulations(defaultdict):
 
 class AllowBareCityName:
 
-    def __init__(self, min_p1_gap=200000):
+    def __init__(self, min_p1_gap=200000, blocklist=None):
         self.name_pops = CityNamePopulations()
         self.min_p1_gap = min_p1_gap
+        self.blocklist = set(map(keyify, blocklist or []))
+
+    def blocked(self, name):
+        return keyify(name) in self.blocklist
+
+    def large_p1_gap(self, row, name):
+        """Get the difference in population between this city and the second-
+        most-populous city with the name. Allow if over threshold.
+        """
+        all_pops = sorted(self.name_pops[name], reverse=True)
+        pop = row.population or 0
+        return pop - sum(all_pops[1:]) > self.min_p1_gap
 
     def __call__(self, row, name):
-        """Is a city name unique enough that it should be indexed
-        independently?
+        """Is a name unique enough that it should be indexed independently?
 
         Args:
-            row (models.Locality)
+            row (models.WOFLocality)
             name (str)
 
         Returns: bool
         """
-        all_pops = sorted(self.name_pops[name], reverse=True)
-
-        pop = row.population or 0
-
-        return pop - sum(all_pops[1:]) > self.min_p1_gap
+        return not self.blocked(name) and self.large_p1_gap(row, name)
 
 
 class CityKeyIter:
@@ -231,10 +238,14 @@ class USCityIndex(Index):
     def load(cls, path=US_CITY_PATH):
         return super().load(path)
 
+    def __init__(self, bare_name_blocklist=None):
+        super().__init__()
+        self.bare_name_blocklist = bare_name_blocklist
+
     def build(self):
         """Index all US cities.
         """
-        iter_keys = CityKeyIter()
+        iter_keys = CityKeyIter(blocklist=self.bare_name_blocklist)
 
         # Deduped cities.
         cities = WOFLocality.clean_us_cities()
