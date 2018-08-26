@@ -5,6 +5,7 @@ import pytest
 from litecoder.usa import USCityIndex
 
 
+# TODO: Possible to speed this up?
 def test_bare_name_bloclist():
     """Blocklisted bare names should be omitted from index.
     """

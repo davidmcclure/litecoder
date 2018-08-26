@@ -89,8 +89,8 @@ class AllowBareCityName:
 
 class CityKeyIter:
 
-    def __init__(self, *args, **kwargs):
-        self.allow_bare = AllowBareCityName(*args, **kwargs)
+    def __init__(self, allow_bare):
+        self.allow_bare = allow_bare
 
     def __call__(self, row):
         """Enumerate index keys for a city.
@@ -245,7 +245,9 @@ class USCityIndex(Index):
     def build(self):
         """Index all US cities.
         """
-        iter_keys = CityKeyIter(blocklist=self.bare_name_blocklist)
+        allow_bare = AllowBareCityName(blocklist=self.bare_name_blocklist)
+
+        iter_keys = CityKeyIter(allow_bare)
 
         # Deduped cities.
         cities = WOFLocality.clean_us_cities()
