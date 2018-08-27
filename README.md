@@ -20,7 +20,7 @@ Litecoder is a small library that links these kinds of free-text location string
 
 For now, Litecoder only supports US cities and states.
 
-## Goals
+## Now
 - Be fast. Lookups take ~20µs.
 - Work anywhere without hassle. The underlying data ships with the package and is small enough to fit in memory (~100m). Since everything sits in RAM, the library can be used in ETL and big data workflows involving billions of inputs.
 - Comprehensive support for [nicknames and abbreviations](litecoder/data/city-alt-names.yml). Eg, `Windy City` always means Chicago.
