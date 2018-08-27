@@ -16,28 +16,28 @@ from litecoder.sources.wof import (
 
 
 @task
-def create_db(ctx):
+def create_db(c):
     """Create all tables.
     """
     BaseModel.metadata.create_all(engine)
 
 
 @task
-def drop_db(ctx):
+def drop_db(c):
     """Drop all tables.
     """
     BaseModel.metadata.drop_all(engine)
 
 
 @task(drop_db, create_db)
-def reset_db(ctx):
+def reset_db(c):
     """Drop + create tables.
     """
     pass
 
 
 @task(reset_db)
-def load_db(ctx):
+def load_db(c):
     """Load SQLite tables.
     """
     logger.info('Loading regions.')
@@ -51,7 +51,7 @@ def load_db(ctx):
 
 
 @task
-def clean_db(ctx):
+def clean_db(c):
     """Database post-processing.
     """
     logger.info('Cleaning localities.')
@@ -59,7 +59,7 @@ def clean_db(ctx):
 
 
 @task
-def build_indexes(ctx):
+def build_indexes(c):
     """Build dist indexes.
     """
     logger.info('Indexing states.')
@@ -74,15 +74,15 @@ def build_indexes(ctx):
 
 
 @task(build_indexes)
-def test(ctx):
+def test(c):
     """Run test suite.
     """
-    call(['pytest', 'tests/test_db'])
-    call(['pytest', 'tests/prod_db'])
+    c.run('pytest tests/test_db')
+    c.run('pytest tests/prod_db')
 
 
 @task(load_db, clean_db, build_indexes, test)
-def build(ctx):
+def build(c):
     """Load SQLite, build indexes, test.
     """
     pass
