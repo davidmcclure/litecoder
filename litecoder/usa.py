@@ -212,8 +212,11 @@ class Index:
         )
 
     def __getitem__(self, text):
-        """Get ids, map to records.
+        """Get ids, map to records only if there is a match in the index
         """
+        if keyify(text) not in self._key_to_ids:
+            return None
+
         ids = self._key_to_ids[keyify(text)]
 
         return [self._id_to_loc[id] for id in ids]
