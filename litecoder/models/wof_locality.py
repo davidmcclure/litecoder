@@ -22,7 +22,7 @@ from .base import BaseModel
 # TODO: Make pluggable.
 CITY_ALT_NAMES = yaml.load(pkgutil.get_data(
     'litecoder', 'data/city-alt-names.yml'
-))
+), Loader=yaml.FullLoader)
 
 
 ID_COLS = (

@@ -16,4 +16,4 @@ def read_yaml(from_path, file_name):
     path = os.path.join(os.path.dirname(from_path), file_name)
 
     with open(path, 'r') as fh:
-        return yaml.load(fh)
+        return yaml.load(fh, Loader=yaml.FullLoader)
