@@ -1,0 +1,340 @@
+- query:
+    - Edinburg, Texas
+  matches:
+    - 101723563
+- query:
+    - Lakeville , Minnesota
+  matches:
+    - 85968479
+- query:
+    - Woodland, CA.
+  matches:
+    - 85922405
+- query:
+    - Gary, IN
+  matches:
+    - 85941813
+- query:
+    - Cornelius, NC
+  matches:
+    - 85981335
+- query:
+    - Okeechobee, Fl
+  matches:
+    - 85932281
+- query:
+    - Saginaw Township South, MI
+  matches:
+    - 1125767499
+- query:
+    - Lansdowne, PA
+  matches:
+    - 101718067
+- query:
+    - Knoxville TN
+  matches:
+    - 101722865
+- query:
+    - OAKLAND, CA
+  matches:
+    - 85921881
+- query:
+    - suffolk va
+  matches:
+    - 101728729
+- query:
+    - Port Orange, FL
+  matches:
+    - 85932629
+- query:
+    - Sedona, AZ
+  matches:
+    - 85917431
+- query:
+    - Cedar City UT 
+  matches:
+    - 101727685
+- query:
+    - Cincinnati. 
+  matches:
+    - 101712203
+- query:
+    - Huntington Beach CA
+  matches:
+    - 85923137
+- query:
+    - Wooster,Ohio
+  matches:
+    - 101712345
+- query:
+    - Lewisville, Texas
+  matches:
+    - 101724413
+- query:
+    - traverse city mi
+  matches:
+    - 85950881
+- query:
+    - Pennsauken, New Jersey
+  matches:
+    - 1125947935
+- query:
+    - Jonesboro, Arkansas
+  matches:
+    - 85920203
+- query:
+    - Zephyrhills, FL
+  matches:
+    - 85932233
+- query:
+    - West Jefferson, NC
+  matches:
+    - 85981009
+- query:
+    - Escondido, CA 
+  matches:
+    - 85922263
+- query:
+    - Lumberton, NC
+  matches:
+    - 85981189
+- query:
+    - Cayce, SC
+  matches:
+    - 101720791
+- query:
+    - Stratford, Connecticut, USA
+  matches:
+    - 85930997
+- query:
+    - Avondale, AZ
+  matches:
+    - 85917553
+- query:
+    - Coral Springs, FL 
+  matches:
+    - 85932415
+- query:
+    - Gaithersburg, MD
+  matches:
+    - 85949491
+- query:
+    - Westchester, IL
+  matches:
+    - 85940923
+- query:
+    - Louisa, Virginia 
+  matches:
+    - 101728949
+- query:
+    - Norway, ME
+  matches:
+    - 85948973
+- query:
+    - Philadelphia PA, USA
+  matches:
+    - 101718083
+- query:
+    - Fort worth, tx
+  matches:
+    - 101724443
+- query:
+    - Eureka Springs, Arkansas
+  matches:
+    - 85919765
+- query:
+    - Nashville , TN
+  matches:
+    - 101723183
+- query:
+    - Ellenwood Ga
+  matches:
+    - 1126054897
+- query:
+    - Floral Park, NY
+  matches:
+    - 85977689
+- query:
+    - Nashville Tennessee
+  matches:
+    - 101723183
+- query:
+    - Malvern, AR
+  matches:
+    - 85920689
+- query:
+    - Valdosta, Georgia
+  matches:
+    - 85936921
+- query:
+    - Valley Center Ca
+  matches:
+    - 85925201
+- query:
+    - St. Robert Mo. 
+  matches:
+    - 85971093
+- query:
+    - Hollandale, MS
+  matches:
+    - 85969835
+- query:
+    - New Castle, PA 
+  matches:
+    - 101716721
+- query:
+    - Harlem, FL
+  matches:
+    - 85934341
+- query:
+    - Kings Mills, OH
+  matches:
+    - 101713989
+- query:
+    - knoxville Tennessee
+  matches:
+    - 101722865
+- query:
+    - BrooklYn
+  matches:
+    - 85977539
+- query: 
+    - Nuketown
+  matches: []
+  xfail: true
+- query: 
+    - Under Lefty's Skin
+  matches: []
+  xfail: true
+- query: 
+    - oY’– 7/6/20 oY’–
+  matches: []
+  xfail: true
+- query: 
+    - Palestine.Ramallah
+  matches: []
+  xfail: true
+- query: 
+    - DONT REPOST MY ART ! carrd byf
+  matches: []
+  xfail: true
+- query: 
+    - AJ&K, Pakistan.
+  matches: []
+  xfail: true
+- query: 
+    - La Plana Alta 
+  matches: []
+  xfail: true
+- query: 
+    - Com o ChorAEo
+  matches: []
+  xfail: true
+- query: 
+    - PLUTO
+  matches: []
+  xfail: true
+- query: 
+    - All Over The WORLD
+  matches: []
+  xfail: true
+- query: 
+    - /dev/null
+  matches: []
+  xfail: true
+- query: 
+    - University of Bath
+  matches: []
+  xfail: true
+- query: 
+    - Gaia
+  matches: []
+  xfail: true
+- query: 
+    - Plc
+  matches: []
+  xfail: true
+- query: 
+    - Jay cooke mn
+  matches: []
+  xfail: true
+- query: 
+    - Toulouse - Perpignan 
+  matches: []
+  xfail: true
+- query: 
+    - oYtaoYt |oYtaoYt¦ aeC sc squad.a†’
+  matches: []
+  xfail: true
+- query: 
+    - oYscoY
+  matches: []
+  xfail: true
+- query: 
+    - sheher ecoe 20
+  matches: []
+  xfail: true
+- query: 
+    - pequitas de sunoo^^
+  matches: []
+  xfail: true
+- query: 
+    - West M
+  matches: []
+  xfail: true
+- query: 
+    - Maputo city
+  matches: []
+  xfail: true
+- query: 
+    - Entwined w peace 
+  matches: []
+  xfail: true
+- query: 
+    - DDDDDDDDDDDDDDD
+  matches: []
+  xfail: true
+- query: 
+    - mons vaticanus, subterrane
+  matches: []
+  xfail: true
+- query: 
+    - oYoO oyOY Oyoyo OY
+  matches: []
+  xfail: true
+- query: 
+    - Loin du hood 
+  matches: []
+  xfail: true
+- query: 
+    - acab blm
+  matches: []
+  xfail: true
+- query: 
+    - 010997
+  matches: []
+  xfail: true
+- query: 
+    - tidytuanzebeaETMs basement
+  matches: []
+  xfail: true
+- query: 
+    - oYOyomasdEmr
+  matches: []
+  xfail: true
+- query: 
+    - somewhere
+  matches: []
+  xfail: true
+- query: 
+    - 330
+  matches: []
+  xfail: true
+- query: 
+    - oSUSdod
+  matches: []
+  xfail: true
+- query: 
+    - she/her 16 isfp
+  matches: []
+  xfail: true

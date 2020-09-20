@@ -7,9 +7,9 @@ from litecoder.usa import USCityIndex, USStateIndex
 
 @pytest.fixture(scope='session')
 def city_idx():
-    return USCityIndex.load()
+    return USCityIndex()
 
 
 @pytest.fixture(scope='session')
 def state_idx():
-    return USStateIndex.load()
+    return USStateIndex()

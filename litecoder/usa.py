@@ -1,8 +1,10 @@
 
 
 import re
-import pickle
-
+import os
+import hashlib
+import struct
+from sqlitedict import SqliteDict
 from tqdm import tqdm
 from collections import defaultdict
 from itertools import product
@@ -192,14 +194,16 @@ class StateMatch(Match):
 
 class Index:
 
-    @classmethod
-    def load(cls, path):
-        with open(path, 'rb') as fh:
-            return pickle.load(fh)
+    # Now that loading the database is instantenous, it is better to put it in the constructor over a
+    #   separate load method
+    # @classmethod
+    # def load(cls, path):
+    #     with open(path, 'rb') as fh:
+    #         return pickle.load(fh)
 
-    def __init__(self):
-        self._key_to_ids = defaultdict(set)
-        self._id_to_loc = dict()
+    def __init__(self, path):
+        self._key_to_ids = SqliteDict(filename=path, tablename="keys")
+        self._id_to_loc = SqliteDict(filename=path, tablename="locations")
 
     def __len__(self):
         return len(self._key_to_ids)
@@ -211,38 +215,47 @@ class Index:
             len(self._id_to_loc),
         )
 
-    def __getitem__(self, text):
+    def __getitem__(self, key):
         """Get ids, map to records only if there is a match in the index
         """
-        if keyify(text) not in self._key_to_ids:
+        # convert string to integer
+        hash = hashlib.md5(bytes(keyify(key), encoding="utf-8")).digest()
+        hashed_key = struct.unpack("L", hash[:8])[0] % (2 ** 63)
+        if hashed_key not in self._key_to_ids:
             return None
 
-        ids = self._key_to_ids[keyify(text)]
+        ids = self._key_to_ids[hashed_key]
 
         return [self._id_to_loc[id] for id in ids]
 
     def add_key(self, key, id):
-        self._key_to_ids[key].add(id)
+        # convert string to integer
+        hash = hashlib.md5(bytes(key, encoding="utf-8")).digest()
+        hashed_key = struct.unpack("L", hash[:8])[0] % (2 ** 63)
+        if hashed_key not in self._key_to_ids:
+            self._key_to_ids[hashed_key] = set()
+        curr_ids = self._key_to_ids[hashed_key]
+        curr_ids.add(id)
+        self._key_to_ids[hashed_key] = curr_ids
+        self._key_to_ids.commit()
+        del curr_ids
 
     def add_location(self, id, location):
         self._id_to_loc[id] = location
+        self._id_to_loc.commit()
 
     def locations(self):
         return list(self._id_to_loc.values())
 
-    def save(self, path):
-        with open(path, 'wb') as fh:
-            pickle.dump(self, fh)
+    def close(self):
+        self._key_to_ids.close()
+        self._id_to_loc.close()
 
 
 class USCityIndex(Index):
 
-    @classmethod
-    def load(cls, path=US_CITY_PATH):
-        return super().load(path)
-
     def __init__(self, bare_name_blocklist=None):
-        super().__init__()
+        super().__init__(path=US_CITY_PATH)
         self.bare_name_blocklist = bare_name_blocklist
 
     def build(self):
@@ -269,9 +282,8 @@ class USCityIndex(Index):
 
 class USStateIndex(Index):
 
-    @classmethod
-    def load(cls, path=US_STATE_PATH):
-        return super().load(path)
+    def __init__(self):
+        super().__init__(path=US_STATE_PATH)
 
     def build(self):
         """Index all US states.
