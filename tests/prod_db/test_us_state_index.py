@@ -16,19 +16,15 @@ def yield_cases():
 
         queries = group['query']
 
-        xfail = group.get('xfail', False)
-
         if type(queries) is str:
             queries = [queries]
 
         for query in queries:
-            yield query, group['matches'], xfail
+            yield query, group['matches']
 
 
-@pytest.mark.parametrize('query,matches,xfail', yield_cases())
-def test_cases(state_idx, query, matches, xfail):
-    if xfail:
-        pytest.xfail()
+@pytest.mark.parametrize('query,matches', yield_cases())
+def test_cases(state_idx, query, matches):
 
     res = state_idx[query]
 

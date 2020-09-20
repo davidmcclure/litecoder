@@ -35,7 +35,6 @@ PyYAML = "*"
 Shapely = "*"
 numpy = "*"
 scipy = "*"
-sqlitedict = "*"
 
 [dev-packages]
 
