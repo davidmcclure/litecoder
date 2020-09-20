@@ -1,6 +1,7 @@
 
 
 import re
+import marisa_trie
 import pickle
 
 from tqdm import tqdm
@@ -192,14 +193,13 @@ class StateMatch(Match):
 
 class Index:
 
-    @classmethod
-    def load(cls, path):
-        with open(path, 'rb') as fh:
-            return pickle.load(fh)
+    def load(self, key_to_ids_path, id_to_loc_path):
+        self._key_to_ids.load(key_to_ids_path)
+        self._id_to_loc.load(id_to_loc_path)
 
     def __init__(self):
-        self._key_to_ids = defaultdict(set)
-        self._id_to_loc = dict()
+        self._key_to_ids = marisa_trie.BytesTrie()
+        self._id_to_loc = marisa_trie.BytesTrie()
 
     def __len__(self):
         return len(self._key_to_ids)
@@ -214,32 +214,29 @@ class Index:
     def __getitem__(self, text):
         """Get ids, map to records only if there is a match in the index
         """
-        if keyify(text) not in self._key_to_ids:
+        normalized_key = keyify(text)
+        if normalized_key not in self._key_to_ids:
             return None
 
-        ids = self._key_to_ids[keyify(text)]
+        ids = pickle.loads(self._key_to_ids[normalized_key][0])
 
-        return [self._id_to_loc[id] for id in ids]
+        return [pickle.loads(self._id_to_loc[id][0]) for id in ids]
 
-    def add_key(self, key, id):
-        self._key_to_ids[key].add(id)
+    # def add_key(self, key, id):
+    #     self._key_to_ids[key].add(id)
 
-    def add_location(self, id, location):
-        self._id_to_loc[id] = location
+    # def add_location(self, id, location):
+    #     self._id_to_loc[id] = location
 
     def locations(self):
         return list(self._id_to_loc.values())
 
-    def save(self, path):
-        with open(path, 'wb') as fh:
-            pickle.dump(self, fh)
+    def save(self, key_to_ids_path, id_to_loc_path):
+        self._key_to_ids.save(key_to_ids_path)
+        self._id_to_loc.save(id_to_loc_path)
 
 
 class USCityIndex(Index):
-
-    @classmethod
-    def load(cls, path=US_CITY_PATH):
-        return super().load(path)
 
     def __init__(self, bare_name_blocklist=None):
         super().__init__()
@@ -257,21 +254,23 @@ class USCityIndex(Index):
 
         logger.info('Indexing US cities.')
 
+        key_to_ids = defaultdict(set)
+        id_to_loc = dict()
+
         for row in tqdm(cities):
 
             # Key -> id(s)
             for key in map(keyify, iter_keys(row)):
-                self.add_key(key, row.wof_id)
+                key_to_ids[key].add(str(row.wof_id))
 
             # ID -> city
-            self.add_location(row.wof_id, CityMatch(row))
+            id_to_loc[str(row.wof_id)] = pickle.dumps(CityMatch(row))
+        
+        self._key_to_ids = marisa_trie.BytesTrie([(key, pickle.dumps(key_to_ids[key])) for key in key_to_ids])
+        self._id_to_loc = marisa_trie.BytesTrie(id_to_loc.items())
 
 
 class USStateIndex(Index):
-
-    @classmethod
-    def load(cls, path=US_STATE_PATH):
-        return super().load(path)
 
     def build(self):
         """Index all US states.
@@ -280,11 +279,17 @@ class USStateIndex(Index):
 
         logger.info('Indexing US states.')
 
+        key_to_ids = defaultdict(set)
+        id_to_loc = dict()
+
         for row in tqdm(states):
 
             # Key -> id(s)
             for key in map(keyify, state_key_iter(row)):
-                self.add_key(key, row.wof_id)
+                key_to_ids[key].add(str(row.wof_id))
 
             # ID -> state
-            self.add_location(row.wof_id, StateMatch(row))
+            id_to_loc[str(row.wof_id)] = pickle.dumps(StateMatch(row))
+        
+        self._key_to_ids = marisa_trie.BytesTrie([(key, pickle.dumps(key_to_ids[key])) for key in key_to_ids])
+        self._id_to_loc = marisa_trie.BytesTrie(id_to_loc.items())
