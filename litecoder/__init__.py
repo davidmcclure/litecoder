@@ -9,9 +9,7 @@ LITECODER_ENV = os.environ.get('LITECODER_ENV')
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 
-US_STATE_PATH = os.path.join(DATA_DIR, 'us-states.p')
-
-US_CITY_PATH = os.path.join(DATA_DIR, 'us-cities.p')
+DATA_PATH = os.path.join(DATA_DIR, 'trie.marisa')
 
 
 logging.basicConfig(

@@ -12,7 +12,7 @@ from box import Box
 
 from sqlalchemy.inspection import inspect
 
-from . import logger, US_CITY_PATH, US_STATE_PATH
+from . import logger, DATA_PATH
 from .models import WOFRegion, WOFLocality
 
 
@@ -193,34 +193,39 @@ class StateMatch(Match):
 
 class Index:
 
-    def load(self, key_to_ids_path, id_to_loc_path):
-        self._key_to_ids.load(key_to_ids_path)
-        self._id_to_loc.load(id_to_loc_path)
+    # city keys -> ids = A
+    # city ids -> loc = B
+    # state keys -> ids = C
+    # state ids -> loc = D
 
-    def __init__(self):
-        self._key_to_ids = marisa_trie.BytesTrie()
-        self._id_to_loc = marisa_trie.BytesTrie()
+    def load(self, trie_path=DATA_PATH):
+        self._trie.load(trie_path)
+
+    def __init__(self, keys_key, ids_key):
+        self._trie = marisa_trie.BytesTrie()
+        self._keys_key = keys_key
+        self._ids_key = ids_key
 
     def __len__(self):
-        return len(self._key_to_ids)
+        return len(self._trie.keys(self._keys_key))
 
     def __repr__(self):
         return '%s<%d keys, %d entities>' % (
             self.__class__.__name__,
-            len(self._key_to_ids),
-            len(self._id_to_loc),
+            len(self._trie.keys(self._keys_key)),
+            len(self._trie.keys(self._ids_key)),
         )
 
     def __getitem__(self, text):
         """Get ids, map to records only if there is a match in the index
         """
-        normalized_key = keyify(text)
-        if normalized_key not in self._key_to_ids:
+        normalized_key = self._keys_key + keyify(text)
+        if normalized_key not in self._trie:
             return None
 
-        ids = pickle.loads(self._key_to_ids[normalized_key][0])
+        ids = pickle.loads(self._trie[normalized_key][0])
 
-        return [pickle.loads(self._id_to_loc[id][0]) for id in ids]
+        return [pickle.loads(self._trie[self._ids_key + id][0]) for id in ids]
 
     # def add_key(self, key, id):
     #     self._key_to_ids[key].add(id)
@@ -231,20 +236,20 @@ class Index:
     def locations(self):
         return list(self._id_to_loc.values())
 
-    def save(self, key_to_ids_path, id_to_loc_path):
-        self._key_to_ids.save(key_to_ids_path)
-        self._id_to_loc.save(id_to_loc_path)
+    def save(self, path):
+        self._trie.save(path)
 
 
 class USCityIndex(Index):
 
     def __init__(self, bare_name_blocklist=None):
-        super().__init__()
+        super().__init__(u"A", u"B")
         self.bare_name_blocklist = bare_name_blocklist
 
     def build(self):
         """Index all US cities.
         """
+        
         allow_bare = AllowBareCityName(blocklist=self.bare_name_blocklist)
 
         iter_keys = CityKeyIter(allow_bare)
@@ -264,13 +269,20 @@ class USCityIndex(Index):
                 key_to_ids[key].add(str(row.wof_id))
 
             # ID -> city
-            id_to_loc[str(row.wof_id)] = pickle.dumps(CityMatch(row))
+            id_to_loc[self._ids_key + str(row.wof_id)] = pickle.dumps(CityMatch(row))
+
+        # In case the loaded trie already has states data
+        previous_trie_data = [(key, value) for (key, value) in self._trie.items() if not (key.startswith(self._keys_key) or key.startswith(self._ids_key))]
+        key_to_ids_trie_data = [(self._keys_key + key, pickle.dumps(key_to_ids[key])) for key in key_to_ids]
+        id_to_loc_trie_data = list(id_to_loc.items())
         
-        self._key_to_ids = marisa_trie.BytesTrie([(key, pickle.dumps(key_to_ids[key])) for key in key_to_ids])
-        self._id_to_loc = marisa_trie.BytesTrie(id_to_loc.items())
+        self._trie = marisa_trie.BytesTrie(previous_trie_data + key_to_ids_trie_data + id_to_loc_trie_data)
 
 
 class USStateIndex(Index):
+
+    def __init__(self):
+        super().__init__(u"C", u"D")
 
     def build(self):
         """Index all US states.
@@ -289,7 +301,11 @@ class USStateIndex(Index):
                 key_to_ids[key].add(str(row.wof_id))
 
             # ID -> state
-            id_to_loc[str(row.wof_id)] = pickle.dumps(StateMatch(row))
+            id_to_loc[self._ids_key + str(row.wof_id)] = pickle.dumps(StateMatch(row))
+
+        # In case the loaded trie already has states data
+        previous_trie_data = [(key, value) for (key, value) in self._trie.items() if not (key.startswith(self._keys_key) or key.startswith(self._ids_key))]
+        key_to_ids_trie_data = [(self._keys_key + key, pickle.dumps(key_to_ids[key])) for key in key_to_ids]
+        id_to_loc_trie_data = list(id_to_loc.items())
         
-        self._key_to_ids = marisa_trie.BytesTrie([(key, pickle.dumps(key_to_ids[key])) for key in key_to_ids])
-        self._id_to_loc = marisa_trie.BytesTrie(id_to_loc.items())
+        self._trie = marisa_trie.BytesTrie(previous_trie_data + key_to_ids_trie_data + id_to_loc_trie_data)
