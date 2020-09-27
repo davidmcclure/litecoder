@@ -234,7 +234,7 @@ class Index:
     #     self._id_to_loc[id] = location
 
     def locations(self):
-        return list(self._id_to_loc.values())
+        return [loc for (id, loc) in self._trie.items() if id.startswith(self._ids_key)]
 
     def save(self, path):
         self._trie.save(path)
