@@ -63,8 +63,8 @@ Harlem, FL
 Kings Mills, OH
 knoxville Tennessee
 BrooklYn""".split("\n")
-for x in range (8):
-    city_tests += city_tests
+# for x in range (10):
+#     city_tests += city_tests
 print("measuring time for {} cities... ".format(len(city_tests)), end="")
 start_time = time.time()
 for city in city_tests:
