@@ -11,7 +11,7 @@ DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 
 US_STATE_PATH = os.path.join(DATA_DIR, 'us-states.marisa')
 
-US_CITY_PATH = os.path.join(DATA_DIR, 'us-cities.marisa')
+US_CITY_PATH = os.path.join(DATA_DIR, 'us-cities-ujson.marisa')
 
 
 logging.basicConfig(

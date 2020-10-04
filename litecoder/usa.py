@@ -2,20 +2,20 @@
 
 import re
 import marisa_trie
-import pickle
+import _pickle as pickle
+import ujson
 
 from tqdm import tqdm
 from collections import defaultdict
 from itertools import product
 from cached_property import cached_property
 from box import Box
+import gc
 
 from sqlalchemy.inspection import inspect
 
 from . import logger, US_CITY_PATH, US_STATE_PATH
 from .models import WOFRegion, WOFLocality
-
-
 # TODO: Country alt-names YAML.
 USA_NAMES = (
     'USA',
@@ -199,6 +199,7 @@ class Index:
     # state ids -> loc = D
 
     def load(self, path):
+        print(path)
         self._trie.load(path)
 
     def __init__(self):
@@ -223,9 +224,12 @@ class Index:
         if normalized_key not in self._trie:
             return None
 
-        ids = pickle.loads(self._trie[normalized_key][0])
+        ids = ujson.loads(self._trie[normalized_key][0])
 
-        return [pickle.loads(self._trie[self._ids_prefix + id][0]) for id in ids]
+        gc.disable()
+        z= [pickle.loads(self._trie[self._ids_prefix + id][0]) for id in ids]
+        gc.enable()
+        return z
 
     # def add_key(self, key, id):
     #     self._key_to_ids[key].add(id)
@@ -272,9 +276,9 @@ class USCityIndex(Index):
                 key_to_ids[key].add(str(row.wof_id))
 
             # ID -> city
-            id_to_loc[self._ids_prefix + str(row.wof_id)] = pickle.dumps(CityMatch(row))
+            id_to_loc[self._ids_prefix + str(row.wof_id)] = pickle.dumps(CityMatch(row), protocol=-1)
 
-        key_to_ids_data = [(self._keys_prefix + key, pickle.dumps(key_to_ids[key])) for key in key_to_ids]
+        key_to_ids_data = [(self._keys_prefix + key, bytes(ujson.dumps(list(key_to_ids[key])), encoding="utf-8")) for key in key_to_ids]
         id_to_loc_data = list(id_to_loc.items())
         
         self._trie = marisa_trie.BytesTrie(key_to_ids_data + id_to_loc_data)
@@ -302,9 +306,9 @@ class USStateIndex(Index):
                 key_to_ids[key].add(str(row.wof_id))
 
             # ID -> state
-            id_to_loc[self._ids_prefix + str(row.wof_id)] = pickle.dumps(StateMatch(row))
+            id_to_loc[self._ids_prefix + str(row.wof_id)] = pickle.dumps(StateMatch(row), protocol=-1)
 
-        key_to_ids_data = [(self._keys_prefix + key, pickle.dumps(key_to_ids[key])) for key in key_to_ids]
+        key_to_ids_data = [(self._keys_prefix + key, bytes(ujson.dumps(list(key_to_ids[key])), encoding="utf-8")) for key in key_to_ids]
         id_to_loc_data = list(id_to_loc.items())
         
         self._trie = marisa_trie.BytesTrie(key_to_ids_data + id_to_loc_data)
