@@ -3,7 +3,7 @@
 import re
 import marisa_trie
 import _pickle as pickle
-import ujson
+import ujson as json
 
 from tqdm import tqdm
 from collections import defaultdict
@@ -148,49 +148,6 @@ def state_key_iter(row):
         yield ' '.join((abbr, usa))
 
 
-class Match:
-
-    def __init__(self, row):
-        """Set model class, PK, metadata.
-        """
-        state = inspect(row)
-
-        # Don't store the actual row, so we can serialize.
-        self._model_cls = state.class_
-        self._pk = state.identity
-
-        self.data = Box(dict(row))
-
-    @cached_property
-    def db_row(self):
-        """Hydrate database row, lazily.
-        """
-        return self._model_cls.query.get(self._pk)
-
-
-class CityMatch(Match):
-
-    def __repr__(self):
-        return '%s<%s, %s, %s, wof:%d>' % (
-            self.__class__.__name__,
-            self.data.name,
-            self.data.name_a1,
-            self.data.name_a0,
-            self.data.wof_id,
-        )
-
-
-class StateMatch(Match):
-
-    def __repr__(self):
-        return '%s<%s, %s, wof:%d>' % (
-            self.__class__.__name__,
-            self.data.name,
-            self.data.name_a0,
-            self.data.wof_id,
-        )
-
-
 class Index:
 
     # city keys -> ids = A
@@ -224,12 +181,9 @@ class Index:
         if normalized_key not in self._trie:
             return None
 
-        ids = ujson.loads(self._trie[normalized_key][0])
+        ids = json.loads(self._trie[normalized_key][0])
 
-        gc.disable()
-        z= [pickle.loads(self._trie[self._ids_prefix + id][0]) for id in ids]
-        gc.enable()
-        return z
+        return [json.loads(self._trie[self._ids_prefix + id][0]) for id in ids]
 
     # def add_key(self, key, id):
     #     self._key_to_ids[key].add(id)
@@ -267,7 +221,7 @@ class USCityIndex(Index):
         logger.info('Indexing US cities.')
 
         key_to_ids = defaultdict(set)
-        id_to_loc = dict()
+        id_to_loc_items = list()
 
         for row in tqdm(cities):
 
@@ -276,12 +230,11 @@ class USCityIndex(Index):
                 key_to_ids[key].add(str(row.wof_id))
 
             # ID -> city
-            id_to_loc[self._ids_prefix + str(row.wof_id)] = pickle.dumps(CityMatch(row), protocol=-1)
+            id_to_loc_items.append((self._ids_prefix + str(row.wof_id), bytes(json.dumps(dict(row)), encoding="utf-8")))
 
-        key_to_ids_data = [(self._keys_prefix + key, bytes(ujson.dumps(list(key_to_ids[key])), encoding="utf-8")) for key in key_to_ids]
-        id_to_loc_data = list(id_to_loc.items())
+        key_to_ids_items = [(self._keys_prefix + key, bytes(json.dumps(list(key_to_ids[key])), encoding="utf-8")) for key in key_to_ids]
         
-        self._trie = marisa_trie.BytesTrie(key_to_ids_data + id_to_loc_data)
+        self._trie = marisa_trie.BytesTrie(key_to_ids_items + id_to_loc_items)
 
 
 class USStateIndex(Index):
@@ -297,7 +250,7 @@ class USStateIndex(Index):
         logger.info('Indexing US states.')
 
         key_to_ids = defaultdict(set)
-        id_to_loc = dict()
+        id_to_loc_items = list()
 
         for row in tqdm(states):
 
@@ -306,9 +259,8 @@ class USStateIndex(Index):
                 key_to_ids[key].add(str(row.wof_id))
 
             # ID -> state
-            id_to_loc[self._ids_prefix + str(row.wof_id)] = pickle.dumps(StateMatch(row), protocol=-1)
+            id_to_loc_items.append((self._ids_prefix + str(row.wof_id), bytes(json.dumps(dict(row)), encoding="utf-8")))
 
-        key_to_ids_data = [(self._keys_prefix + key, bytes(ujson.dumps(list(key_to_ids[key])), encoding="utf-8")) for key in key_to_ids]
-        id_to_loc_data = list(id_to_loc.items())
+        key_to_ids_items = [(self._keys_prefix + key, bytes(json.dumps(list(key_to_ids[key])), encoding="utf-8")) for key in key_to_ids]
         
-        self._trie = marisa_trie.BytesTrie(key_to_ids_data + id_to_loc_data)
+        self._trie = marisa_trie.BytesTrie(key_to_ids_items + id_to_loc_items)
