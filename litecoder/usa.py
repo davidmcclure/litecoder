@@ -2,7 +2,6 @@
 
 import re
 import marisa_trie
-import _pickle as pickle
 import ujson as json
 
 from tqdm import tqdm
@@ -10,7 +9,6 @@ from collections import defaultdict
 from itertools import product
 from cached_property import cached_property
 from box import Box
-import gc
 
 from sqlalchemy.inspection import inspect
 
