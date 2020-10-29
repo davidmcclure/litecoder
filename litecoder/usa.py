@@ -14,6 +14,8 @@ from sqlalchemy.inspection import inspect
 
 from . import logger, US_CITY_PATH, US_STATE_PATH
 from .models import WOFRegion, WOFLocality
+
+
 # TODO: Country alt-names YAML.
 USA_NAMES = (
     'USA',
@@ -154,7 +156,6 @@ class Index:
     # state ids -> loc = D
 
     def load(self, path):
-        print(path)
         self._trie.load(path)
 
     def __init__(self):
@@ -182,12 +183,6 @@ class Index:
         ids = json.loads(self._trie[normalized_key][0])
 
         return [json.loads(self._trie[self._ids_prefix + id][0]) for id in ids]
-
-    # def add_key(self, key, id):
-    #     self._key_to_ids[key].add(id)
-
-    # def add_location(self, id, location):
-    #     self._id_to_loc[id] = location
 
     def locations(self):
         return [loc for (id, loc) in self._trie.items() if id.startswith(self._ids_prefix)]
