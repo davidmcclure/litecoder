@@ -28,7 +28,7 @@ def test_cases(state_idx, query, matches):
 
     res = state_idx[query]
 
-    ids = [r.data.wof_id for r in res]
+    ids = [r["wof_id"] for r in res]
 
     assert sorted(ids) == sorted(matches)
 
@@ -41,6 +41,6 @@ def test_all(state_idx, state):
     """Smoke test N most populous cities.
     """
     res = state_idx[state.name]
-    res_ids = [r.data.wof_id for r in res]
+    res_ids = [r["wof_id"] for r in res]
 
     assert state.wof_id in res_ids

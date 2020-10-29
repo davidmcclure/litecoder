@@ -33,7 +33,7 @@ def test_cases(city_idx, query, matches, xfail):
 
     res = city_idx[query]
 
-    ids = [r.data.wof_id for r in res]
+    ids = [r["wof_id"] for r in res]
 
     # Exact id list match.
     assert sorted(ids) == sorted(matches)
@@ -49,6 +49,6 @@ def test_topn(city_idx, city):
     """Smoke test N most populous cities.
     """
     res = city_idx['%s, %s' % (city.name, city.name_a1)]
-    res_ids = [r.data.wof_id for r in res]
+    res_ids = [r["wof_id"] for r in res]
 
     assert city.wof_id in res_ids
