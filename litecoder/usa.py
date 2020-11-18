@@ -1,7 +1,8 @@
 
 
 import re
-import pickle
+import marisa_trie
+import ujson as json
 
 from tqdm import tqdm
 from collections import defaultdict
@@ -147,99 +148,53 @@ def state_key_iter(row):
         yield ' '.join((abbr, usa))
 
 
-class Match:
-
-    def __init__(self, row):
-        """Set model class, PK, metadata.
-        """
-        state = inspect(row)
-
-        # Don't store the actual row, so we can serialize.
-        self._model_cls = state.class_
-        self._pk = state.identity
-
-        self.data = Box(dict(row))
-
-    @cached_property
-    def db_row(self):
-        """Hydrate database row, lazily.
-        """
-        return self._model_cls.query.get(self._pk)
-
-
-class CityMatch(Match):
-
-    def __repr__(self):
-        return '%s<%s, %s, %s, wof:%d>' % (
-            self.__class__.__name__,
-            self.data.name,
-            self.data.name_a1,
-            self.data.name_a0,
-            self.data.wof_id,
-        )
-
-
-class StateMatch(Match):
-
-    def __repr__(self):
-        return '%s<%s, %s, wof:%d>' % (
-            self.__class__.__name__,
-            self.data.name,
-            self.data.name_a0,
-            self.data.wof_id,
-        )
-
-
 class Index:
 
-    @classmethod
-    def load(cls, path):
-        with open(path, 'rb') as fh:
-            return pickle.load(fh)
+    def load(self, path, mmap=False):
+        if mmap:
+            self._trie.mmap(path)
+        else:
+            self._trie.load(path)
 
     def __init__(self):
-        self._key_to_ids = defaultdict(set)
-        self._id_to_loc = dict()
+        self._trie = marisa_trie.BytesTrie()
+
+        # We use prefixes here to store the keys -> ids and ids -> loc "maps" as subtrees in one marisa trie.
+        self._keys_prefix = "A"
+        self._ids_prefix = "B"
 
     def __len__(self):
-        return len(self._key_to_ids)
+        return len(self._trie.keys(self._keys_prefix))
 
     def __repr__(self):
         return '%s<%d keys, %d entities>' % (
             self.__class__.__name__,
-            len(self._key_to_ids),
-            len(self._id_to_loc),
+            len(self._trie.keys(self._keys_prefix)),
+            len(self._trie.keys(self._ids_prefix)),
         )
 
     def __getitem__(self, text):
         """Get ids, map to records only if there is a match in the index
         """
-        if keyify(text) not in self._key_to_ids:
+        normalized_key = self._keys_prefix + keyify(text)
+        val = self._trie.get(normalized_key, None)
+        if not val:
             return None
+        ids = json.loads(val[0])
 
-        ids = self._key_to_ids[keyify(text)]
-
-        return [self._id_to_loc[id] for id in ids]
-
-    def add_key(self, key, id):
-        self._key_to_ids[key].add(id)
-
-    def add_location(self, id, location):
-        self._id_to_loc[id] = location
+        return [json.loads(self._trie[self._ids_prefix + id][0]) for id in ids]
 
     def locations(self):
-        return list(self._id_to_loc.values())
+        return self._trie.items(self._ids_prefix)
 
     def save(self, path):
-        with open(path, 'wb') as fh:
-            pickle.dump(self, fh)
+        self._trie.save(path)
 
 
 class USCityIndex(Index):
 
-    @classmethod
-    def load(cls, path=US_CITY_PATH):
-        return super().load(path)
+    def load(self, path=US_CITY_PATH, mmap=False):
+        return super().load(path, mmap)
 
     def __init__(self, bare_name_blocklist=None):
         super().__init__()
@@ -248,6 +203,7 @@ class USCityIndex(Index):
     def build(self):
         """Index all US cities.
         """
+        
         allow_bare = AllowBareCityName(blocklist=self.bare_name_blocklist)
 
         iter_keys = CityKeyIter(allow_bare)
@@ -257,21 +213,27 @@ class USCityIndex(Index):
 
         logger.info('Indexing US cities.')
 
+        key_to_ids = defaultdict(set)
+        id_to_loc_items = list()
+
         for row in tqdm(cities):
 
             # Key -> id(s)
             for key in map(keyify, iter_keys(row)):
-                self.add_key(key, row.wof_id)
+                key_to_ids[key].add(str(row.wof_id))
 
             # ID -> city
-            self.add_location(row.wof_id, CityMatch(row))
+            id_to_loc_items.append((self._ids_prefix + str(row.wof_id), bytes(json.dumps(dict(row)), encoding="utf-8")))
+
+        key_to_ids_items = [(self._keys_prefix + key, json.dumps(list(key_to_ids[key])).encode("utf-8")) for key in key_to_ids]
+        
+        self._trie = marisa_trie.BytesTrie(key_to_ids_items + id_to_loc_items)
 
 
 class USStateIndex(Index):
 
-    @classmethod
-    def load(cls, path=US_STATE_PATH):
-        return super().load(path)
+    def load(self, path=US_STATE_PATH, mmap=False):
+        return super().load(path, mmap)
 
     def build(self):
         """Index all US states.
@@ -280,11 +242,18 @@ class USStateIndex(Index):
 
         logger.info('Indexing US states.')
 
+        key_to_ids = defaultdict(set)
+        id_to_loc_items = list()
+
         for row in tqdm(states):
 
             # Key -> id(s)
             for key in map(keyify, state_key_iter(row)):
-                self.add_key(key, row.wof_id)
+                key_to_ids[key].add(str(row.wof_id))
 
             # ID -> state
-            self.add_location(row.wof_id, StateMatch(row))
+            id_to_loc_items.append((self._ids_prefix + str(row.wof_id), bytes(json.dumps(dict(row)), encoding="utf-8")))
+
+        key_to_ids_items = [(self._keys_prefix + key, json.dumps(list(key_to_ids[key])).encode("utf-8")) for key in key_to_ids]
+        
+        self._trie = marisa_trie.BytesTrie(key_to_ids_items + id_to_loc_items)
