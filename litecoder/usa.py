@@ -150,16 +150,16 @@ def state_key_iter(row):
 
 class Index:
 
-    # city keys -> ids = A
-    # city ids -> loc = B
-    # state keys -> ids = C
-    # state ids -> loc = D
-
-    def load(self, path):
-        self._trie.load(path)
+    def load(self, path, mmap=False):
+        if mmap:
+            self._trie.mmap(path)
+        else:
+            self._trie.load(path)
 
     def __init__(self):
         self._trie = marisa_trie.BytesTrie()
+
+        # We use prefixes here to store the keys -> ids and ids -> loc "maps" as subtrees in one marisa trie.
         self._keys_prefix = "A"
         self._ids_prefix = "B"
 
@@ -177,15 +177,15 @@ class Index:
         """Get ids, map to records only if there is a match in the index
         """
         normalized_key = self._keys_prefix + keyify(text)
-        if normalized_key not in self._trie:
+        val = self._trie.get(normalized_key, None)
+        if not val:
             return None
-
-        ids = json.loads(self._trie[normalized_key][0])
+        ids = json.loads(val[0])
 
         return [json.loads(self._trie[self._ids_prefix + id][0]) for id in ids]
 
     def locations(self):
-        return [loc for (id, loc) in self._trie.items() if id.startswith(self._ids_prefix)]
+        return self._trie.items(self._ids_prefix)
 
     def save(self, path):
         self._trie.save(path)
@@ -193,8 +193,8 @@ class Index:
 
 class USCityIndex(Index):
 
-    def load(self, path=US_CITY_PATH):
-        return super().load(path)
+    def load(self, path=US_CITY_PATH, mmap=False):
+        return super().load(path, mmap)
 
     def __init__(self, bare_name_blocklist=None):
         super().__init__()
@@ -225,15 +225,15 @@ class USCityIndex(Index):
             # ID -> city
             id_to_loc_items.append((self._ids_prefix + str(row.wof_id), bytes(json.dumps(dict(row)), encoding="utf-8")))
 
-        key_to_ids_items = [(self._keys_prefix + key, bytes(json.dumps(list(key_to_ids[key])), encoding="utf-8")) for key in key_to_ids]
+        key_to_ids_items = [(self._keys_prefix + key, json.dumps(list(key_to_ids[key])).encode("utf-8")) for key in key_to_ids]
         
         self._trie = marisa_trie.BytesTrie(key_to_ids_items + id_to_loc_items)
 
 
 class USStateIndex(Index):
 
-    def load(self, path=US_STATE_PATH):
-        return super().load(path)
+    def load(self, path=US_STATE_PATH, mmap=False):
+        return super().load(path, mmap)
 
     def build(self):
         """Index all US states.
@@ -254,6 +254,6 @@ class USStateIndex(Index):
             # ID -> state
             id_to_loc_items.append((self._ids_prefix + str(row.wof_id), bytes(json.dumps(dict(row)), encoding="utf-8")))
 
-        key_to_ids_items = [(self._keys_prefix + key, bytes(json.dumps(list(key_to_ids[key])), encoding="utf-8")) for key in key_to_ids]
+        key_to_ids_items = [(self._keys_prefix + key, json.dumps(list(key_to_ids[key])).encode("utf-8")) for key in key_to_ids]
         
         self._trie = marisa_trie.BytesTrie(key_to_ids_items + id_to_loc_items)

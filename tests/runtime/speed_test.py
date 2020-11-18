@@ -8,7 +8,7 @@ city_idx.load()
 print("finished: {}s!".format(time.time() - start_time))
 
 # Load 50 test city lookups
-with open("tests/runtime/test_city_lookups.txt", "r") as lookups_file:
+with open("test_city_lookups.txt", "r") as lookups_file:
     city_tests = lookups_file.read().splitlines()
 
 # Increase the number of lookups for the speed test if necessary
@@ -29,7 +29,7 @@ state_idx.load()
 print("finished: {}s!".format(time.time() - start_time))
 
 # Load 50 test state lookups
-with open("tests/runtime/test_state_lookups.txt", "r") as lookups_file:
+with open("test_state_lookups.txt", "r") as lookups_file:
     state_tests = lookups_file.read().splitlines()
 
 # Increase the number of lookups for the speed test if necessary

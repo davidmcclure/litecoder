@@ -35,6 +35,7 @@ PyYAML = "*"
 Shapely = "*"
 numpy = "*"
 scipy = "*"
+marisa_trie = "*"
 
 [dev-packages]
 
